@@ -528,4 +528,55 @@ footer .container {
     .math-equation {
         font-size: 1rem;
     }
+}
+
+/* Update resource buttons */
+.view-btn {
+    display: inline-block;
+    background-color: var(--math-color);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.view-btn:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Add styles for PDF viewer modal if needed */
+.pdf-viewer-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+}
+
+.pdf-viewer-content {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    margin: 2% auto;
+}
+
+.pdf-viewer-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.close-modal {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
 } 

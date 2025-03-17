@@ -10,112 +10,251 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            background-color: #f8f9fa;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         h1 {
-            color: #333;
+            color: #2c3e50;
             text-align: center;
             margin-bottom: 30px;
+            font-weight: 600;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-top: 20px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
         }
         .resources-nav {
             display: flex;
             justify-content: space-around;
             margin-bottom: 30px;
-            background-color: #f0f0f0;
+            background-color: #f0f7ff;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .resources-nav button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .resources-nav button:hover {
-            background-color: #45a049;
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .resources-nav button:active {
+            transform: translateY(0);
         }
         .resources-section {
             display: none;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
         .resources-section.active {
             display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .course-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
         }
         .course-buttons button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             background-color: #2196F3;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 120px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .course-buttons button:hover {
-            background-color: #0b7dda;
+            background-color: #0d8aee;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         .semester-buttons {
             display: none;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin: 20px 0 30px;
+            justify-content: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
         }
         .semester-buttons.active {
             display: flex;
+            animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .semester-buttons button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             background-color: #ff9800;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 120px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .semester-buttons button:hover {
             background-color: #e68a00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         .lecture-notes {
             display: none;
         }
         .lecture-notes.active {
             display: block;
+            animation: fadeIn 0.5s ease;
         }
         .lecture-item {
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
             background-color: #f9f9f9;
-            border-radius: 5px;
-            border-left: 4px solid #4CAF50;
+            border-radius: 8px;
+            border-left: 5px solid #4CAF50;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .lecture-item:hover {
+            background-color: #f0f0f0;
+            transform: translateX(5px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
         .lecture-item a {
             color: #333;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .lecture-item a:before {
+            content: "\f15c";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 10px;
+            color: #4CAF50;
         }
         .lecture-item a:hover {
-            text-decoration: underline;
+            color: #2c3e50;
+        }
+        .resources-hero {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 10px 10px;
+        }
+        .resources-hero h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+        }
+        .resources-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .upload-section {
+            background-color: #f0f7ff;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+        .upload-section h2 {
+            color: #2c3e50;
+            border-bottom: none;
+        }
+        .contact-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .contact-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .contact-btn i {
+            margin-right: 8px;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .resources-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .resources-nav button {
+                width: 100%;
+            }
+            .course-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .course-buttons button {
+                width: 100%;
+                max-width: 300px;
+            }
+            .semester-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .semester-buttons button {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>

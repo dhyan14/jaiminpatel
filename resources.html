@@ -104,9 +104,7 @@
                                     <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
                                     <span><i class="fas fa-file-pdf"></i> PDF</span>
                                 </div>
-                                <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" 
-                                   target="_blank" 
-                                   class="view-btn">View Document</a>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                             </div>
                         </div>
 
@@ -119,9 +117,7 @@
                                     <span><i class="fas fa-calendar-alt"></i> May 2024</span>
                                     <span><i class="fas fa-file-pdf"></i> PDF</span>
                                 </div>
-                                <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" 
-                                   target="_blank" 
-                                   class="view-btn">View Document</a>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                             </div>
                         </div>
 
@@ -260,6 +256,12 @@
         }
         
         function showNotes(semester, chapter, course) {
+            // Remove any existing pdf viewer modal if it exists
+            const existingModal = document.querySelector('.pdf-viewer-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
             // Remove previous notes display if exists
             if (document.querySelector('.notes-display')) {
                 document.querySelector('.notes-display').remove();
@@ -275,17 +277,17 @@
                     <div class="note-item">
                         <h3>Topic 1</h3>
                         <p>Notes content would appear here...</p>
-                        <a href="#" class="download-link">Download PDF</a>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
                     </div>
                     <div class="note-item">
                         <h3>Topic 2</h3>
                         <p>Notes content would appear here...</p>
-                        <a href="#" class="download-link">Download PDF</a>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
                     </div>
                     <div class="note-item">
                         <h3>Topic 3</h3>
                         <p>Notes content would appear here...</p>
-                        <a href="#" class="download-link">Download PDF</a>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
                     </div>
                 </div>
             `;

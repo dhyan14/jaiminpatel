@@ -479,6 +479,10 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
+            // Set initial background to solid black
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
             const fontSize = 14;
             const columns = Math.floor(canvas.width / fontSize);
             
@@ -492,8 +496,8 @@
             const chars = '01αβγΔπΣ∫∂√∞∑∏⊕⊗∇∴∵∝∃∄∈∉∋∌∧∨∩∪≡≠≤≥≪≫⊂⊃⊆⊇⊥⊢⊣⋅∘×÷±∓∔∖∗∙∣∤∥∦∎∀∃∄∴∵∼≈≠≡≤≥⊂⊃⊆⊇⊕⊗⊥';
             
             function draw() {
-                // Semi-transparent black to create fade effect
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                // Solid black background with slight fade for trail effect
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 ctx.fillStyle = '#33ff33';

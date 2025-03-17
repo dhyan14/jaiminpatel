@@ -179,6 +179,12 @@
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             
+            // Remove existing upload section if it exists
+            const existingUploadSection = document.querySelector('.upload-section');
+            if (existingUploadSection) {
+                existingUploadSection.remove();
+            }
+            
             // Create semester buttons based on course
             let semesterButtonsHTML = '';
             let maxSemesters = 8; // default
@@ -215,13 +221,24 @@
                     ${semesterButtonsHTML}
                 </div>
             `;
-            document.querySelector('main').appendChild(coursesContainer);
             
-            // Scroll to the upload section (contact page)
-            const uploadSection = document.querySelector('.upload-section');
-            if (uploadSection) {
-                uploadSection.scrollIntoView({ behavior: 'smooth' });
-            }
+            // Create the upload section
+            let uploadSection = document.createElement('section');
+            uploadSection.className = 'upload-section';
+            uploadSection.innerHTML = `
+                <div class="container">
+                    <h2>Looking for a specific resource?</h2>
+                    <p>If you can't find what you're looking for, feel free to reach out and I'll try to help!</p>
+                    <a href="mailto:your.email@example.com" class="contact-btn"><i class="fas fa-envelope"></i> Contact Me</a>
+                </div>
+            `;
+            
+            // Add both containers to main
+            document.querySelector('main').appendChild(coursesContainer);
+            document.querySelector('main').appendChild(uploadSection);
+            
+            // Scroll to the courses container
+            coursesContainer.scrollIntoView({ behavior: 'smooth' });
         }
         
         function getCourseTitle(course) {
@@ -239,6 +256,12 @@
             const coursesContainer = document.querySelector('.courses-container');
             if (coursesContainer) {
                 coursesContainer.remove();
+            }
+            
+            // Remove the dynamically added upload section
+            const uploadSection = document.querySelector('.upload-section');
+            if (uploadSection) {
+                uploadSection.remove();
             }
             
             // Show the resources content section again

@@ -134,9 +134,7 @@
                                     <span><i class="fas fa-calendar-alt"></i> 2024</span>
                                     <span><i class="fas fa-file-pdf"></i> PDF</span>
                                 </div>
-                                <a href="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview" 
-                                   target="_blank" 
-                                   class="view-btn">View Document</a>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
                             </div>
                         </div>
 
@@ -364,7 +362,7 @@
         
         // Remove the modal-related event listeners since we're not using the modal anymore
         document.addEventListener('DOMContentLoaded', function() {
-            // Category filter functionality
+            // Only keep the category filter functionality
             const categoryBtns = document.querySelectorAll('.category-btn');
             const resourceItems = document.querySelectorAll('.resource-item');
             
@@ -568,6 +566,12 @@
         
         .view-btn:hover {
             background-color: #3e8e41;
+        }
+        
+        // Remove any modal-related styles if they exist
+        .pdf-viewer-modal,
+        .pdf-viewer-content {
+            display: none !important;
         }
     </style>
 </body>

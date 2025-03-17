@@ -188,13 +188,13 @@
                     maxSemesters = 4;
                     break;
                 case 'mca':
-                    maxSemesters = 6;
+                    maxSemesters = 1;  // 1 semester for MCA
                     break;
                 case 'imca':
-                    maxSemesters = 8;
+                    maxSemesters = 4;  // 4 semesters for iMCA
                     break;
                 case 'bca':
-                    maxSemesters = 6;
+                    maxSemesters = 3;  // Changed to 3 semesters for BCA
                     break;
             }
             
@@ -246,7 +246,7 @@
             }
             
             // Determine number of units and label based on course
-            let unitCount = 4; // default for B.Tech
+            let unitCount = 4; // default for B.Tech, iMCA, and BCA
             let unitLabel = 'Unit';
             
             switch(course) {
@@ -255,15 +255,15 @@
                     unitLabel = 'Unit';
                     break;
                 case 'mca':
-                    unitCount = 5;
+                    unitCount = 5;  // 5 modules for MCA
                     unitLabel = 'Module';
                     break;
                 case 'imca':
-                    unitCount = 4;
+                    unitCount = 4;  // 4 units for iMCA
                     unitLabel = 'Unit';
                     break;
                 case 'bca':
-                    unitCount = 4;
+                    unitCount = 4;  // 4 units for BCA
                     unitLabel = 'Unit';
                     break;
             }

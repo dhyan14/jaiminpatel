@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Portfolio - Resources</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="math-symbol">&int;</span> Math Portfolio
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="resources.html" class="active">Resources</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="resources-hero">
+            <div class="container">
+                <h1>Mathematical Resources</h1>
+                <p>Download lecture notes, problem sets, and other educational materials</p>
+            </div>
+        </section>
+
+        <section class="resources-content">
+            <div class="container">
+                <div class="resource-categories">
+                    <div class="category-nav">
+                        <button class="category-btn active" data-category="all">All Resources</button>
+                        <button class="category-btn" data-category="notes">Lecture Notes</button>
+                        <button class="category-btn" data-category="problems">Problem Sets</button>
+                        <button class="category-btn" data-category="books">Books & Papers</button>
+                        <button class="category-btn" data-category="tools">Tools & Software</button>
+                    </div>
+
+                    <div class="resource-grid">
+                        <!-- Example resource items - replace with your actual resources -->
+                        <div class="resource-item" data-category="notes">
+                            <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="resource-details">
+                                <h3>Calculus I: Limits and Derivatives</h3>
+                                <p>Comprehensive notes covering the fundamentals of limits and derivatives.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> Jan 2023</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <a href="assets/files/sample.pdf" download class="download-btn">Download</a>
+                            </div>
+                        </div>
+
+                        <div class="resource-item" data-category="problems">
+                            <div class="resource-icon"><i class="fas fa-tasks"></i></div>
+                            <div class="resource-details">
+                                <h3>Linear Algebra Problem Set</h3>
+                                <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <a href="assets/files/sample.pdf" download class="download-btn">Download</a>
+                            </div>
+                        </div>
+
+                        <div class="resource-item" data-category="books">
+                            <div class="resource-icon"><i class="fas fa-book"></i></div>
+                            <div class="resource-details">
+                                <h3>Introduction to Number Theory</h3>
+                                <p>A beginner-friendly guide to the fascinating world of number theory.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> Feb 2023</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <a href="assets/files/sample.pdf" download class="download-btn">Download</a>
+                            </div>
+                        </div>
+
+                        <div class="resource-item" data-category="tools">
+                            <div class="resource-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="resource-details">
+                                <h3>Statistical Analysis Toolkit</h3>
+                                <p>Excel templates for common statistical analyses and data visualization.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> Apr 2023</span>
+                                    <span><i class="fas fa-file-excel"></i> XLSX</span>
+                                </div>
+                                <a href="assets/files/sample.xlsx" download class="download-btn">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <div class="container">
+                <h2>Looking for a specific resource?</h2>
+                <p>If you can't find what you're looking for, feel free to reach out and I'll try to help!</p>
+                <a href="mailto:your.email@example.com" class="contact-btn"><i class="fas fa-envelope"></i> Contact Me</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Math Portfolio. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/main.js"></script>
+</body>
+</html> 

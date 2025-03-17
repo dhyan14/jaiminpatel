@@ -389,19 +389,42 @@
                         
                         <div class="code-snippet">
                             <code>
-                                <span class="code-comment">// Recursive implementation of the Fibonacci sequence</span><br>
-                                <span class="code-keyword">function</span> <span class="code-function">fibonacci</span>(n) {<br>
-                                &nbsp;&nbsp;<span class="code-keyword">if</span> (n <= <span class="code-number">1</span>) <span class="code-keyword">return</span> n;<br>
-                                &nbsp;&nbsp;<span class="code-keyword">return</span> fibonacci(n - <span class="code-number">1</span>) + fibonacci(n - <span class="code-number">2</span>);<br>
+                                <span class="code-comment">/* Matrix Operations and Eigenvalue Decomposition */</span><br>
+                                <span class="code-keyword">function</span> <span class="code-function">matrixMultiply</span>(A, B) {<br>
+                                &nbsp;&nbsp;<span class="code-keyword">const</span> result = Array(A.length).fill().map(() => Array(B[0].length).fill(<span class="code-number">0</span>));<br>
+                                &nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < A.length; i++) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> j = <span class="code-number">0</span>; j < B[0].length; j++) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> k = <span class="code-number">0</span>; k < A[0].length; k++) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result[i][j] += A[i][k] * B[k][j];<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                &nbsp;&nbsp;}<br>
+                                &nbsp;&nbsp;<span class="code-keyword">return</span> result;<br>
                                 }<br><br>
                                 
-                                <span class="code-comment">// Optimized implementation using dynamic programming</span><br>
-                                <span class="code-keyword">function</span> <span class="code-function">fibonacciDP</span>(n) {<br>
-                                &nbsp;&nbsp;<span class="code-keyword">const</span> fib = [<span class="code-number">0</span>, <span class="code-number">1</span>];<br>
-                                &nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">2</span>; i <= n; i++) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;fib[i] = fib[i - <span class="code-number">1</span>] + fib[i - <span class="code-number">2</span>];<br>
-                                &nbsp;&nbsp;}<br>
-                                &nbsp;&nbsp;<span class="code-keyword">return</span> fib[n];<br>
+                                <span class="code-comment">/* Eigenvalue calculation using Power Method */</span><br>
+                                <span class="code-keyword">function</span> <span class="code-function">powerMethod</span>(A, iterations = <span class="code-number">100</span>, tolerance = <span class="code-number">1e-10</span>) {<br>
+                                &nbsp;&nbsp;<span class="code-comment">// Start with random vector</span><br>
+                                &nbsp;&nbsp;<span class="code-keyword">let</span> x = Array(A.length).fill().map(() => Math.random());<br>
+                                &nbsp;&nbsp;<span class="code-keyword">let</span> eigenvalue = <span class="code-number">0</span>;<br>
+                                &nbsp;&nbsp;<span class="code-keyword">let</span> prevEigenvalue = <span class="code-number">0</span>;<br><br>
+                                
+                                &nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < iterations; i++) {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Ax multiplication</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> Ax = matrixMultiply(A, x.map(val => [val]));<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Find largest value for normalization</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> maxVal = Math.max(...Ax.map(val => Math.abs(val[<span class="code-number">0</span>])));<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Normalize the vector</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;x = Ax.map(val => val[<span class="code-number">0</span>] / maxVal);<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Calculate Rayleigh quotient</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;eigenvalue = (matrixMultiply(matrixMultiply([x], A), x.map(val => [val])))[<span class="code-number">0</span>][<span class="code-number">0</span>];<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Check for convergence</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (Math.abs(eigenvalue - prevEigenvalue) < tolerance) <span class="code-keyword">break</span>;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;prevEigenvalue = eigenvalue;<br>
+                                &nbsp;&nbsp;}<br><br>
+                                
+                                &nbsp;&nbsp;<span class="code-keyword">return</span> { eigenvalue, eigenvector: x };<br>
                                 }
                             </code>
                         </div>

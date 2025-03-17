@@ -176,8 +176,9 @@
     <script src="scripts/main.js"></script>
     <script>
         function showCourses(course) {
-            // Hide the resources content section
+            // Hide the resources content section and upload section
             document.querySelector('.resources-content').style.display = 'none';
+            document.querySelector('.upload-section').style.display = 'none';
             
             // Create semester buttons based on course
             let semesterButtonsHTML = '';
@@ -216,7 +217,6 @@
                 </div>
             `;
             
-            // Add container to main
             document.querySelector('main').appendChild(coursesContainer);
             
             // Scroll to the courses container
@@ -240,8 +240,9 @@
                 coursesContainer.remove();
             }
             
-            // Show the resources content section again
+            // Show the resources content section and upload section again
             document.querySelector('.resources-content').style.display = 'block';
+            document.querySelector('.upload-section').style.display = 'block';
         }
         
         function showUnits(semester, course) {

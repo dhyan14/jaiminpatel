@@ -48,24 +48,25 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .resources-nav button {
+        .resources-nav .nav-link {
             padding: 12px 24px;
             background-color: #3498db;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 500;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
         }
-        .resources-nav button:hover {
+        .resources-nav .nav-link:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        .resources-nav button:active {
+        .resources-nav .nav-link:active {
             transform: translateY(0);
         }
         .resources-section {
@@ -92,19 +93,21 @@
             margin-bottom: 25px;
             justify-content: center;
         }
-        .course-buttons button {
+        .course-buttons .course-link {
             padding: 10px 20px;
             background-color: #2196F3;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
             min-width: 120px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            display: inline-block;
         }
-        .course-buttons button:hover {
+        .course-buttons .course-link:hover {
             background-color: #0d8aee;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -123,23 +126,21 @@
             display: flex;
             animation: slideDown 0.4s ease;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .semester-buttons button {
+        .semester-buttons .semester-link {
             padding: 10px 20px;
             background-color: #ff9800;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
             min-width: 120px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            display: inline-block;
         }
-        .semester-buttons button:hover {
+        .semester-buttons .semester-link:hover {
             background-color: #e68a00;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -236,14 +237,15 @@
                 flex-direction: column;
                 gap: 10px;
             }
-            .resources-nav button {
+            .resources-nav .nav-link {
                 width: 100%;
+                display: block;
             }
             .course-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            .course-buttons button {
+            .course-buttons .course-link {
                 width: 100%;
                 max-width: 300px;
             }
@@ -251,7 +253,7 @@
                 flex-direction: column;
                 align-items: center;
             }
-            .semester-buttons button {
+            .semester-buttons .semester-link {
                 width: 100%;
                 max-width: 300px;
             }
@@ -282,44 +284,44 @@
         <section class="resources-content">
             <div class="container">
                 <div class="resources-nav">
-                    <button onclick="showSection('lecture-notes')">Lecture Notes</button>
-                    <button onclick="showSection('problem-sets')">Problem Sets</button>
-                    <button onclick="showSection('assignments')">Assignments</button>
-                    <button onclick="showSection('expert-lectures')">Expert Lectures</button>
+                    <a href="#" onclick="showSection('lecture-notes'); return false;" class="nav-link">Lecture Notes</a>
+                    <a href="#" onclick="showSection('problem-sets'); return false;" class="nav-link">Problem Sets</a>
+                    <a href="#" onclick="showSection('assignments'); return false;" class="nav-link">Assignments</a>
+                    <a href="#" onclick="showSection('expert-lectures'); return false;" class="nav-link">Expert Lectures</a>
                 </div>
                 
                 <!-- Lecture Notes Section -->
                 <div id="lecture-notes" class="resources-section">
                     <h2>Lecture Notes</h2>
                     <div class="course-buttons">
-                        <button onclick="showCourse('btech')">B.Tech</button>
-                        <button onclick="showCourse('mca')">MCA</button>
-                        <button onclick="showCourse('imca')">iMCA</button>
-                        <button onclick="showCourse('bca')">BCA</button>
+                        <a href="#" onclick="showCourse('btech'); return false;" class="course-link">B.Tech</a>
+                        <a href="#" onclick="showCourse('mca'); return false;" class="course-link">MCA</a>
+                        <a href="#" onclick="showCourse('imca'); return false;" class="course-link">iMCA</a>
+                        <a href="#" onclick="showCourse('bca'); return false;" class="course-link">BCA</a>
                     </div>
                     
                     <!-- B.Tech Semesters -->
                     <div id="btech-semesters" class="semester-buttons">
-                        <button onclick="showSemester('btech', 'sem1')">Semester I</button>
-                        <button onclick="showSemester('btech', 'sem2')">Semester II</button>
+                        <a href="#" onclick="showSemester('btech', 'sem1'); return false;" class="semester-link">Semester I</a>
+                        <a href="#" onclick="showSemester('btech', 'sem2'); return false;" class="semester-link">Semester II</a>
                     </div>
                     
                     <!-- MCA Semesters -->
                     <div id="mca-semesters" class="semester-buttons">
-                        <button onclick="showSemester('mca', 'sem1')">Semester I</button>
-                        <button onclick="showSemester('mca', 'sem2')">Semester II</button>
+                        <a href="#" onclick="showSemester('mca', 'sem1'); return false;" class="semester-link">Semester I</a>
+                        <a href="#" onclick="showSemester('mca', 'sem2'); return false;" class="semester-link">Semester II</a>
                     </div>
                     
                     <!-- iMCA Semesters -->
                     <div id="imca-semesters" class="semester-buttons">
-                        <button onclick="showSemester('imca', 'sem1')">Semester I</button>
-                        <button onclick="showSemester('imca', 'sem2')">Semester II</button>
+                        <a href="#" onclick="showSemester('imca', 'sem1'); return false;" class="semester-link">Semester I</a>
+                        <a href="#" onclick="showSemester('imca', 'sem2'); return false;" class="semester-link">Semester II</a>
                     </div>
                     
                     <!-- BCA Semesters -->
                     <div id="bca-semesters" class="semester-buttons">
-                        <button onclick="showSemester('bca', 'sem1')">Semester I</button>
-                        <button onclick="showSemester('bca', 'sem2')">Semester II</button>
+                        <a href="#" onclick="showSemester('bca', 'sem1'); return false;" class="semester-link">Semester I</a>
+                        <a href="#" onclick="showSemester('bca', 'sem2'); return false;" class="semester-link">Semester II</a>
                     </div>
                     
                     <!-- B.Tech Lecture Notes -->

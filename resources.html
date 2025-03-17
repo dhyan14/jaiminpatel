@@ -422,8 +422,6 @@
 
     <main>
         <section class="resources-hero">
-            <div class="binary-background" id="binary-background"></div>
-            <div class="matrix-rain" id="matrix-canvas"></div>
             <div class="container">
                 <h1>Mathematical Resources</h1>
                 <p>Download lecture notes, problem sets, and other educational materials</p>
@@ -575,86 +573,11 @@
 
     <script src="scripts/main.js"></script>
     <script>
-        // Matrix rain effect
         document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const matrixContainer = document.getElementById('matrix-canvas');
-            
-            if (matrixContainer) {
-                matrixContainer.appendChild(canvas);
-                
-                canvas.width = window.innerWidth;
-                canvas.height = document.querySelector('.resources-hero').offsetHeight;
-                
-                const fontSize = 14;
-                const columns = Math.floor(canvas.width / fontSize);
-                
-                // Array to store the y position of each column
-                const drops = [];
-                for (let i = 0; i < columns; i++) {
-                    drops[i] = Math.random() * -100;
-                }
-                
-                // Characters to display
-                const chars = '01αβγΔπΣ∫∂√∞∑∏⊕⊗∇∴∵∝∃∄∈∉∋∌∧∨∩∪≡≠≤≥≪≫⊂⊃⊆⊇⊥⊢⊣⋅∘×÷±∓∔∖∗∙∣∤∥∦∎∀∃∄∴∵∼≈≠≡≤≥⊂⊃⊆⊇⊕⊗⊥';
-                
-                function draw() {
-                    // Semi-transparent black to create fade effect
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    ctx.fillStyle = '#33ff33';
-                    ctx.font = fontSize + 'px monospace';
-                    
-                    for (let i = 0; i < drops.length; i++) {
-                        // Random character
-                        const text = chars[Math.floor(Math.random() * chars.length)];
-                        
-                        // x = i * fontSize, y = value of drops[i]
-                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                        
-                        // Sending the drop back to the top randomly after it has crossed the screen
-                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                            drops[i] = 0;
-                        }
-                        
-                        // Incrementing Y coordinate
-                        drops[i]++;
-                    }
-                    
-                    requestAnimationFrame(draw);
-                }
-                
-                draw();
-            }
-            
-            // Binary background
-            const binaryBackground = document.getElementById('binary-background');
-            
-            if (binaryBackground) {
-                for (let i = 0; i < 20; i++) {
-                    const binaryText = document.createElement('div');
-                    binaryText.className = 'binary-text';
-                    
-                    // Random binary string
-                    let text = '';
-                    const length = Math.floor(Math.random() * 100) + 50;
-                    for (let j = 0; j < length; j++) {
-                        text += Math.random() > 0.5 ? '1' : '0';
-                    }
-                    
-                    binaryText.textContent = text;
-                    
-                    // Random position and animation duration
-                    const left = Math.random() * 100;
-                    const animationDuration = Math.random() * 30 + 20;
-                    
-                    binaryText.style.left = left + 'vw';
-                    binaryText.style.animationDuration = animationDuration + 's';
-                    
-                    binaryBackground.appendChild(binaryText);
-                }
+            // Set solid black background for hero section
+            const resourcesHero = document.querySelector('.resources-hero');
+            if (resourcesHero) {
+                resourcesHero.style.backgroundColor = '#000000';
             }
             
             // Category filter functionality

@@ -58,39 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle PDF viewer links
-    document.querySelectorAll('.view-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const pdfUrl = this.getAttribute('href');
-            
-            // Create modal
-            const modal = document.createElement('div');
-            modal.className = 'pdf-viewer-modal';
-            modal.innerHTML = `
-                <div class="pdf-viewer-content">
-                    <span class="close-modal">&times;</span>
-                    <iframe src="${pdfUrl}" allowfullscreen></iframe>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            modal.style.display = 'block';
-            
-            // Close modal functionality
-            modal.querySelector('.close-modal').addEventListener('click', () => {
-                modal.remove();
-            });
-            
-            // Close on outside click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-        });
-    });
-
     // Course modal functionality
     const courseModal = document.getElementById('course-modal');
     const courseTitle = document.getElementById('course-title');

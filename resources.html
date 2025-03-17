@@ -185,6 +185,11 @@
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             
+            // Remove any existing courses container to prevent duplicates
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
+            
             // Create and show the courses container
             let coursesContainer = document.createElement('div');
             coursesContainer.className = 'courses-container';
@@ -219,7 +224,10 @@
         
         function backToResources() {
             // Remove courses container
-            document.querySelector('.courses-container').remove();
+            const coursesContainer = document.querySelector('.courses-container');
+            if (coursesContainer) {
+                coursesContainer.remove();
+            }
             
             // Show the resources content section again
             document.querySelector('.resources-content').style.display = 'block';
@@ -290,6 +298,11 @@
         function showExpertLectures() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
+            
+            // Remove any existing courses container to prevent duplicates
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
             
             // Create and show the expert lectures container
             let lecturesContainer = document.createElement('div');

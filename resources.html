@@ -194,7 +194,7 @@
                     maxSemesters = 4;  // 4 semesters for iMCA
                     break;
                 case 'bca':
-                    maxSemesters = 3;  // Changed to 3 semesters for BCA
+                    maxSemesters = 3;  // 3 semesters for BCA
                     break;
             }
             
@@ -216,6 +216,12 @@
                 </div>
             `;
             document.querySelector('main').appendChild(coursesContainer);
+            
+            // Scroll to the upload section (contact page)
+            const uploadSection = document.querySelector('.upload-section');
+            if (uploadSection) {
+                uploadSection.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         
         function getCourseTitle(course) {

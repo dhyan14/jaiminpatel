@@ -267,32 +267,7 @@
                 document.querySelector('.notes-display').remove();
             }
             
-            // Create and show the notes container
-            let notesContainer = document.createElement('div');
-            notesContainer.className = 'notes-display';
-            notesContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - Chapter ${chapter} Notes</h2>
-                <div class="notes-content">
-                    <!-- This would be populated with actual notes content -->
-                    <div class="note-item">
-                        <h3>Topic 1</h3>
-                        <p>Notes content would appear here...</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
-                    </div>
-                    <div class="note-item">
-                        <h3>Topic 2</h3>
-                        <p>Notes content would appear here...</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
-                    </div>
-                    <div class="note-item">
-                        <h3>Topic 3</h3>
-                        <p>Notes content would appear here...</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">Download PDF</button>
-                    </div>
-                </div>
-            `;
-            document.querySelector('.courses-container').appendChild(notesContainer);
-        }
+            
         
         // Add a new function to handle Expert Lectures
         function showExpertLectures() {

@@ -32,111 +32,120 @@
 
         <section class="resources-content">
             <div class="container">
-                <div class="resource-grid">
-                    <!-- Course cards -->
-                    <div class="resource-item" data-category="courses">
-                        <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="resource-details">
-                            <h3>B.Tech</h3>
-                            <p>Lecture notes and course materials for Bachelor of Technology students.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-book"></i> Engineering</span>
-                                <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
-                            </div>
-                            <button class="view-btn" onclick="showCourses('btech')">View Course</button>
-                        </div>
+                <div class="resource-categories">
+                    <div class="category-nav">
+                        <button class="category-btn active" data-category="all">All Resources</button>
+                        <button class="category-btn" data-category="courses">Lecture Notes</button>
+                        <button class="category-btn" data-category="problems">Problem Sets</button>
+                        <button class="category-btn" data-category="assignments">Assignments</button>
                     </div>
 
-                    <div class="resource-item" data-category="courses">
-                        <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="resource-details">
-                            <h3>MCA</h3>
-                            <p>Lecture notes and course materials for Master of Computer Applications students.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-book"></i> Computer Applications</span>
-                                <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                    <div class="resource-grid">
+                        <!-- Course cards -->
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>B.Tech</h3>
+                                <p>Lecture notes and course materials for Bachelor of Technology students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Engineering</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <button class="view-btn" onclick="showCourses('btech')">View Course</button>
                             </div>
-                            <button class="view-btn" onclick="showCourses('mca')">View Course</button>
                         </div>
-                    </div>
 
-                    <div class="resource-item" data-category="courses">
-                        <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="resource-details">
-                            <h3>iMCA</h3>
-                            <p>Lecture notes and course materials for Integrated Master of Computer Applications students.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-book"></i> Computer Applications</span>
-                                <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>MCA</h3>
+                                <p>Lecture notes and course materials for Master of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <button class="view-btn" onclick="showCourses('mca')">View Course</button>
                             </div>
-                            <button class="view-btn" onclick="showCourses('imca')">View Course</button>
                         </div>
-                    </div>
 
-                    <div class="resource-item" data-category="courses">
-                        <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="resource-details">
-                            <h3>BCA</h3>
-                            <p>Lecture notes and course materials for Bachelor of Computer Applications students.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-book"></i> Computer Applications</span>
-                                <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>iMCA</h3>
+                                <p>Lecture notes and course materials for Integrated Master of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <button class="view-btn" onclick="showCourses('imca')">View Course</button>
                             </div>
-                            <button class="view-btn" onclick="showCourses('bca')">View Course</button>
                         </div>
-                    </div>
 
-                    <!-- Other existing resources -->
-                    <div class="resource-item" data-category="problems">
-                        <div class="resource-icon"><i class="fas fa-tasks"></i></div>
-                        <div class="resource-details">
-                            <h3>Linear Algebra Problem Set</h3>
-                            <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
-                                <span><i class="fas fa-file-pdf"></i> PDF</span>
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>BCA</h3>
+                                <p>Lecture notes and course materials for Bachelor of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <button class="view-btn" onclick="showCourses('bca')">View Course</button>
                             </div>
-                            <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                         </div>
-                    </div>
 
-                    <div class="resource-item" data-category="assignments">
-                        <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
-                        <div class="resource-details">
-                            <h3>Differential Equations Assignment</h3>
-                            <p>Assignment problems on solving various types of differential equations.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-calendar-alt"></i> May 2024</span>
-                                <span><i class="fas fa-file-pdf"></i> PDF</span>
+                        <!-- Other existing resources -->
+                        <div class="resource-item" data-category="problems">
+                            <div class="resource-icon"><i class="fas fa-tasks"></i></div>
+                            <div class="resource-details">
+                                <h3>Linear Algebra Problem Set</h3>
+                                <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                             </div>
-                            <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                         </div>
-                    </div>
 
-                    <div class="resource-item" data-category="notes">
-                        <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
-                        <div class="resource-details">
-                            <h3>Complex Differentiation</h3>
-                            <p>Comprehensive notes on complex differentiation and complex analysis.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-calendar-alt"></i> 2024</span>
-                                <span><i class="fas fa-file-pdf"></i> PDF</span>
+                        <div class="resource-item" data-category="assignments">
+                            <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="resource-details">
+                                <h3>Differential Equations Assignment</h3>
+                                <p>Assignment problems on solving various types of differential equations.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> May 2024</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
                             </div>
-                            <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
                         </div>
-                    </div>
 
-                    <!-- Expert Lectures -->
-                    <div class="resource-item" data-category="courses">
-                        <div class="resource-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                        <div class="resource-details">
-                            <h3>Expert Lectures</h3>
-                            <p>Video lectures from subject matter experts and professors.</p>
-                            <div class="resource-meta">
-                                <span><i class="fas fa-video"></i> Video Content</span>
-                                <span><i class="fas fa-layer-group"></i> Multiple Topics</span>
+                        <div class="resource-item" data-category="notes">
+                            <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="resource-details">
+                                <h3>Complex Differentiation</h3>
+                                <p>Comprehensive notes on complex differentiation and complex analysis.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-calendar-alt"></i> 2024</span>
+                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                </div>
+                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
                             </div>
-                            <button class="view-btn" onclick="showExpertLectures()">View Lectures</button>
+                        </div>
+
+                        <!-- Expert Lectures -->
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                            <div class="resource-details">
+                                <h3>Expert Lectures</h3>
+                                <p>Video lectures from subject matter experts and professors.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-video"></i> Video Content</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Topics</span>
+                                </div>
+                                <button class="view-btn" onclick="showExpertLectures()">View Lectures</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -388,6 +397,32 @@
             // This function will be implemented when you have the actual lecture content/videos
             console.log(`Opening lecture: ${lectureId}`);
         }
+
+        // Fix the syntax error in the event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category filter functionality
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const resourceItems = document.querySelectorAll('.resource-item');
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const category = btn.getAttribute('data-category');
+                    
+                    // Toggle active class
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Filter resources
+                    resourceItems.forEach(item => {
+                        if (category === 'all' || item.getAttribute('data-category') === category) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
     </script>
 
     <style>

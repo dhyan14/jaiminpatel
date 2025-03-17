@@ -179,10 +179,6 @@
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             
-            // Remove any existing courses container to prevent duplicates
-            if (document.querySelector('.courses-container')) {
-                document.querySelector('.courses-container').remove();
-            }
             
             // Create and show the courses container
             let coursesContainer = document.createElement('div');
@@ -255,19 +251,6 @@
             document.querySelector('.courses-container').appendChild(chaptersContainer);
         }
         
-        function showNotes(semester, chapter, course) {
-            // Remove any existing pdf viewer modal if it exists
-            const existingModal = document.querySelector('.pdf-viewer-modal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            // Remove previous notes display if exists
-            if (document.querySelector('.notes-display')) {
-                document.querySelector('.notes-display').remove();
-            }
-            
-            
         
         // Add a new function to handle Expert Lectures
         function showExpertLectures() {
@@ -336,9 +319,7 @@
             // This function will be implemented when you have the actual lecture content/videos
             console.log(`Opening lecture: ${lectureId}`);
         }
-        
-        // Remove the modal-related event listeners since we're not using the modal anymore
-        document.addEventListener('DOMContentLoaded', function() {
+        {
             // Only keep the category filter functionality
             const categoryBtns = document.querySelectorAll('.category-btn');
             const resourceItems = document.querySelectorAll('.resource-item');

@@ -179,6 +179,30 @@
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             
+            // Create semester buttons based on course
+            let semesterButtonsHTML = '';
+            let maxSemesters = 8; // default
+            
+            switch(course) {
+                case 'btech':
+                    maxSemesters = 4;
+                    break;
+                case 'mca':
+                    maxSemesters = 6;
+                    break;
+                case 'imca':
+                    maxSemesters = 8;
+                    break;
+                case 'bca':
+                    maxSemesters = 6;
+                    break;
+            }
+            
+            for(let i = 1; i <= maxSemesters; i++) {
+                semesterButtonsHTML += `
+                    <button onclick="showUnits(${i}, '${course}')">Semester ${i}</button>`;
+            }
+            
             // Create and show the courses container
             let coursesContainer = document.createElement('div');
             coursesContainer.className = 'courses-container';
@@ -188,14 +212,7 @@
                 </div>
                 <h2>${getCourseTitle(course)} - Select Semester</h2>
                 <div class="semester-selection">
-                    <button onclick="showUnits(1, '${course}')">Semester 1</button>
-                    <button onclick="showUnits(2, '${course}')">Semester 2</button>
-                    <button onclick="showUnits(3, '${course}')">Semester 3</button>
-                    <button onclick="showUnits(4, '${course}')">Semester 4</button>
-                    <button onclick="showUnits(5, '${course}')">Semester 5</button>
-                    <button onclick="showUnits(6, '${course}')">Semester 6</button>
-                    <button onclick="showUnits(7, '${course}')">Semester 7</button>
-                    <button onclick="showUnits(8, '${course}')">Semester 8</button>
+                    ${semesterButtonsHTML}
                 </div>
             `;
             document.querySelector('main').appendChild(coursesContainer);
@@ -229,7 +246,7 @@
             }
             
             // Determine number of units and label based on course
-            let unitCount = 4; // default
+            let unitCount = 4; // default for B.Tech
             let unitLabel = 'Unit';
             
             switch(course) {

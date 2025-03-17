@@ -179,7 +179,6 @@
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             
-            
             // Create and show the courses container
             let coursesContainer = document.createElement('div');
             coursesContainer.className = 'courses-container';
@@ -189,14 +188,14 @@
                 </div>
                 <h2>${getCourseTitle(course)} - Select Semester</h2>
                 <div class="semester-selection">
-                    <button onclick="showChapters(1, '${course}')">Semester 1</button>
-                    <button onclick="showChapters(2, '${course}')">Semester 2</button>
-                    <button onclick="showChapters(3, '${course}')">Semester 3</button>
-                    <button onclick="showChapters(4, '${course}')">Semester 4</button>
-                    <button onclick="showChapters(5, '${course}')">Semester 5</button>
-                    <button onclick="showChapters(6, '${course}')">Semester 6</button>
-                    <button onclick="showChapters(7, '${course}')">Semester 7</button>
-                    <button onclick="showChapters(8, '${course}')">Semester 8</button>
+                    <button onclick="showUnits(1, '${course}')">Semester 1</button>
+                    <button onclick="showUnits(2, '${course}')">Semester 2</button>
+                    <button onclick="showUnits(3, '${course}')">Semester 3</button>
+                    <button onclick="showUnits(4, '${course}')">Semester 4</button>
+                    <button onclick="showUnits(5, '${course}')">Semester 5</button>
+                    <button onclick="showUnits(6, '${course}')">Semester 6</button>
+                    <button onclick="showUnits(7, '${course}')">Semester 7</button>
+                    <button onclick="showUnits(8, '${course}')">Semester 8</button>
                 </div>
             `;
             document.querySelector('main').appendChild(coursesContainer);
@@ -223,34 +222,59 @@
             document.querySelector('.resources-content').style.display = 'block';
         }
         
-        function showChapters(semester, course) {
-            // Remove previous chapter selection if exists
-            if (document.querySelector('.chapter-selection')) {
-                document.querySelector('.chapter-selection').remove();
+        function showUnits(semester, course) {
+            // Remove previous unit selection if exists
+            if (document.querySelector('.unit-selection')) {
+                document.querySelector('.unit-selection').remove();
             }
             
+            // Create and show the units container
+            let unitsContainer = document.createElement('div');
+            unitsContainer.className = 'unit-selection';
+            unitsContainer.innerHTML = `
+                <h2>${getCourseTitle(course)} - Semester ${semester} - Select Unit</h2>
+                <div class="units-grid">
+                    <button onclick="showLectureNotes(${semester}, 1, '${course}')">Unit 1</button>
+                    <button onclick="showLectureNotes(${semester}, 2, '${course}')">Unit 2</button>
+                    <button onclick="showLectureNotes(${semester}, 3, '${course}')">Unit 3</button>
+                    <button onclick="showLectureNotes(${semester}, 4, '${course}')">Unit 4</button>
+                    <button onclick="showLectureNotes(${semester}, 5, '${course}')">Unit 5</button>
+                </div>
+            `;
+            document.querySelector('.courses-container').appendChild(unitsContainer);
+        }
+        
+        function showLectureNotes(semester, unit, course) {
             // Remove previous notes display if exists
             if (document.querySelector('.notes-display')) {
                 document.querySelector('.notes-display').remove();
             }
             
-            // Create and show the chapters container
-            let chaptersContainer = document.createElement('div');
-            chaptersContainer.className = 'chapter-selection';
-            chaptersContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - Select Chapter</h2>
-                <div class="chapters-grid">
-                    <button onclick="showNotes(${semester}, 1, '${course}')">Chapter 1</button>
-                    <button onclick="showNotes(${semester}, 2, '${course}')">Chapter 2</button>
-                    <button onclick="showNotes(${semester}, 3, '${course}')">Chapter 3</button>
-                    <button onclick="showNotes(${semester}, 4, '${course}')">Chapter 4</button>
-                    <button onclick="showNotes(${semester}, 5, '${course}')">Chapter 5</button>
-                    <button onclick="showNotes(${semester}, 6, '${course}')">Chapter 6</button>
+            // Create and show the lecture notes container
+            let notesContainer = document.createElement('div');
+            notesContainer.className = 'notes-display';
+            notesContainer.innerHTML = `
+                <h2>${getCourseTitle(course)} - Semester ${semester} - Unit ${unit} Notes</h2>
+                <div class="notes-grid">
+                    <div class="note-item">
+                        <h3>Lecture 1</h3>
+                        <p>Introduction to the topic</p>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
+                    </div>
+                    <div class="note-item">
+                        <h3>Lecture 2</h3>
+                        <p>Core concepts and principles</p>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
+                    </div>
+                    <div class="note-item">
+                        <h3>Lecture 3</h3>
+                        <p>Advanced topics and applications</p>
+                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
+                    </div>
                 </div>
             `;
-            document.querySelector('.courses-container').appendChild(chaptersContainer);
+            document.querySelector('.courses-container').appendChild(notesContainer);
         }
-        
         
         // Add a new function to handle Expert Lectures
         function showExpertLectures() {
@@ -319,8 +343,10 @@
             // This function will be implemented when you have the actual lecture content/videos
             console.log(`Opening lecture: ${lectureId}`);
         }
-        {
-            // Only keep the category filter functionality
+
+        // Fix the syntax error in the event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category filter functionality
             const categoryBtns = document.querySelectorAll('.category-btn');
             const resourceItems = document.querySelectorAll('.resource-item');
             
@@ -369,14 +395,14 @@
             font-weight: bold;
         }
         
-        .semester-selection, .chapters-grid {
+        .semester-selection, .units-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
         
-        .semester-selection button, .chapters-grid button {
+        .semester-selection button, .units-grid button {
             padding: 15px;
             background-color: #4CAF50;
             color: white;
@@ -387,7 +413,7 @@
             transition: background-color 0.3s;
         }
         
-        .semester-selection button:hover, .chapters-grid button:hover {
+        .semester-selection button:hover, .units-grid button:hover {
             background-color: #3e8e41;
         }
         
@@ -526,7 +552,55 @@
             background-color: #3e8e41;
         }
         
-
+        .unit-selection {
+            margin-top: 30px;
+        }
+        
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .units-grid button {
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .units-grid button:hover {
+            background-color: #3e8e41;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .note-item {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .note-item h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .note-item p {
+            margin-bottom: 15px;
+            color: #666;
+        }
     </style>
 </body>
 </html> 

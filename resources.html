@@ -228,17 +228,45 @@
                 document.querySelector('.unit-selection').remove();
             }
             
+            // Determine number of units and label based on course
+            let unitCount = 4; // default
+            let unitLabel = 'Unit';
+            
+            switch(course) {
+                case 'btech':
+                    unitCount = 4;
+                    unitLabel = 'Unit';
+                    break;
+                case 'mca':
+                    unitCount = 5;
+                    unitLabel = 'Module';
+                    break;
+                case 'imca':
+                    unitCount = 4;
+                    unitLabel = 'Unit';
+                    break;
+                case 'bca':
+                    unitCount = 4;
+                    unitLabel = 'Unit';
+                    break;
+            }
+            
+            // Create unit buttons HTML
+            let unitButtonsHTML = '';
+            for(let i = 1; i <= unitCount; i++) {
+                unitButtonsHTML += `
+                    <button onclick="showLectureNotes(${semester}, ${i}, '${course}')">
+                        ${unitLabel} ${i}
+                    </button>`;
+            }
+            
             // Create and show the units container
             let unitsContainer = document.createElement('div');
             unitsContainer.className = 'unit-selection';
             unitsContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - Select Unit</h2>
+                <h2>${getCourseTitle(course)} - Semester ${semester} - Select ${unitLabel}</h2>
                 <div class="units-grid">
-                    <button onclick="showLectureNotes(${semester}, 1, '${course}')">Unit 1</button>
-                    <button onclick="showLectureNotes(${semester}, 2, '${course}')">Unit 2</button>
-                    <button onclick="showLectureNotes(${semester}, 3, '${course}')">Unit 3</button>
-                    <button onclick="showLectureNotes(${semester}, 4, '${course}')">Unit 4</button>
-                    <button onclick="showLectureNotes(${semester}, 5, '${course}')">Unit 5</button>
+                    ${unitButtonsHTML}
                 </div>
             `;
             document.querySelector('.courses-container').appendChild(unitsContainer);
@@ -250,11 +278,14 @@
                 document.querySelector('.notes-display').remove();
             }
             
+            // Determine the label based on course
+            const unitLabel = course === 'mca' ? 'Module' : 'Unit';
+            
             // Create and show the lecture notes container
             let notesContainer = document.createElement('div');
             notesContainer.className = 'notes-display';
             notesContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - Unit ${unit} Notes</h2>
+                <h2>${getCourseTitle(course)} - Semester ${semester} - ${unitLabel} ${unit} Notes</h2>
                 <div class="notes-grid">
                     <div class="note-item">
                         <h3>Lecture 1</h3>

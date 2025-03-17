@@ -375,7 +375,6 @@
 
     <main>
         <section class="hero">
-            <div class="matrix-rain" id="matrix-canvas"></div>
             <div class="container">
                 <div class="hero-content">
                     <h1>Mathematics & Algorithms</h1>
@@ -468,61 +467,14 @@
     </footer>
 
     <script>
-        // Matrix rain effect
+        // Remove the matrix rain effect
         document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            // Set a solid black background for the hero section
             const matrixContainer = document.getElementById('matrix-canvas');
-            
-            matrixContainer.appendChild(canvas);
-            
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            // Set initial background to solid black
-            ctx.fillStyle = 'rgb(0, 0, 0)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const fontSize = 14;
-            const columns = Math.floor(canvas.width / fontSize);
-            
-            // Array to store the y position of each column
-            const drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.random() * -100;
+            if (matrixContainer) {
+                // Create a solid black background
+                matrixContainer.style.backgroundColor = '#000000';
             }
-            
-            // Characters to display
-            const chars = '01αβγΔπΣ∫∂√∞∑∏⊕⊗∇∴∵∝∃∄∈∉∋∌∧∨∩∪≡≠≤≥≪≫⊂⊃⊆⊇⊥⊢⊣⋅∘×÷±∓∔∖∗∙∣∤∥∦∎∀∃∄∴∵∼≈≠≡≤≥⊂⊃⊆⊇⊕⊗⊥';
-            
-            function draw() {
-                // Solid black background with slight fade for trail effect
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.fillStyle = '#33ff33';
-                ctx.font = fontSize + 'px monospace';
-                
-                for (let i = 0; i < drops.length; i++) {
-                    // Random character
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    
-                    // x = i * fontSize, y = value of drops[i]
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    
-                    // Sending the drop back to the top randomly after it has crossed the screen
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    
-                    // Incrementing Y coordinate
-                    drops[i]++;
-                }
-                
-                requestAnimationFrame(draw);
-            }
-            
-            draw();
         });
     </script>
 </body>

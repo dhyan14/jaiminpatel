@@ -579,4 +579,135 @@ footer .container {
     color: white;
     font-size: 30px;
     cursor: pointer;
+}
+
+/* Course Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--accent-color);
+}
+
+#course-title {
+    margin-bottom: 2rem;
+    color: var(--secondary-color);
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--light-color);
+}
+
+.course-content {
+    display: none;
+}
+
+.course-subject {
+    margin-bottom: 2rem;
+}
+
+.course-subject h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--math-color);
+}
+
+.course-materials {
+    list-style: none;
+}
+
+.course-materials li {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--light-color);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.course-materials li:hover {
+    background-color: #e3e8ea;
+}
+
+.course-materials i {
+    color: var(--accent-color);
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.course-materials span {
+    flex-grow: 1;
+}
+
+.course-materials a {
+    background-color: var(--math-color);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.course-materials a:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Responsive adjustments for course modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1.5rem;
+    }
+    
+    .course-materials li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .course-materials i {
+        margin-bottom: 0.5rem;
+    }
+    
+    .course-materials span {
+        margin-bottom: 0.5rem;
+    }
+    
+    .course-materials a {
+        align-self: flex-end;
+    }
 } 

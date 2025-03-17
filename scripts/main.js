@@ -90,4 +90,67 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Course modal functionality
+    const courseModal = document.getElementById('course-modal');
+    const courseTitle = document.getElementById('course-title');
+    const courseButtons = document.querySelectorAll('.course-btn');
+    const courseContents = document.querySelectorAll('.course-content');
+    const closeModalButton = document.querySelector('.close-modal');
+
+    // Course button click handlers
+    if (courseButtons.length > 0) {
+        courseButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const course = this.getAttribute('data-course');
+                
+                // Set the modal title based on the course
+                switch(course) {
+                    case 'btech':
+                        courseTitle.textContent = 'B.Tech Course Materials';
+                        break;
+                    case 'mca':
+                        courseTitle.textContent = 'MCA Course Materials';
+                        break;
+                    case 'imca':
+                        courseTitle.textContent = 'iMCA Course Materials';
+                        break;
+                    case 'bca':
+                        courseTitle.textContent = 'BCA Course Materials';
+                        break;
+                    default:
+                        courseTitle.textContent = 'Course Materials';
+                }
+                
+                // Hide all course contents first
+                courseContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Show the selected course content
+                const selectedContent = document.getElementById(`${course}-content`);
+                if (selectedContent) {
+                    selectedContent.style.display = 'block';
+                }
+                
+                // Show the modal
+                courseModal.style.display = 'block';
+            });
+        });
+    }
+
+    // Close modal when clicking the close button
+    if (closeModalButton) {
+        closeModalButton.addEventListener('click', function() {
+            courseModal.style.display = 'none';
+        });
+    }
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', function(e) {
+        if (e.target === courseModal) {
+            courseModal.style.display = 'none';
+        }
+    });
 }); 

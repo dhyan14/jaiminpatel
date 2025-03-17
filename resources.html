@@ -35,28 +35,66 @@
                 <div class="resource-categories">
                     <div class="category-nav">
                         <button class="category-btn active" data-category="all">All Resources</button>
-                        <button class="category-btn" data-category="notes">Lecture Notes</button>
+                        <button class="category-btn" data-category="courses">Courses</button>
                         <button class="category-btn" data-category="problems">Problem Sets</button>
                         <button class="category-btn" data-category="assignments">Assignments</button>
                     </div>
 
                     <div class="resource-grid">
-                        <div class="resource-item" data-category="notes">
-                            <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                        <!-- Course cards -->
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
                             <div class="resource-details">
-                                <h3>Calculus I: Limits and Derivatives</h3>
-                                <p>Comprehensive notes covering the fundamentals of limits and derivatives.</p>
+                                <h3>B.Tech</h3>
+                                <p>Lecture notes and course materials for Bachelor of Technology students.</p>
                                 <div class="resource-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> Jan 2023</span>
-                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                                    <span><i class="fas fa-book"></i> Engineering</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
                                 </div>
-                                <!-- Replace GOOGLE_DRIVE_FILE_ID with your actual file ID -->
-                                <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" 
-                                   target="_blank" 
-                                   class="view-btn">View Document</a>
+                                <a href="#" class="view-btn course-btn" data-course="btech">View Course</a>
                             </div>
                         </div>
 
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>MCA</h3>
+                                <p>Lecture notes and course materials for Master of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <a href="#" class="view-btn course-btn" data-course="mca">View Course</a>
+                            </div>
+                        </div>
+
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>iMCA</h3>
+                                <p>Lecture notes and course materials for Integrated Master of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <a href="#" class="view-btn course-btn" data-course="imca">View Course</a>
+                            </div>
+                        </div>
+
+                        <div class="resource-item" data-category="courses">
+                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="resource-details">
+                                <h3>BCA</h3>
+                                <p>Lecture notes and course materials for Bachelor of Computer Applications students.</p>
+                                <div class="resource-meta">
+                                    <span><i class="fas fa-book"></i> Computer Applications</span>
+                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
+                                </div>
+                                <a href="#" class="view-btn course-btn" data-course="bca">View Course</a>
+                            </div>
+                        </div>
+
+                        <!-- Other existing resources -->
                         <div class="resource-item" data-category="problems">
                             <div class="resource-icon"><i class="fas fa-tasks"></i></div>
                             <div class="resource-details">
@@ -126,6 +164,159 @@
             </div>
         </div>
     </footer>
+
+    <!-- Course content modals -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="course-title">Course Title</h2>
+            
+            <!-- B.Tech Course Content -->
+            <div class="course-content" id="btech-content">
+                <div class="course-subject">
+                    <h3>Calculus and Differential Equations</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Introduction to Calculus</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Differential Equations</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Vector Calculus</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="course-subject">
+                    <h3>Linear Algebra</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Matrices and Determinants</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Vector Spaces</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- MCA Course Content -->
+            <div class="course-content" id="mca-content">
+                <div class="course-subject">
+                    <h3>Discrete Mathematics</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Set Theory and Relations</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Graph Theory</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="course-subject">
+                    <h3>Probability and Statistics</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Probability Distributions</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Statistical Inference</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- iMCA Course Content -->
+            <div class="course-content" id="imca-content">
+                <div class="course-subject">
+                    <h3>Mathematical Foundations</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Number Theory</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Combinatorics</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="course-subject">
+                    <h3>Advanced Mathematics</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Complex Analysis</span>
+                            <a href="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Numerical Methods</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- BCA Course Content -->
+            <div class="course-content" id="bca-content">
+                <div class="course-subject">
+                    <h3>Basic Mathematics</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Algebra and Trigonometry</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Calculus Fundamentals</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="course-subject">
+                    <h3>Discrete Structures</h3>
+                    <ul class="course-materials">
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Logic and Proofs</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Counting and Probability</span>
+                            <a href="https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview" target="_blank">View</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="scripts/main.js"></script>
 </body>

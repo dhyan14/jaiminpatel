@@ -312,14 +312,23 @@
                     <div class="note-item" style="width: 100%;">
                         <h3>Complete Unit Notes</h3>
                         <p>Comprehensive notes for Unit 3</p>
-                        <button class="view-btn" onclick="togglePdfViewer(this)">View PDF</button>
-                        <div id="pdfViewer" style="position: relative; width: 100%; height: 600px; margin-top: 20px; display: none;">
-                            <iframe src="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview" 
-                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-                                    allow="autoplay"></iframe>
-                        </div>
+                        <button class="view-btn" onclick="togglePdfViewer()">View PDF</button>
                     </div>
                 `;
+
+                // Create modal for PDF viewer
+                const modal = document.createElement('div');
+                modal.id = 'pdfModal';
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-btn" onclick="togglePdfViewer()">&times;</span>
+                        <iframe src="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview" 
+                                style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;"
+                                allow="autoplay"></iframe>
+                    </div>
+                `;
+                document.body.appendChild(modal);
             } else {
                 notesContent = `
                     <div class="note-item">
@@ -446,15 +455,13 @@
             });
         });
 
-        // Add this new function to toggle PDF viewer
-        function togglePdfViewer(button) {
-            const pdfViewer = document.getElementById('pdfViewer');
-            if (pdfViewer.style.display === 'none') {
-                pdfViewer.style.display = 'block';
-                button.textContent = 'Hide PDF';
+        // Update the toggle function
+        function togglePdfViewer() {
+            const modal = document.getElementById('pdfModal');
+            if (modal.style.display === 'none' || modal.style.display === '') {
+                modal.style.display = 'block';
             } else {
-                pdfViewer.style.display = 'none';
-                button.textContent = 'View PDF';
+                modal.style.display = 'none';
             }
         }
     </script>
@@ -688,6 +695,39 @@
         .note-item p {
             margin-bottom: 15px;
             color: #666;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .modal-content {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            transform: none;
+        }
+        
+        .close-btn {
+            position: fixed;
+            right: 25px;
+            top: 15px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
         }
     </style>
 </body>

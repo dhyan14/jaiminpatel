@@ -169,6 +169,7 @@
                 <a href="#"><i class="fab fa-linkedin"></i></a>
                 <a href="#"><i class="fab fa-github"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="javascript:void(0)" onclick="showAdminPanel()"><i class="fas fa-cog"></i></a>
             </div>
         </div>
     </footer>
@@ -295,6 +296,36 @@
             document.querySelector('.courses-container').appendChild(unitsContainer);
         }
         
+        // Add this function to load course data dynamically
+        function loadCourseData() {
+            // This could be replaced with an AJAX call to fetch from a JSON file or database
+            return {
+                "btech": {
+                    "1": {
+                        "1": "https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview",
+                        "2": "https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview",
+                        "3": "https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview",
+                        "4": "https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview"
+                    },
+                    "2": {
+                        "1": "https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview",
+                        "2": "https://drive.google.com/file/d/1tKdIYTDpLX3S-S8V2z68RhyhOEYS4Yfv/preview",
+                        "3": "https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview"
+                    }
+                },
+                "mca": {
+                    "1": {
+                        "1": "https://drive.google.com/file/d/1YWZpDdD3NjZosWSvnBumaiWPhde870T2/preview",
+                        "2": "https://drive.google.com/file/d/1VZCrle_06AG_XUcRFoMSFZ23bTY5fJxr/preview",
+                        "3": "https://drive.google.com/file/d/1X1eZ06AzkL_NdtVZUy8TB5C09DUeAxyp/preview",
+                        "4": "https://drive.google.com/file/d/1W_VJwZozU3MkEeADeEGIhb9lfylYT7zm/preview",
+                        "5": "https://drive.google.com/file/d/1ZeNfV9_-1-p0YfWS18nmXcpIPKzfeKkg/preview"
+                    }
+                }
+            };
+        }
+        
+        // Update the showLectureNotes function to use the dynamic data
         function showLectureNotes(semester, unit, course) {
             // Remove previous notes display if exists
             if (document.querySelector('.notes-display')) {
@@ -309,64 +340,19 @@
             // Determine the label based on course
             const unitLabel = course === 'mca' ? 'Module' : 'Unit';
             
-            // Create notes content based on course, semester and unit
-            let notesContent = '';
-            let pdfLink = '';
+            // Get course data
+            const courseData = loadCourseData();
             
-            if (course === 'btech') {
-                if (semester === 1) {
-                    // B.Tech Semester 1 links - convert from /view to /preview
-                    switch(unit) {
-                        case 1:
-                            pdfLink = 'https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview';
-                            break;
-                        case 2:
-                            pdfLink = 'https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview';
-                            break;
-                        case 3:
-                            pdfLink = 'https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview';
-                            break;
-                        case 4:
-                            pdfLink = 'https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview';
-                            break;
-                    }
-                } else if (semester === 2) {
-                    // B.Tech Semester 2 links
-                    switch(unit) {
-                        case 1:
-                            pdfLink = 'https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview';
-                            break;
-                        case 2:
-                            pdfLink = 'https://drive.google.com/file/d/1tKdIYTDpLX3S-S8V2z68RhyhOEYS4Yfv/preview';
-                            break;
-                        case 3:
-                            pdfLink = 'https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview';
-                            break;
-                    }
-                }
-            } else if (course === 'mca') {
-                if (semester === 1) {
-                    // MCA Semester 1 links - convert from /view to /preview
-                    switch(unit) {
-                        case 1:
-                            pdfLink = 'https://drive.google.com/file/d/1YWZpDdD3NjZosWSvnBumaiWPhde870T2/preview';
-                            break;
-                        case 2:
-                            pdfLink = 'https://drive.google.com/file/d/1VZCrle_06AG_XUcRFoMSFZ23bTY5fJxr/preview';
-                            break;
-                        case 3:
-                            pdfLink = 'https://drive.google.com/file/d/1X1eZ06AzkL_NdtVZUy8TB5C09DUeAxyp/preview';
-                            break;
-                        case 4:
-                            pdfLink = 'https://drive.google.com/file/d/1W_VJwZozU3MkEeADeEGIhb9lfylYT7zm/preview';
-                            break;
-                        case 5:
-                            pdfLink = 'https://drive.google.com/file/d/1ZeNfV9_-1-p0YfWS18nmXcpIPKzfeKkg/preview';
-                            break;
-                    }
-                }
+            // Get PDF link if available
+            let pdfLink = '';
+            if (courseData[course] && 
+                courseData[course][semester] && 
+                courseData[course][semester][unit]) {
+                pdfLink = courseData[course][semester][unit];
             }
             
+            // Create notes content based on whether PDF link exists
+            let notesContent = '';
             if (pdfLink) {
                 // For units with PDF links, show a single note item with View PDF button
                 notesContent = `
@@ -532,6 +518,144 @@
                 });
             });
         });
+
+        // Add this after the togglePdfViewer function
+        function showAdminPanel() {
+            // Hide the resources content section
+            document.querySelector('.resources-content').style.display = 'none';
+            document.querySelector('.upload-section').style.display = 'none';
+            
+            // Remove any existing courses container
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
+            
+            // Create admin panel
+            let adminPanel = document.createElement('div');
+            adminPanel.className = 'courses-container admin-panel';
+            adminPanel.innerHTML = `
+                <div class="back-button">
+                    <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
+                </div>
+                <h2>Admin Panel - Add New Resource</h2>
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label for="course-select">Course:</label>
+                        <select id="course-select">
+                            <option value="btech">B.Tech</option>
+                            <option value="mca">MCA</option>
+                            <option value="imca">iMCA</option>
+                            <option value="bca">BCA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester-input">Semester:</label>
+                        <input type="number" id="semester-input" min="1" max="8" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-input">Unit/Module:</label>
+                        <input type="number" id="unit-input" min="1" max="10" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="link-input">Google Drive Link:</label>
+                        <input type="text" id="link-input" placeholder="https://drive.google.com/file/d/...">
+                    </div>
+                    <button class="admin-submit-btn" onclick="addNewResource()">Add Resource</button>
+                </div>
+                <div id="admin-message" class="admin-message"></div>
+                
+                <h3 class="mt-4">Current Resources</h3>
+                <div class="current-resources" id="current-resources">
+                    <!-- Resources will be listed here -->
+                </div>
+            `;
+            
+            document.querySelector('main').appendChild(adminPanel);
+            
+            // Display current resources
+            displayCurrentResources();
+        }
+
+        function displayCurrentResources() {
+            const courseData = loadCourseData();
+            const resourcesContainer = document.getElementById('current-resources');
+            let resourcesHTML = '';
+            
+            for (const course in courseData) {
+                for (const semester in courseData[course]) {
+                    for (const unit in courseData[course][semester]) {
+                        const link = courseData[course][semester][unit];
+                        const courseTitle = getCourseTitle(course);
+                        const unitLabel = course === 'mca' ? 'Module' : 'Unit';
+                        
+                        resourcesHTML += `
+                            <div class="resource-entry">
+                                <div class="resource-entry-details">
+                                    <span>${courseTitle} - Semester ${semester} - ${unitLabel} ${unit}</span>
+                                    <a href="${link}" target="_blank" class="resource-link">View Link</a>
+                                </div>
+                                <button class="delete-resource-btn" onclick="deleteResource('${course}', '${semester}', '${unit}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            resourcesContainer.innerHTML = resourcesHTML || '<p>No resources added yet.</p>';
+        }
+
+        function addNewResource() {
+            const course = document.getElementById('course-select').value;
+            const semester = document.getElementById('semester-input').value;
+            const unit = document.getElementById('unit-input').value;
+            let link = document.getElementById('link-input').value;
+            
+            // Validate inputs
+            if (!course || !semester || !unit || !link) {
+                showAdminMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Convert from /view to /preview if needed
+            if (link.includes('/view')) {
+                link = link.replace('/view', '/preview');
+            }
+            
+            // In a real application, this would send data to the server
+            // For now, we'll just show a success message
+            showAdminMessage(`Resource added for ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'success');
+            
+            // Clear the form
+            document.getElementById('link-input').value = '';
+            
+            // In a real application, we would update the courseData here
+            // For demonstration, we'll just refresh the display
+            displayCurrentResources();
+        }
+
+        function deleteResource(course, semester, unit) {
+            // In a real application, this would send a delete request to the server
+            // For now, we'll just show a success message
+            showAdminMessage(`Resource deleted for ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'success');
+            
+            // In a real application, we would update the courseData here
+            // For demonstration, we'll just refresh the display
+            displayCurrentResources();
+        }
+
+        function showAdminMessage(message, type) {
+            const messageElement = document.getElementById('admin-message');
+            messageElement.textContent = message;
+            messageElement.className = `admin-message ${type}`;
+            
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+                messageElement.textContent = '';
+                messageElement.className = 'admin-message';
+            }, 3000);
+        }
     </script>
 
     <style>
@@ -797,6 +921,102 @@
             font-weight: bold;
             cursor: pointer;
             z-index: 1001;
+        }
+        
+        .admin-panel {
+            max-width: 800px;
+        }
+        
+        .admin-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .admin-submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .admin-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .admin-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .admin-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .current-resources {
+            margin-top: 20px;
+        }
+        
+        .resource-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .resource-entry-details {
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            margin-left: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        
+        .delete-resource-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .mt-4 {
+            margin-top: 20px;
         }
     </style>
 </body>

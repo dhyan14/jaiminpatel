@@ -301,35 +301,48 @@
                 document.querySelector('.notes-display').remove();
             }
             
+            // Remove any existing PDF modal
+            if (document.getElementById('pdfModal')) {
+                document.getElementById('pdfModal').remove();
+            }
+            
             // Determine the label based on course
             const unitLabel = course === 'mca' ? 'Module' : 'Unit';
             
             // Create notes content based on course, semester and unit
             let notesContent = '';
+            let pdfLink = '';
             
-            if (course === 'btech' && semester === 2 && unit === 3) {
+            if (course === 'btech') {
+                if (semester === 1) {
+                    // B.Tech Semester 1 links
+                    switch(unit) {
+                        case 1:
+                            pdfLink = 'https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview';
+                            break;
+                        case 2:
+                            pdfLink = 'https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview';
+                            break;
+                        case 3:
+                            pdfLink = 'https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview';
+                            break;
+                        case 4:
+                            pdfLink = 'https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview';
+                            break;
+                    }
+                } else if (semester === 2 && unit === 3) {
+                    pdfLink = 'https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview';
+                }
+            }
+            
+            if (pdfLink) {
                 notesContent = `
                     <div class="note-item" style="width: 100%;">
-                        <h3>Complete Unit Notes</h3>
-                        <p>Comprehensive notes for Unit 3</p>
-                        <button class="view-btn" onclick="togglePdfViewer()">View PDF</button>
+                        <h3>Complete ${unitLabel} ${unit} Notes</h3>
+                        <p>Comprehensive notes for ${unitLabel} ${unit}</p>
+                        <button class="view-btn" onclick="createAndShowPdfViewer('${pdfLink}')">View PDF</button>
                     </div>
                 `;
-
-                // Create modal for PDF viewer
-                const modal = document.createElement('div');
-                modal.id = 'pdfModal';
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <span class="close-btn" onclick="togglePdfViewer()">&times;</span>
-                        <iframe src="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview?embedded=true&rm=minimal" 
-                                style="width: 100%; height: 100%; border: none;"
-                                allow="autoplay"
-                                sandbox="allow-same-origin allow-scripts"></iframe>
-                    </div>
-                `;
-                document.body.appendChild(modal);
             } else {
                 notesContent = `
                     <div class="note-item">
@@ -360,6 +373,47 @@
                 </div>
             `;
             document.querySelector('.courses-container').appendChild(notesContainer);
+        }
+        
+        // Add a new function to create and show PDF viewer
+        function createAndShowPdfViewer(pdfLink) {
+            // Remove any existing PDF modal
+            if (document.getElementById('pdfModal')) {
+                document.getElementById('pdfModal').remove();
+            }
+            
+            // Create modal for PDF viewer
+            const modal = document.createElement('div');
+            modal.id = 'pdfModal';
+            modal.className = 'modal';
+            modal.style.display = 'none'; // Initially hidden
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close-btn" onclick="togglePdfViewer()">&times;</span>
+                    <iframe src="${pdfLink}?embedded=true&rm=minimal" 
+                            style="width: 100%; height: 100%; border: none;"
+                            allow="autoplay"
+                            sandbox="allow-same-origin allow-scripts"></iframe>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Show the PDF viewer
+            togglePdfViewer();
+        }
+        
+        // Update the toggle function
+        function togglePdfViewer() {
+            const modal = document.getElementById('pdfModal');
+            if (!modal) return;
+            
+            if (modal.style.display === 'none' || modal.style.display === '') {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            } else {
+                modal.style.display = 'none';
+                document.body.style.overflow = ''; // Restore scrolling
+            }
         }
         
         // Add a new function to handle Expert Lectures
@@ -455,16 +509,6 @@
                 });
             });
         });
-
-        // Update the toggle function
-        function togglePdfViewer() {
-            const modal = document.getElementById('pdfModal');
-            if (modal.style.display === 'none' || modal.style.display === '') {
-                modal.style.display = 'block';
-            } else {
-                modal.style.display = 'none';
-            }
-        }
     </script>
 
     <style>

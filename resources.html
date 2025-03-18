@@ -1135,13 +1135,32 @@
                     icon = 'fa-laptop-code';
                 }
                 
+                // Create a more descriptive course description
+                let courseDescription = '';
+                switch(courseId) {
+                    case 'btech':
+                        courseDescription = 'Lecture notes and course materials for Bachelor of Technology students.';
+                        break;
+                    case 'mca':
+                        courseDescription = 'Lecture notes and course materials for Master of Computer Applications students.';
+                        break;
+                    case 'imca':
+                        courseDescription = 'Lecture notes and course materials for Integrated Master of Computer Applications students.';
+                        break;
+                    case 'bca':
+                        courseDescription = 'Lecture notes and course materials for Bachelor of Computer Applications students.';
+                        break;
+                    default:
+                        courseDescription = `Lecture notes, assignments, and study materials for ${course.title} students.`;
+                }
+                
                 courseCard.innerHTML = `
                     <div class="resource-icon"><i class="fas ${icon}"></i></div>
                     <div class="resource-details">
                         <h3>${course.title}</h3>
-                        <p>Lecture notes, assignments, and study materials for ${course.title} students.</p>
+                        <p>${courseDescription}</p>
                         <div class="resource-meta">
-                            <span><i class="fas fa-graduation-cap"></i> ${course.title}</span>
+                            <span><i class="fas fa-book"></i> ${courseId.toUpperCase()}</span>
                             <span><i class="fas fa-layer-group"></i> ${course.maxSemesters} Semesters</span>
                         </div>
                         <button class="view-btn" onclick="showCourses('${courseId}')">View Materials</button>
@@ -1172,6 +1191,71 @@
             
             // Add the expert lectures card to the courses section
             coursesSection.appendChild(expertLecturesCard);
+            
+            // Add some example resources for other categories
+            addExampleResources(coursesSection);
+        }
+
+        // Add example resources for other categories
+        function addExampleResources(container) {
+            // Problem Sets
+            const problemSet = document.createElement('div');
+            problemSet.className = 'resource-item';
+            problemSet.setAttribute('data-category', 'problems');
+            
+            problemSet.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-tasks"></i></div>
+                <div class="resource-details">
+                    <h3>Linear Algebra Problem Set</h3>
+                    <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
+                </div>
+            `;
+            
+            // Assignments
+            const assignment = document.createElement('div');
+            assignment.className = 'resource-item';
+            assignment.setAttribute('data-category', 'assignments');
+            
+            assignment.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="resource-details">
+                    <h3>Differential Equations Assignment</h3>
+                    <p>Assignment problems on solving various types of differential equations.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> May 2024</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview', '_blank')">View Document</button>
+                </div>
+            `;
+            
+            // Notes
+            const notes = document.createElement('div');
+            notes.className = 'resource-item';
+            notes.setAttribute('data-category', 'notes');
+            
+            notes.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="resource-details">
+                    <h3>Complex Differentiation</h3>
+                    <p>Comprehensive notes on complex differentiation and complex analysis.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> 2024</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
+                </div>
+            `;
+            
+            // Add the resources to the container
+            container.appendChild(problemSet);
+            container.appendChild(assignment);
+            container.appendChild(notes);
         }
     </script>
 
@@ -1645,26 +1729,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
+            min-width: 80px;
             background-color: #f0f0f0;
             color: #4CAF50;
             font-size: 24px;
+            padding: 20px 0;
         }
 
         .resource-details {
             padding: 20px;
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .resource-details h3 {
             margin-bottom: 10px;
             color: #333;
+            font-size: 1.2rem;
         }
 
         .resource-details p {
             color: #666;
             margin-bottom: 15px;
             font-size: 0.9rem;
+            flex-grow: 1;
         }
 
         .resource-meta {
@@ -1682,6 +1771,25 @@
 
         .resource-meta i {
             margin-right: 5px;
+        }
+
+        .view-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .view-btn:hover {
+            background-color: #3e8e41;
+            color: white;
         }
     </style>
 </body>

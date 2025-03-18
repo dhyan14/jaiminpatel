@@ -597,7 +597,7 @@
             }
         }
 
-        // Add a function to show the admin interface (separated from showAdminPanel)
+        // Update showAdminInterface to include course management
         function showAdminInterface() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
@@ -656,6 +656,9 @@
             
             // Display current resources
             displayCurrentResources();
+            
+            // Add course management
+            showCourseManagement();
         }
 
         // Add a function to handle logout

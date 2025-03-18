@@ -3,362 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaimin Patel - Mathematics & Coding</title>
+    <title>Jaimin Patel - Mathematics</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <style>
-        /* Hacker Theme Styles */
-        :root {
-            --hacker-bg: #0a0a0a;
-            --hacker-text: #33ff33;
-            --hacker-accent: #ff3333;
-            --hacker-secondary: #3333ff;
-            --hacker-dark: #111111;
-            --hacker-light: #222222;
-            --matrix-animation-speed: 30s;
-        }
-        
-        body {
-            background-color: var(--hacker-bg);
-            color: var(--hacker-text);
-            font-family: 'Courier New', monospace;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        header {
-            background-color: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid var(--hacker-text);
-        }
-        
-        .logo {
-            text-shadow: 0 0 10px var(--hacker-text);
-        }
-        
-        .math-symbol {
-            color: var(--hacker-accent);
-            text-shadow: 0 0 15px var(--hacker-accent);
-        }
-        
-        nav ul li a {
-            color: var(--hacker-text);
-            text-shadow: 0 0 5px var(--hacker-text);
-        }
-        
-        nav ul li a:after {
-            background-color: var(--hacker-accent);
-            box-shadow: 0 0 10px var(--hacker-accent);
-        }
-        
-        nav ul li a.active {
-            color: var(--hacker-accent);
-        }
-        
-        .hero {
-            background: var(--hacker-bg);
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .hero .container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .hero:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(51, 255, 51, 0.05) 0%, transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(51, 51, 255, 0.05) 0%, transparent 30%);
-        }
-        
-        .hero-content {
-            background-color: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--hacker-text);
-            box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
-            max-width: 800px;
-            padding: 40px;
-            position: relative;
-            z-index: 10;
-            text-align: center;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--hacker-text);
-            animation: glitch 5s infinite;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
-        .math-equation {
-            font-family: 'Times New Roman', serif;
-            font-size: 1.4rem;
-            margin: 2rem 0;
-            color: var(--hacker-accent);
-            text-shadow: 0 0 5px var(--hacker-accent);
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background-color: transparent;
-            color: var(--hacker-text);
-            border: 2px solid var(--hacker-text);
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .cta-button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background-color: var(--hacker-text);
-            transition: all 0.3s;
-            z-index: -1;
-        }
-        
-        .cta-button:hover {
-            color: var(--hacker-bg);
-        }
-        
-        .cta-button:hover:before {
-            left: 0;
-        }
-        
-        .matrix-rain {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .about {
-            background-color: var(--hacker-light);
-            padding: 6rem 0;
-            position: relative;
-        }
-        
-        .about:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 49%, var(--hacker-dark) 49%, var(--hacker-dark) 51%, transparent 51%);
-            background-size: 20px 20px;
-            opacity: 0.3;
-        }
-        
-        .about h2 {
-            color: var(--hacker-text);
-            text-shadow: 0 0 10px var(--hacker-text);
-        }
-        
-        .about h2:after {
-            background-color: var(--hacker-accent);
-            box-shadow: 0 0 10px var(--hacker-accent);
-        }
-        
-        .about-text p {
-            color: #cccccc;
-            font-family: 'Arial', sans-serif;
-            line-height: 1.8;
-        }
-        
-        .math-interests {
-            background-color: var(--hacker-dark);
-            border: 1px solid var(--hacker-text);
-            box-shadow: 0 0 15px rgba(51, 255, 51, 0.2);
-        }
-        
-        .math-interests h3 {
-            color: var(--hacker-text);
-        }
-        
-        .math-interests li i {
-            color: var(--hacker-accent);
-        }
-        
-        .code-snippet {
-            background-color: var(--hacker-dark);
-            border-left: 3px solid var(--hacker-accent);
-            padding: 20px;
-            margin: 30px 0;
-            font-family: 'Courier New', monospace;
-            color: #cccccc;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .code-snippet:before {
-            content: '/* Mathematics & Algorithms */';
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            color: var(--hacker-accent);
-            opacity: 0.5;
-            font-size: 0.8rem;
-        }
-        
-        .code-snippet code {
-            display: block;
-            line-height: 1.6;
-        }
-        
-        .code-comment {
-            color: #777777;
-        }
-        
-        .code-keyword {
-            color: #569cd6;
-        }
-        
-        .code-function {
-            color: #dcdcaa;
-        }
-        
-        .code-string {
-            color: #ce9178;
-        }
-        
-        .code-number {
-            color: #b5cea8;
-        }
-        
-        .binary-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            opacity: 0.05;
-            z-index: 0;
-        }
-        
-        .binary-text {
-            position: absolute;
-            font-family: monospace;
-            font-size: 14px;
-            color: var(--hacker-text);
-            white-space: nowrap;
-            animation: binary-fall linear infinite;
-        }
-        
-        footer {
-            background-color: var(--hacker-dark);
-            border-top: 1px solid var(--hacker-text);
-        }
-        
-        .social-links a {
-            color: var(--hacker-text);
-            transition: all 0.3s;
-        }
-        
-        .social-links a:hover {
-            color: var(--hacker-accent);
-            transform: translateY(-3px);
-        }
-        
-        @keyframes glitch {
-            0% {
-                text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75), -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            14% {
-                text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75), -0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            15% {
-                text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75), -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            49% {
-                text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75), -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            50% {
-                text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75), 0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            99% {
-                text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75), 0.05em 0 0 rgba(0, 255, 0, 0.75), 0 -0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-            100% {
-                text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75), -0.025em -0.025em 0 rgba(0, 255, 0, 0.75), -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
-            }
-        }
-        
-        @keyframes binary-fall {
-            from {
-                transform: translateY(-100%);
-            }
-            to {
-                transform: translateY(100vh);
-            }
-        }
-
-        /* Add responsive styles for mobile devices */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .math-equation {
-                font-size: 1.1rem;
-            }
-            
-            .hero-content {
-                padding: 25px;
-            }
-            
-            .cta-button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* For very small screens */
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .math-equation {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -375,15 +24,15 @@
 
     <main>
         <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Mathematics & Algorithms</h1>
-                    <p>Exploring the intersection of mathematical theory and computational implementation</p>
-                    <div class="math-equation">
-                        ∇ × E = -∂B/∂t &nbsp;&nbsp; ∇ × B = μ₀J + μ₀ε₀∂E/∂t
-                    </div>
-                    <a href="resources.html" class="cta-button">Explore Resources <i class="fas fa-arrow-right"></i></a>
-                </div>
+            <div class="hero-content">
+                <h1>Welcome to My Math World</h1>
+                <p class="math-equation">Where \(f(passion) = \int_{knowledge}^{innovation} creativity \, dx\)</p>
+            </div>
+            <div class="floating-equations">
+                <span class="equation eq1">e^{iπ} + 1 = 0</span>
+                <span class="equation eq2">\frac{d}{dx}e^x = e^x</span>
+                <span class="equation eq3">\sum_{n=0}^{\infty} \frac{1}{n!}</span>
+                <span class="equation eq4">\oint_C f(z) \, dz = 2\pi i \sum \text{Res}(f, a_k)</span>
             </div>
         </section>
 
@@ -392,60 +41,21 @@
                 <h2>About Me</h2>
                 <div class="about-content">
                     <div class="about-text">
-                        <p>Welcome to my digital workspace. I'm Jaimin Patel, a mathematician and programmer passionate about exploring the beautiful relationship between mathematical theory and computational implementation.</p>
+                        <p>Hello! I'm [Your Name], a passionate mathematician and educator. My journey in the world of mathematics began [brief background].</p>
                         
-                        <p>My work focuses on developing elegant solutions to complex problems through the application of mathematical principles and efficient algorithms.</p>
+                        <p>I specialize in [your math specialties/interests], and I'm particularly interested in [specific areas of math you enjoy].</p>
                         
-                        <div class="code-snippet">
-                            <code>
-                                <span class="code-comment">/* Matrix Operations and Eigenvalue Decomposition */</span><br>
-                                <span class="code-keyword">function</span> <span class="code-function">matrixMultiply</span>(A, B) {<br>
-                                &nbsp;&nbsp;<span class="code-keyword">const</span> result = Array(A.length).fill().map(() => Array(B[0].length).fill(<span class="code-number">0</span>));<br>
-                                &nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < A.length; i++) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> j = <span class="code-number">0</span>; j < B[0].length; j++) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> k = <span class="code-number">0</span>; k < A[0].length; k++) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result[i][j] += A[i][k] * B[k][j];<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                                &nbsp;&nbsp;}<br>
-                                &nbsp;&nbsp;<span class="code-keyword">return</span> result;<br>
-                                }<br><br>
-                                
-                                <span class="code-comment">/* Eigenvalue calculation using Power Method */</span><br>
-                                <span class="code-keyword">function</span> <span class="code-function">powerMethod</span>(A, iterations = <span class="code-number">100</span>, tolerance = <span class="code-number">1e-10</span>) {<br>
-                                &nbsp;&nbsp;<span class="code-comment">// Start with random vector</span><br>
-                                &nbsp;&nbsp;<span class="code-keyword">let</span> x = Array(A.length).fill().map(() => Math.random());<br>
-                                &nbsp;&nbsp;<span class="code-keyword">let</span> eigenvalue = <span class="code-number">0</span>;<br>
-                                &nbsp;&nbsp;<span class="code-keyword">let</span> prevEigenvalue = <span class="code-number">0</span>;<br><br>
-                                
-                                &nbsp;&nbsp;<span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < iterations; i++) {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Ax multiplication</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> Ax = matrixMultiply(A, x.map(val => [val]));<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Find largest value for normalization</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> maxVal = Math.max(...Ax.map(val => Math.abs(val[<span class="code-number">0</span>])));<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Normalize the vector</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;x = Ax.map(val => val[<span class="code-number">0</span>] / maxVal);<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Calculate Rayleigh quotient</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;eigenvalue = (matrixMultiply(matrixMultiply([x], A), x.map(val => [val])))[<span class="code-number">0</span>][<span class="code-number">0</span>];<br><br>
-                                
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Check for convergence</span><br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (Math.abs(eigenvalue - prevEigenvalue) < tolerance) <span class="code-keyword">break</span>;<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;prevEigenvalue = eigenvalue;<br>
-                                &nbsp;&nbsp;}<br><br>
-                                
-                                &nbsp;&nbsp;<span class="code-keyword">return</span> { eigenvalue, eigenvector: x };<br>
-                                }
-                            </code>
-                        </div>
+                        <p>Through this website, I aim to share my knowledge, resources, and passion for mathematics with students, educators, and fellow math enthusiasts.</p>
+                        
+                        <p>My educational background includes [your education details].</p>
                         
                         <div class="math-interests">
-                            <h3>Research Interests</h3>
+                            <h3>Areas of Interest:</h3>
                             <ul>
-                                <li><i class="fas fa-square-root-alt"></i> Computational Number Theory</li>
-                                <li><i class="fas fa-project-diagram"></i> Graph Theory & Network Algorithms</li>
-                                <li><i class="fas fa-brain"></i> Machine Learning & Neural Networks</li>
-                                <li><i class="fas fa-infinity"></i> Cryptography & Information Security</li>
-                                <li><i class="fas fa-wave-square"></i> Signal Processing & Fourier Analysis</li>
+                                <li><i class="fas fa-square-root-alt"></i> [Math Interest 1]</li>
+                                <li><i class="fas fa-infinity"></i> [Math Interest 2]</li>
+                                <li><i class="fas fa-calculator"></i> [Math Interest 3]</li>
+                                <li><i class="fas fa-chart-line"></i> [Math Interest 4]</li>
                             </ul>
                         </div>
                     </div>
@@ -458,24 +68,14 @@
         <div class="container">
             <p>&copy; 2024 Jaimin Patel. All rights reserved.</p>
             <div class="social-links">
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </footer>
 
-    <script>
-        // Remove the matrix rain effect
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set a solid black background for the hero section
-            const matrixContainer = document.getElementById('matrix-canvas');
-            if (matrixContainer) {
-                // Create a solid black background
-                matrixContainer.style.backgroundColor = '#000000';
-            }
-        });
-    </script>
+    <script src="scripts/main.js"></script>
 </body>
 </html> 

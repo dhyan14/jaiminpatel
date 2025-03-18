@@ -163,6 +163,7 @@
             
             // Get course data to determine available units
             const courseData = loadCourseData();
+            console.log("Course data for units:", courseData);
             
             // Determine number of units based on available data
             let unitCount = 5; // default
@@ -172,7 +173,10 @@
                 const units = Object.keys(courseData[course][semester]).map(Number);
                 if (units.length > 0) {
                     unitCount = Math.max(...units);
+                    console.log(`Found ${unitCount} units for ${course} semester ${semester}`);
                 }
+            } else {
+                console.log(`No units found for ${course} semester ${semester}, using default count`);
             }
             
             // Create unit buttons HTML
@@ -1147,9 +1151,10 @@
             return defaultData;
         }
 
-        // Add a function to save resource data
+        // Add this function to save resource data
         function saveResourceData(data) {
             sessionStorage.setItem('resourceData', JSON.stringify(data));
+            console.log("Saved resource data:", data);
         }
 
         // Add this function to update the main page when courses change

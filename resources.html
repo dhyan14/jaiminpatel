@@ -89,12 +89,22 @@
             document.querySelector('.resources-content').style.display = 'none';
             document.querySelector('.upload-section').style.display = 'none';
             
-            // Create semester buttons based on course
-            let semesterButtonsHTML = '';
-            
             // Get course config from session storage
             const courseConfig = getCourseConfig();
-            const maxSemesters = courseConfig[course] ? courseConfig[course].maxSemesters : 8;
+            
+            // Check if the course exists in the config
+            if (!courseConfig[course]) {
+                console.error(`Course ${course} not found in configuration!`);
+                return;
+            }
+            
+            // Get the maximum number of semesters for this course
+            const maxSemesters = courseConfig[course].maxSemesters || 1;
+            
+            console.log(`Showing course ${course} with ${maxSemesters} semesters`);
+            
+            // Create semester buttons based on course
+            let semesterButtonsHTML = '';
             
             for(let i = 1; i <= maxSemesters; i++) {
                 semesterButtonsHTML += `
@@ -823,7 +833,7 @@
             // Add the course management panel to the admin panel
             document.querySelector('.admin-panel').appendChild(coursePanel);
             
-            // Display current courses
+            // Display current resources
             displayCurrentCourses();
             
             // Add tabs for switching between resources and courses

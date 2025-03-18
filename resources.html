@@ -312,7 +312,8 @@
                     <div class="note-item" style="width: 100%;">
                         <h3>Complete Unit Notes</h3>
                         <p>Comprehensive notes for Unit 3</p>
-                        <div style="position: relative; width: 100%; height: 600px; margin-top: 20px;">
+                        <button class="view-btn" onclick="togglePdfViewer(this)">View PDF</button>
+                        <div id="pdfViewer" style="position: relative; width: 100%; height: 600px; margin-top: 20px; display: none;">
                             <iframe src="https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview" 
                                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
                                     allow="autoplay"></iframe>
@@ -444,6 +445,18 @@
                 });
             });
         });
+
+        // Add this new function to toggle PDF viewer
+        function togglePdfViewer(button) {
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer.style.display === 'none') {
+                pdfViewer.style.display = 'block';
+                button.textContent = 'Hide PDF';
+            } else {
+                pdfViewer.style.display = 'none';
+                button.textContent = 'View PDF';
+            }
+        }
     </script>
 
     <style>

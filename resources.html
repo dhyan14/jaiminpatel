@@ -40,112 +40,9 @@
                         <button class="category-btn" data-category="assignments">Assignments</button>
                     </div>
 
-                    <div class="resource-grid">
-                        <!-- Course cards -->
-                        <div class="resource-item" data-category="courses">
-                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="resource-details">
-                                <h3>B.Tech</h3>
-                                <p>Lecture notes and course materials for Bachelor of Technology students.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-book"></i> Engineering</span>
-                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
-                                </div>
-                                <button class="view-btn" onclick="showCourses('btech')">View Course</button>
-                            </div>
-                        </div>
-
-                        <div class="resource-item" data-category="courses">
-                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="resource-details">
-                                <h3>MCA</h3>
-                                <p>Lecture notes and course materials for Master of Computer Applications students.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-book"></i> Computer Applications</span>
-                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
-                                </div>
-                                <button class="view-btn" onclick="showCourses('mca')">View Course</button>
-                            </div>
-                        </div>
-
-                        <div class="resource-item" data-category="courses">
-                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="resource-details">
-                                <h3>iMCA</h3>
-                                <p>Lecture notes and course materials for Integrated Master of Computer Applications students.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-book"></i> Computer Applications</span>
-                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
-                                </div>
-                                <button class="view-btn" onclick="showCourses('imca')">View Course</button>
-                            </div>
-                        </div>
-
-                        <div class="resource-item" data-category="courses">
-                            <div class="resource-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="resource-details">
-                                <h3>BCA</h3>
-                                <p>Lecture notes and course materials for Bachelor of Computer Applications students.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-book"></i> Computer Applications</span>
-                                    <span><i class="fas fa-layer-group"></i> Multiple Subjects</span>
-                                </div>
-                                <button class="view-btn" onclick="showCourses('bca')">View Course</button>
-                            </div>
-                        </div>
-
-                        <!-- Other existing resources -->
-                        <div class="resource-item" data-category="problems">
-                            <div class="resource-icon"><i class="fas fa-tasks"></i></div>
-                            <div class="resource-details">
-                                <h3>Linear Algebra Problem Set</h3>
-                                <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
-                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
-                                </div>
-                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
-                            </div>
-                        </div>
-
-                        <div class="resource-item" data-category="assignments">
-                            <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
-                            <div class="resource-details">
-                                <h3>Differential Equations Assignment</h3>
-                                <p>Assignment problems on solving various types of differential equations.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> May 2024</span>
-                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
-                                </div>
-                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/GOOGLE_DRIVE_FILE_ID/preview', '_blank')">View Document</button>
-                            </div>
-                        </div>
-
-                        <div class="resource-item" data-category="notes">
-                            <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="resource-details">
-                                <h3>Complex Differentiation</h3>
-                                <p>Comprehensive notes on complex differentiation and complex analysis.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-calendar-alt"></i> 2024</span>
-                                    <span><i class="fas fa-file-pdf"></i> PDF</span>
-                                </div>
-                                <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
-                            </div>
-                        </div>
-
-                        <!-- Expert Lectures -->
-                        <div class="resource-item" data-category="courses">
-                            <div class="resource-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                            <div class="resource-details">
-                                <h3>Expert Lectures</h3>
-                                <p>Video lectures from subject matter experts and professors.</p>
-                                <div class="resource-meta">
-                                    <span><i class="fas fa-video"></i> Video Content</span>
-                                    <span><i class="fas fa-layer-group"></i> Multiple Topics</span>
-                                </div>
-                                <button class="view-btn" onclick="showExpertLectures()">View Lectures</button>
-                            </div>
+                    <div class="category-content">
+                        <div class="courses-grid">
+                            <!-- Course cards will be dynamically added here -->
                         </div>
                     </div>
                 </div>
@@ -466,6 +363,9 @@
                     });
                 });
             });
+
+            // Initialize the courses section with dynamic data
+            initializeCoursesSection();
         });
 
         function checkLogin(username, password) {
@@ -690,6 +590,9 @@
             
             // Refresh the display
             displayCurrentResources();
+            
+            // After adding the resource and refreshing the display
+            initializeCoursesSection();
         }
 
         function deleteResource(course, semester, unit) {
@@ -728,6 +631,9 @@
             
             // Refresh the display
             displayCurrentResources();
+            
+            // After deleting the resource and refreshing the display
+            initializeCoursesSection();
         }
 
         function showAdminMessage(message, type) {
@@ -821,6 +727,9 @@
             
             // Refresh the display
             displayCurrentResources();
+            
+            // After updating the resource and refreshing the display
+            initializeCoursesSection();
         }
 
         function cancelEdit() {
@@ -1017,6 +926,9 @@
             
             // Refresh the display
             displayCurrentCourses();
+            
+            // After adding the course and refreshing the display
+            initializeCoursesSection();
         }
 
         function editCourse(courseId) {
@@ -1083,6 +995,9 @@
             
             // Refresh the display
             displayCurrentCourses();
+            
+            // After updating the course and refreshing the display
+            initializeCoursesSection();
         }
 
         function deleteCourse(courseId) {
@@ -1110,6 +1025,9 @@
             
             // Refresh the display
             displayCurrentCourses();
+            
+            // After deleting the course and refreshing the display
+            initializeCoursesSection();
         }
 
         function cancelCourseEdit() {
@@ -1185,6 +1103,46 @@
         // Add a function to save resource data
         function saveResourceData(data) {
             sessionStorage.setItem('resourceData', JSON.stringify(data));
+        }
+
+        // Add this function to dynamically create course cards on the main page
+        function initializeCoursesSection() {
+            const courseConfig = getCourseConfig();
+            const coursesSection = document.querySelector('.courses-grid');
+            
+            if (!coursesSection) {
+                console.error("Courses grid not found!");
+                return;
+            }
+            
+            // Clear existing course cards
+            coursesSection.innerHTML = '';
+            
+            // Create a card for each course in the config
+            for (const courseId in courseConfig) {
+                const course = courseConfig[courseId];
+                
+                // Create course card
+                const courseCard = document.createElement('div');
+                courseCard.className = 'resource-item';
+                courseCard.setAttribute('data-category', 'courses');
+                
+                courseCard.innerHTML = `
+                    <div class="resource-icon"><i class="fas fa-book"></i></div>
+                    <div class="resource-details">
+                        <h3>${course.title}</h3>
+                        <p>Lecture notes, assignments, and study materials for ${course.title} students.</p>
+                        <div class="resource-meta">
+                            <span><i class="fas fa-graduation-cap"></i> ${course.title}</span>
+                            <span><i class="fas fa-layer-group"></i> ${course.maxSemesters} Semesters</span>
+                        </div>
+                        <button class="view-btn" onclick="showCourses('${courseId}')">View Materials</button>
+                    </div>
+                `;
+                
+                // Add the card to the courses section
+                coursesSection.appendChild(courseCard);
+            }
         }
     </script>
 

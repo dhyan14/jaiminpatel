@@ -85,15 +85,12 @@
         }
 
         function showCourses(course) {
-            console.log("showCourses called for course:", course);
-            
             // Hide the resources content section and upload section
             document.querySelector('.resources-content').style.display = 'none';
             document.querySelector('.upload-section').style.display = 'none';
             
             // Get course config from session storage
             const courseConfig = getCourseConfig();
-            console.log("Course config:", courseConfig);
             
             // Check if the course exists in the config
             if (!courseConfig[course]) {
@@ -103,22 +100,15 @@
             
             // Get the maximum number of semesters for this course
             const maxSemesters = courseConfig[course].maxSemesters || 1;
-            console.log(`Showing course ${course} with ${maxSemesters} semesters`);
             
-            // Get resource data to check available semesters
-            const resourceData = loadCourseData();
-            console.log("Resource data for course:", resourceData[course]);
+            console.log(`Showing course ${course} with ${maxSemesters} semesters`);
             
             // Create semester buttons based on course
             let semesterButtonsHTML = '';
             
             for(let i = 1; i <= maxSemesters; i++) {
-                // Check if this semester has any content
-                const hasContent = resourceData[course] && resourceData[course][i];
-                const contentClass = hasContent ? 'has-content' : '';
-                
                 semesterButtonsHTML += `
-                    <button class="${contentClass}" onclick="showSemesterUnits(${i}, '${course}')">
+                    <button onclick="showSemesterUnits(${i}, '${course}')">
                         Semester ${i}
                     </button>`;
             }
@@ -543,9 +533,6 @@
                 <div class="current-resources" id="current-resources">
                     <!-- Resources will be listed here -->
                 </div>
-                <button onclick="testAddResource()" style="margin-top: 20px; padding: 10px; background-color: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    Test Add Resource (B.Tech Sem 5 Unit 1)
-                </button>
             `;
             
             document.querySelector('main').appendChild(adminPanel);
@@ -1332,39 +1319,6 @@
             // Initialize the courses section
             initializeCoursesSection();
         });
-
-        // Add this test function to your resources.html file
-        function testAddResource() {
-            // This is a direct test function to add a resource to session storage
-            
-            // Get current resource data
-            let resourceData = {};
-            const storedData = sessionStorage.getItem('resourceData');
-            if (storedData) {
-                try {
-                    resourceData = JSON.parse(storedData);
-                } catch (e) {
-                    console.error("Error parsing resource data:", e);
-                }
-            }
-            
-            // Add a test resource for B.Tech Semester 5 Unit 1
-            if (!resourceData['btech']) {
-                resourceData['btech'] = {};
-            }
-            
-            if (!resourceData['btech']['5']) {
-                resourceData['btech']['5'] = {};
-            }
-            
-            resourceData['btech']['5']['1'] = "https://drive.google.com/file/d/test-file-id/preview";
-            
-            // Save to session storage
-            sessionStorage.setItem('resourceData', JSON.stringify(resourceData));
-            
-            console.log("Test resource added:", resourceData);
-            alert("Test resource added for B.Tech Semester 5 Unit 1. Please check the B.Tech course now.");
-        }
     </script>
 
     <style>

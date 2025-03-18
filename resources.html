@@ -176,6 +176,17 @@
 
     <script src="scripts/main.js"></script>
     <script>
+        // Initialize course data in session storage if not exists
+        if (!sessionStorage.getItem('courseData')) {
+            const initialCourses = {
+                'btech': { title: 'B.Tech', maxSemesters: 4, unitLabel: 'Unit' },
+                'mca': { title: 'MCA', maxSemesters: 1, unitLabel: 'Module' },
+                'imca': { title: 'iMCA', maxSemesters: 4, unitLabel: 'Unit' },
+                'bca': { title: 'BCA', maxSemesters: 3, unitLabel: 'Unit' }
+            };
+            sessionStorage.setItem('courseData', JSON.stringify(initialCourses));
+        }
+
         function showCourses(course) {
             // Hide the resources content section and upload section
             document.querySelector('.resources-content').style.display = 'none';
@@ -183,26 +194,21 @@
             
             // Create semester buttons based on course
             let semesterButtonsHTML = '';
-            let maxSemesters = 8; // default
             
-            switch(course) {
-                case 'btech':
-                    maxSemesters = 4;
-                    break;
-                case 'mca':
-                    maxSemesters = 1;  // 1 semester for MCA
-                    break;
-                case 'imca':
-                    maxSemesters = 4;  // 4 semesters for iMCA
-                    break;
-                case 'bca':
-                    maxSemesters = 3;  // 3 semesters for BCA
-                    break;
-            }
+            // Get course config from session storage
+            const courseConfig = getCourseConfig();
+            const maxSemesters = courseConfig[course] ? courseConfig[course].maxSemesters : 8;
             
             for(let i = 1; i <= maxSemesters; i++) {
                 semesterButtonsHTML += `
-                    <button onclick="showUnits(${i}, '${course}')">Semester ${i}</button>`;
+                    <button onclick="showSemesterUnits(${i}, '${course}')">
+                        Semester ${i}
+                    </button>`;
+            }
+            
+            // Remove any existing courses container to prevent duplicates
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
             }
             
             // Create and show the courses container
@@ -213,25 +219,16 @@
                     <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
                 </div>
                 <h2>${getCourseTitle(course)} - Select Semester</h2>
-                <div class="semester-selection">
+                <div class="semester-grid">
                     ${semesterButtonsHTML}
                 </div>
             `;
-            
             document.querySelector('main').appendChild(coursesContainer);
-            
-            // Scroll to the courses container
-            coursesContainer.scrollIntoView({ behavior: 'smooth' });
         }
         
-        function getCourseTitle(course) {
-            switch(course) {
-                case 'btech': return 'B.Tech';
-                case 'mca': return 'MCA';
-                case 'imca': return 'iMCA';
-                case 'bca': return 'BCA';
-                default: return 'Course';
-            }
+        function getCourseTitle(courseId) {
+            const courseConfig = getCourseConfig();
+            return courseConfig[courseId] ? courseConfig[courseId].title : courseId.toUpperCase();
         }
         
         function backToResources() {
@@ -246,34 +243,19 @@
             document.querySelector('.upload-section').style.display = 'block';
         }
         
-        function showUnits(semester, course) {
-            // Remove previous unit selection if exists
+        function showSemesterUnits(semester, course) {
+            // Remove any existing unit selection
             if (document.querySelector('.unit-selection')) {
                 document.querySelector('.unit-selection').remove();
             }
             
-            // Determine number of units and label based on course
-            let unitCount = 4; // default for B.Tech, iMCA, and BCA
-            let unitLabel = 'Unit';
+            // Get course config from session storage
+            const courseConfig = getCourseConfig();
+            const unitLabel = courseConfig[course] && courseConfig[course].unitLabel ? 
+                              courseConfig[course].unitLabel : 'Unit';
             
-            switch(course) {
-                case 'btech':
-                    unitCount = 4;
-                    unitLabel = 'Unit';
-                    break;
-                case 'mca':
-                    unitCount = 5;  // 5 modules for MCA
-                    unitLabel = 'Module';
-                    break;
-                case 'imca':
-                    unitCount = 4;  // 4 units for iMCA
-                    unitLabel = 'Unit';
-                    break;
-                case 'bca':
-                    unitCount = 4;  // 4 units for BCA
-                    unitLabel = 'Unit';
-                    break;
-            }
+            // Determine number of units based on course and semester
+            let unitCount = 5; // default
             
             // Create unit buttons HTML
             let unitButtonsHTML = '';
@@ -296,36 +278,6 @@
             document.querySelector('.courses-container').appendChild(unitsContainer);
         }
         
-        // Add this function to load course data dynamically
-        function loadCourseData() {
-            // This could be replaced with an AJAX call to fetch from a JSON file or database
-            return {
-                "btech": {
-                    "1": {
-                        "1": "https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview",
-                        "2": "https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview",
-                        "3": "https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview",
-                        "4": "https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview"
-                    },
-                    "2": {
-                        "1": "https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview",
-                        "2": "https://drive.google.com/file/d/1tKdIYTDpLX3S-S8V2z68RhyhOEYS4Yfv/preview",
-                        "3": "https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview"
-                    }
-                },
-                "mca": {
-                    "1": {
-                        "1": "https://drive.google.com/file/d/1YWZpDdD3NjZosWSvnBumaiWPhde870T2/preview",
-                        "2": "https://drive.google.com/file/d/1VZCrle_06AG_XUcRFoMSFZ23bTY5fJxr/preview",
-                        "3": "https://drive.google.com/file/d/1X1eZ06AzkL_NdtVZUy8TB5C09DUeAxyp/preview",
-                        "4": "https://drive.google.com/file/d/1W_VJwZozU3MkEeADeEGIhb9lfylYT7zm/preview",
-                        "5": "https://drive.google.com/file/d/1ZeNfV9_-1-p0YfWS18nmXcpIPKzfeKkg/preview"
-                    }
-                }
-            };
-        }
-        
-        // Update the showLectureNotes function to use the dynamic data
         function showLectureNotes(semester, unit, course) {
             // Remove previous notes display if exists
             if (document.querySelector('.notes-display')) {
@@ -337,8 +289,10 @@
                 document.getElementById('pdfModal').remove();
             }
             
-            // Determine the label based on course
-            const unitLabel = course === 'mca' ? 'Module' : 'Unit';
+            // Get course config from session storage
+            const courseConfig = getCourseConfig();
+            const unitLabel = courseConfig[course] && courseConfig[course].unitLabel ? 
+                              courseConfig[course].unitLabel : 'Unit';
             
             // Get course data
             const courseData = loadCourseData();
@@ -384,7 +338,6 @@
             document.querySelector('.courses-container').appendChild(notesContainer);
         }
         
-        // Add a new function to create and show PDF viewer
         function createAndShowPdfViewer(pdfLink) {
             // Remove any existing PDF modal
             if (document.getElementById('pdfModal')) {
@@ -411,7 +364,6 @@
             togglePdfViewer();
         }
         
-        // Update the toggle function
         function togglePdfViewer() {
             const modal = document.getElementById('pdfModal');
             if (!modal) return;
@@ -425,7 +377,6 @@
             }
         }
         
-        // Add a new function to handle Expert Lectures
         function showExpertLectures() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
@@ -487,13 +438,11 @@
             document.querySelector('main').appendChild(lecturesContainer);
         }
         
-        // Add this new function to handle lecture viewing
         function watchLecture(lectureId) {
             // This function will be implemented when you have the actual lecture content/videos
             console.log(`Opening lecture: ${lectureId}`);
         }
 
-        // Fix the syntax error in the event listener
         document.addEventListener('DOMContentLoaded', function() {
             // Category filter functionality
             const categoryBtns = document.querySelectorAll('.category-btn');
@@ -519,14 +468,12 @@
             });
         });
 
-        // Update the checkLogin function with the new credentials
         function checkLogin(username, password) {
             // In a real application, this would validate against a database
             // For demonstration, we'll use a hardcoded username and password
             return username === "admin@jaiminpatel.com" && password === "JaiminPatel@35869";
         }
 
-        // Modify the showAdminPanel function to require login
         function showAdminPanel() {
             // Check if already logged in (using session storage)
             const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
@@ -541,7 +488,6 @@
             showAdminInterface();
         }
 
-        // Add a function to show the login form
         function showLoginForm() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
@@ -577,7 +523,6 @@
             document.querySelector('main').appendChild(loginPanel);
         }
 
-        // Add a function to attempt login
         function attemptLogin() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -597,7 +542,6 @@
             }
         }
 
-        // Update showAdminInterface to include course management
         function showAdminInterface() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
@@ -661,7 +605,6 @@
             showCourseManagement();
         }
 
-        // Add a function to handle logout
         function logout() {
             // Clear login status
             sessionStorage.removeItem('isAdminLoggedIn');
@@ -756,7 +699,6 @@
             }, 3000);
         }
 
-        // Add a function to handle editing a resource
         function editResource(course, semester, unit, link) {
             // Set form values to the selected resource
             document.getElementById('course-select').value = course;
@@ -781,7 +723,6 @@
             showAdminMessage(`Editing ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'info');
         }
 
-        // Add a function to update a resource
         function updateResource(originalCourse, originalSemester, originalUnit) {
             const newCourse = document.getElementById('course-select').value;
             const newSemester = document.getElementById('semester-input').value;
@@ -814,7 +755,6 @@
             displayCurrentResources();
         }
 
-        // Add a function to cancel editing
         function cancelEdit() {
             // Clear the form
             document.getElementById('course-select').value = 'btech';
@@ -833,7 +773,6 @@
             showAdminMessage('Editing cancelled', 'info');
         }
 
-        // Add this function to show the course management interface
         function showCourseManagement() {
             // Create course management panel
             let coursePanel = document.createElement('div');
@@ -873,14 +812,13 @@
             // Add the course management panel to the admin panel
             document.querySelector('.admin-panel').appendChild(coursePanel);
             
-            // Display current courses
-            displayCurrentCourses();
+            // Display current resources
+            displayCurrentResources();
             
             // Add tabs for switching between resources and courses
             addAdminTabs();
         }
 
-        // Add tabs to switch between resources and courses
         function addAdminTabs() {
             // Check if tabs already exist
             if (document.querySelector('.admin-tabs')) return;
@@ -901,7 +839,6 @@
             document.querySelector('.course-management-panel').style.display = 'none';
         }
 
-        // Switch between admin tabs
         function switchAdminTab(tab) {
             // Update tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -927,7 +864,6 @@
             }
         }
 
-        // Display current courses
         function displayCurrentCourses() {
             // Get courses from the getCourseConfig function
             const courses = getCourseConfig();
@@ -960,18 +896,10 @@
             coursesContainer.innerHTML = coursesHTML || '<p>No courses added yet.</p>';
         }
 
-        // Get course configuration
         function getCourseConfig() {
-            // This would be fetched from a database in a real application
-            return {
-                'btech': { title: 'B.Tech', maxSemesters: 4, unitLabel: 'Unit' },
-                'mca': { title: 'MCA', maxSemesters: 1, unitLabel: 'Module' },
-                'imca': { title: 'iMCA', maxSemesters: 4, unitLabel: 'Unit' },
-                'bca': { title: 'BCA', maxSemesters: 3, unitLabel: 'Unit' }
-            };
+            return JSON.parse(sessionStorage.getItem('courseData') || '{}');
         }
 
-        // Add a new course
         function addCourse() {
             const courseId = document.getElementById('course-id').value.trim().toLowerCase();
             const courseTitle = document.getElementById('course-title').value.trim();
@@ -984,20 +912,34 @@
                 return;
             }
             
-            // In a real application, this would send data to the server
+            // Get current courses
+            const courses = getCourseConfig();
+            
+            // Check if course ID already exists
+            if (courses[courseId]) {
+                showCourseMessage(`Course ID "${courseId}" already exists`, 'error');
+                return;
+            }
+            
+            // Add new course
+            courses[courseId] = {
+                title: courseTitle,
+                maxSemesters: parseInt(maxSemesters),
+                unitLabel: unitLabel
+            };
+            
+            // Save to session storage
+            sessionStorage.setItem('courseData', JSON.stringify(courses));
+            
             showCourseMessage(`Course "${courseTitle}" added successfully`, 'success');
             
             // Clear the form
-            document.getElementById('course-id').value = '';
-            document.getElementById('course-title').value = '';
-            document.getElementById('max-semesters').value = '4';
-            document.getElementById('unit-label').value = 'Unit';
+            resetCourseForm();
             
             // Refresh the display
             displayCurrentCourses();
         }
 
-        // Edit a course
         function editCourse(courseId) {
             const courses = getCourseConfig();
             const course = courses[courseId];
@@ -1031,7 +973,6 @@
             document.querySelector('.course-management-panel .admin-form').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Update a course
         function updateCourse(courseId) {
             const courseTitle = document.getElementById('course-title').value.trim();
             const maxSemesters = document.getElementById('max-semesters').value;
@@ -1043,7 +984,19 @@
                 return;
             }
             
-            // In a real application, this would update data on the server
+            // Get current courses
+            const courses = getCourseConfig();
+            
+            // Update course
+            courses[courseId] = {
+                title: courseTitle,
+                maxSemesters: parseInt(maxSemesters),
+                unitLabel: unitLabel
+            };
+            
+            // Save to session storage
+            sessionStorage.setItem('courseData', JSON.stringify(courses));
+            
             showCourseMessage(`Course "${courseTitle}" updated successfully`, 'success');
             
             // Reset form and button
@@ -1053,8 +1006,8 @@
             displayCurrentCourses();
         }
 
-        // Delete a course
         function deleteCourse(courseId) {
+            // Get current courses
             const courses = getCourseConfig();
             const course = courses[courseId];
             
@@ -1063,20 +1016,28 @@
                 return;
             }
             
-            // In a real application, this would delete data from the server
+            // Confirm deletion
+            if (!confirm(`Are you sure you want to delete the course "${course.title}"?`)) {
+                return;
+            }
+            
+            // Delete course
+            delete courses[courseId];
+            
+            // Save to session storage
+            sessionStorage.setItem('courseData', JSON.stringify(courses));
+            
             showCourseMessage(`Course "${course.title}" deleted successfully`, 'success');
             
             // Refresh the display
             displayCurrentCourses();
         }
 
-        // Cancel course edit
         function cancelCourseEdit() {
             resetCourseForm();
             showCourseMessage('Editing cancelled', 'info');
         }
 
-        // Reset course form
         function resetCourseForm() {
             document.getElementById('course-id').value = '';
             document.getElementById('course-title').value = '';
@@ -1091,7 +1052,6 @@
             document.getElementById('cancel-course-edit-btn').style.display = 'none';
         }
 
-        // Show course message
         function showCourseMessage(message, type) {
             const messageElement = document.getElementById('course-message');
             messageElement.textContent = message;

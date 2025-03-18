@@ -812,8 +812,8 @@
             // Add the course management panel to the admin panel
             document.querySelector('.admin-panel').appendChild(coursePanel);
             
-            // Display current resources
-            displayCurrentResources();
+            // Display current courses
+            displayCurrentCourses();
             
             // Add tabs for switching between resources and courses
             addAdminTabs();
@@ -1089,14 +1089,14 @@
             font-weight: bold;
         }
         
-        .semester-selection, .units-grid {
+        .semester-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
         
-        .semester-selection button, .units-grid button {
+        .semester-grid button {
             padding: 15px;
             background-color: #4CAF50;
             color: white;
@@ -1107,7 +1107,7 @@
             transition: background-color 0.3s;
         }
         
-        .semester-selection button:hover, .units-grid button:hover {
+        .semester-grid button:hover {
             background-color: #3e8e41;
         }
         

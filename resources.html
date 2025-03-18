@@ -1106,21 +1106,16 @@
 
         // Add this function to load course data dynamically
         function loadCourseData() {
-            // Check if we have course data in session storage
             const storedData = sessionStorage.getItem('resourceData');
             if (storedData) {
                 try {
-                    const parsedData = JSON.parse(storedData);
-                    console.log("Loaded resource data:", parsedData);
-                    return parsedData;
+                    return JSON.parse(storedData);
                 } catch (e) {
                     console.error("Error parsing resource data:", e);
                 }
             }
             
-            console.log("No stored resource data found, using default data");
-            
-            // Otherwise return the default data
+            // Default data if nothing in storage
             const defaultData = {
                 "btech": {
                     "1": {
@@ -1146,12 +1141,12 @@
                 }
             };
             
-            // Store the default data in session storage
+            // Save default data to session storage
             sessionStorage.setItem('resourceData', JSON.stringify(defaultData));
             return defaultData;
         }
 
-        // Add this function to save resource data
+        // Add this function to save resource data to session storage
         function saveResourceData(data) {
             sessionStorage.setItem('resourceData', JSON.stringify(data));
             console.log("Saved resource data:", data);

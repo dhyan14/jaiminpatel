@@ -614,14 +614,14 @@
         }
 
         function displayCurrentResources() {
-            const courseData = loadCourseData();
+            const resourceData = loadCourseData();
             const resourcesContainer = document.getElementById('current-resources');
             let resourcesHTML = '';
             
-            for (const course in courseData) {
-                for (const semester in courseData[course]) {
-                    for (const unit in courseData[course][semester]) {
-                        const link = courseData[course][semester][unit];
+            for (const course in resourceData) {
+                for (const semester in resourceData[course]) {
+                    for (const unit in resourceData[course][semester]) {
+                        const link = resourceData[course][semester][unit];
                         const courseTitle = getCourseTitle(course);
                         const unitLabel = course === 'mca' ? 'Module' : 'Unit';
                         
@@ -665,25 +665,68 @@
                 link = link.replace('/view', '/preview');
             }
             
-            // In a real application, this would send data to the server
-            // For now, we'll just show a success message
+            // Get current resource data
+            const resourceData = loadCourseData();
+            
+            // Ensure the course and semester objects exist
+            if (!resourceData[course]) {
+                resourceData[course] = {};
+            }
+            
+            if (!resourceData[course][semester]) {
+                resourceData[course][semester] = {};
+            }
+            
+            // Add or update the resource
+            resourceData[course][semester][unit] = link;
+            
+            // Save the updated data
+            saveResourceData(resourceData);
+            
             showAdminMessage(`Resource added for ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'success');
             
             // Clear the form
             document.getElementById('link-input').value = '';
             
-            // In a real application, we would update the courseData here
-            // For demonstration, we'll just refresh the display
+            // Refresh the display
             displayCurrentResources();
         }
 
         function deleteResource(course, semester, unit) {
-            // In a real application, this would send a delete request to the server
-            // For now, we'll just show a success message
-            showAdminMessage(`Resource deleted for ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'success');
+            // Confirm deletion
+            if (!confirm(`Are you sure you want to delete this resource?`)) {
+                return;
+            }
             
-            // In a real application, we would update the courseData here
-            // For demonstration, we'll just refresh the display
+            // Get current resource data
+            const resourceData = loadCourseData();
+            
+            // Check if the resource exists
+            if (resourceData[course] && 
+                resourceData[course][semester] && 
+                resourceData[course][semester][unit]) {
+                
+                // Delete the resource
+                delete resourceData[course][semester][unit];
+                
+                // Clean up empty objects
+                if (Object.keys(resourceData[course][semester]).length === 0) {
+                    delete resourceData[course][semester];
+                }
+                
+                if (Object.keys(resourceData[course]).length === 0) {
+                    delete resourceData[course];
+                }
+                
+                // Save the updated data
+                saveResourceData(resourceData);
+                
+                showAdminMessage(`Resource deleted successfully`, 'success');
+            } else {
+                showAdminMessage(`Resource not found`, 'error');
+            }
+            
+            // Refresh the display
             displayCurrentResources();
         }
 
@@ -740,8 +783,31 @@
                 newLink = newLink.replace('/view', '/preview');
             }
             
-            // In a real application, this would update the data on the server
-            // For now, we'll just show a success message
+            // Get current resource data
+            const resourceData = loadCourseData();
+            
+            // Remove the original resource if it exists
+            if (resourceData[originalCourse] && 
+                resourceData[originalCourse][originalSemester] && 
+                resourceData[originalCourse][originalSemester][originalUnit]) {
+                delete resourceData[originalCourse][originalSemester][originalUnit];
+            }
+            
+            // Ensure the new course and semester objects exist
+            if (!resourceData[newCourse]) {
+                resourceData[newCourse] = {};
+            }
+            
+            if (!resourceData[newCourse][newSemester]) {
+                resourceData[newCourse][newSemester] = {};
+            }
+            
+            // Add the new resource
+            resourceData[newCourse][newSemester][newUnit] = newLink;
+            
+            // Save the updated data
+            saveResourceData(resourceData);
+            
             showAdminMessage(`Resource updated for ${getCourseTitle(newCourse)} - Semester ${newSemester} - ${newCourse === 'mca' ? 'Module' : 'Unit'} ${newUnit}`, 'success');
             
             // Reset the form and button
@@ -750,8 +816,10 @@
             addButton.textContent = 'Add Resource';
             addButton.onclick = addNewResource;
             
-            // In a real application, we would update the courseData here
-            // For demonstration, we'll just refresh the display
+            // Hide the cancel button
+            document.getElementById('cancel-edit-btn').style.display = 'none';
+            
+            // Refresh the display
             displayCurrentResources();
         }
 
@@ -1062,6 +1130,50 @@
                 messageElement.textContent = '';
                 messageElement.className = 'admin-message';
             }, 3000);
+        }
+
+        // Add this function to load course data dynamically
+        function loadCourseData() {
+            // Check if we have course data in session storage
+            const storedData = sessionStorage.getItem('resourceData');
+            if (storedData) {
+                return JSON.parse(storedData);
+            }
+            
+            // Otherwise return the default data
+            const defaultData = {
+                "btech": {
+                    "1": {
+                        "1": "https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview",
+                        "2": "https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview",
+                        "3": "https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview",
+                        "4": "https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview"
+                    },
+                    "2": {
+                        "1": "https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview",
+                        "2": "https://drive.google.com/file/d/1tKdIYTDpLX3S-S8V2z68RhyhOEYS4Yfv/preview",
+                        "3": "https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview"
+                    }
+                },
+                "mca": {
+                    "1": {
+                        "1": "https://drive.google.com/file/d/1YWZpDdD3NjZosWSvnBumaiWPhde870T2/preview",
+                        "2": "https://drive.google.com/file/d/1VZCrle_06AG_XUcRFoMSFZ23bTY5fJxr/preview",
+                        "3": "https://drive.google.com/file/d/1X1eZ06AzkL_NdtVZUy8TB5C09DUeAxyp/preview",
+                        "4": "https://drive.google.com/file/d/1W_VJwZozU3MkEeADeEGIhb9lfylYT7zm/preview",
+                        "5": "https://drive.google.com/file/d/1ZeNfV9_-1-p0YfWS18nmXcpIPKzfeKkg/preview"
+                    }
+                }
+            };
+            
+            // Store the default data in session storage
+            sessionStorage.setItem('resourceData', JSON.stringify(defaultData));
+            return defaultData;
+        }
+
+        // Add a function to save resource data
+        function saveResourceData(data) {
+            sessionStorage.setItem('resourceData', JSON.stringify(data));
         }
     </script>
 

@@ -519,8 +519,86 @@
             });
         });
 
-        // Add this after the togglePdfViewer function
+        // Add this function to check login credentials
+        function checkLogin(username, password) {
+            // In a real application, this would validate against a database
+            // For demonstration, we'll use a hardcoded username and password
+            return username === "admin" && password === "password123";
+        }
+
+        // Modify the showAdminPanel function to require login
         function showAdminPanel() {
+            // Check if already logged in (using session storage)
+            const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Show login form instead of admin panel
+                showLoginForm();
+                return;
+            }
+            
+            // If logged in, show the admin panel
+            showAdminInterface();
+        }
+
+        // Add a function to show the login form
+        function showLoginForm() {
+            // Hide the resources content section
+            document.querySelector('.resources-content').style.display = 'none';
+            document.querySelector('.upload-section').style.display = 'none';
+            
+            // Remove any existing courses container
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
+            
+            // Create login form
+            let loginPanel = document.createElement('div');
+            loginPanel.className = 'courses-container admin-panel';
+            loginPanel.innerHTML = `
+                <div class="back-button">
+                    <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
+                </div>
+                <h2>Admin Login</h2>
+                <div class="admin-form login-form">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                    </div>
+                    <button class="admin-submit-btn" onclick="attemptLogin()">Login</button>
+                    <div id="login-message" class="admin-message"></div>
+                </div>
+            `;
+            
+            document.querySelector('main').appendChild(loginPanel);
+        }
+
+        // Add a function to attempt login
+        function attemptLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (checkLogin(username, password)) {
+                // Set login status in session storage
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                
+                // Show admin interface
+                document.querySelector('.courses-container').remove();
+                showAdminInterface();
+            } else {
+                // Show error message
+                const messageElement = document.getElementById('login-message');
+                messageElement.textContent = "Invalid username or password";
+                messageElement.className = "admin-message error";
+            }
+        }
+
+        // Add a function to show the admin interface (separated from showAdminPanel)
+        function showAdminInterface() {
             // Hide the resources content section
             document.querySelector('.resources-content').style.display = 'none';
             document.querySelector('.upload-section').style.display = 'none';
@@ -536,6 +614,7 @@
             adminPanel.innerHTML = `
                 <div class="back-button">
                     <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
+                    <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
                 <h2>Admin Panel - Add New Resource</h2>
                 <div class="admin-form">
@@ -560,7 +639,10 @@
                         <label for="link-input">Google Drive Link:</label>
                         <input type="text" id="link-input" placeholder="https://drive.google.com/file/d/...">
                     </div>
-                    <button class="admin-submit-btn" onclick="addNewResource()">Add Resource</button>
+                    <div class="form-actions">
+                        <button class="admin-submit-btn" onclick="addNewResource()">Add Resource</button>
+                        <button id="cancel-edit-btn" class="cancel-btn" onclick="cancelEdit()" style="display: none;">Cancel</button>
+                    </div>
                 </div>
                 <div id="admin-message" class="admin-message"></div>
                 
@@ -574,6 +656,15 @@
             
             // Display current resources
             displayCurrentResources();
+        }
+
+        // Add a function to handle logout
+        function logout() {
+            // Clear login status
+            sessionStorage.removeItem('isAdminLoggedIn');
+            
+            // Return to resources page
+            backToResources();
         }
 
         function displayCurrentResources() {
@@ -594,9 +685,14 @@
                                     <span>${courseTitle} - Semester ${semester} - ${unitLabel} ${unit}</span>
                                     <a href="${link}" target="_blank" class="resource-link">View Link</a>
                                 </div>
-                                <button class="delete-resource-btn" onclick="deleteResource('${course}', '${semester}', '${unit}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div class="resource-actions">
+                                    <button class="edit-resource-btn" onclick="editResource('${course}', '${semester}', '${unit}', '${link}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="delete-resource-btn" onclick="deleteResource('${course}', '${semester}', '${unit}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         `;
                     }
@@ -655,6 +751,83 @@
                 messageElement.textContent = '';
                 messageElement.className = 'admin-message';
             }, 3000);
+        }
+
+        // Add a function to handle editing a resource
+        function editResource(course, semester, unit, link) {
+            // Set form values to the selected resource
+            document.getElementById('course-select').value = course;
+            document.getElementById('semester-input').value = semester;
+            document.getElementById('unit-input').value = unit;
+            document.getElementById('link-input').value = link;
+            
+            // Change the add button to update button
+            const addButton = document.querySelector('.admin-submit-btn');
+            addButton.textContent = 'Update Resource';
+            addButton.onclick = function() {
+                updateResource(course, semester, unit);
+            };
+            
+            // Show the cancel button
+            document.getElementById('cancel-edit-btn').style.display = 'inline-block';
+            
+            // Scroll to the form
+            document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth' });
+            
+            // Show a message
+            showAdminMessage(`Editing ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'info');
+        }
+
+        // Add a function to update a resource
+        function updateResource(originalCourse, originalSemester, originalUnit) {
+            const newCourse = document.getElementById('course-select').value;
+            const newSemester = document.getElementById('semester-input').value;
+            const newUnit = document.getElementById('unit-input').value;
+            let newLink = document.getElementById('link-input').value;
+            
+            // Validate inputs
+            if (!newCourse || !newSemester || !newUnit || !newLink) {
+                showAdminMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Convert from /view to /preview if needed
+            if (newLink.includes('/view')) {
+                newLink = newLink.replace('/view', '/preview');
+            }
+            
+            // In a real application, this would update the data on the server
+            // For now, we'll just show a success message
+            showAdminMessage(`Resource updated for ${getCourseTitle(newCourse)} - Semester ${newSemester} - ${newCourse === 'mca' ? 'Module' : 'Unit'} ${newUnit}`, 'success');
+            
+            // Reset the form and button
+            document.getElementById('link-input').value = '';
+            const addButton = document.querySelector('.admin-submit-btn');
+            addButton.textContent = 'Add Resource';
+            addButton.onclick = addNewResource;
+            
+            // In a real application, we would update the courseData here
+            // For demonstration, we'll just refresh the display
+            displayCurrentResources();
+        }
+
+        // Add a function to cancel editing
+        function cancelEdit() {
+            // Clear the form
+            document.getElementById('course-select').value = 'btech';
+            document.getElementById('semester-input').value = '1';
+            document.getElementById('unit-input').value = '1';
+            document.getElementById('link-input').value = '';
+            
+            // Reset the button
+            const addButton = document.querySelector('.admin-submit-btn');
+            addButton.textContent = 'Add Resource';
+            addButton.onclick = addNewResource;
+            
+            // Hide the cancel button
+            document.getElementById('cancel-edit-btn').style.display = 'none';
+            
+            showAdminMessage('Editing cancelled', 'info');
         }
     </script>
 
@@ -1017,6 +1190,58 @@
         
         .mt-4 {
             margin-top: 20px;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .edit-resource-btn {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .admin-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
         }
     </style>
 </body>

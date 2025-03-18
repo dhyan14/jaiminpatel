@@ -823,8 +823,8 @@
             // Add the course management panel to the admin panel
             document.querySelector('.admin-panel').appendChild(coursePanel);
             
-            // Display current resources
-            displayCurrentResources();
+            // Display current courses
+            displayCurrentCourses();
             
             // Add tabs for switching between resources and courses
             addAdminTabs();
@@ -1294,6 +1294,9 @@
             container.appendChild(assignment);
             container.appendChild(notes);
         }
+
+        // Initialize the courses section when the page loads
+        initializeCoursesSection();
     </script>
 
     <style>

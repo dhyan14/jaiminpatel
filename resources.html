@@ -151,14 +151,33 @@
             const unitLabel = courseConfig[course] && courseConfig[course].unitLabel ? 
                               courseConfig[course].unitLabel : 'Unit';
             
-            // Determine number of units based on course and semester
+            // Get course data to determine available units
+            const courseData = loadCourseData();
+            
+            // Determine number of units based on available data
             let unitCount = 5; // default
+            
+            // If we have data for this course and semester, use the actual number of units
+            if (courseData[course] && courseData[course][semester]) {
+                const units = Object.keys(courseData[course][semester]).map(Number);
+                if (units.length > 0) {
+                    unitCount = Math.max(...units);
+                }
+            }
             
             // Create unit buttons HTML
             let unitButtonsHTML = '';
             for(let i = 1; i <= unitCount; i++) {
+                // Check if this unit has content
+                const hasContent = courseData[course] && 
+                                  courseData[course][semester] && 
+                                  courseData[course][semester][i];
+                
+                // Add a class to indicate if content exists
+                const contentClass = hasContent ? 'has-content' : '';
+                
                 unitButtonsHTML += `
-                    <button onclick="showLectureNotes(${semester}, ${i}, '${course}')">
+                    <button class="${contentClass}" onclick="showLectureNotes(${semester}, ${i}, '${course}')">
                         ${unitLabel} ${i}
                     </button>`;
             }
@@ -194,12 +213,18 @@
             // Get course data
             const courseData = loadCourseData();
             
+            console.log(`Looking for PDF: ${course}, Semester ${semester}, ${unitLabel} ${unit}`);
+            console.log("Course data:", courseData);
+            
             // Get PDF link if available
             let pdfLink = '';
             if (courseData[course] && 
                 courseData[course][semester] && 
                 courseData[course][semester][unit]) {
                 pdfLink = courseData[course][semester][unit];
+                console.log(`Found PDF link: ${pdfLink}`);
+            } else {
+                console.log("No PDF link found for this unit");
             }
             
             // Create notes content based on whether PDF link exists
@@ -565,6 +590,8 @@
                 link = link.replace('/view', '/preview');
             }
             
+            console.log(`Adding resource: ${course}, Semester ${semester}, Unit ${unit}, Link: ${link}`);
+            
             // Get current resource data
             const resourceData = loadCourseData();
             
@@ -582,6 +609,8 @@
             
             // Save the updated data
             saveResourceData(resourceData);
+            
+            console.log("Updated resource data:", resourceData);
             
             showAdminMessage(`Resource added for ${getCourseTitle(course)} - Semester ${semester} - ${course === 'mca' ? 'Module' : 'Unit'} ${unit}`, 'success');
             
@@ -794,8 +823,8 @@
             // Add the course management panel to the admin panel
             document.querySelector('.admin-panel').appendChild(coursePanel);
             
-            // Display current courses
-            displayCurrentCourses();
+            // Display current resources
+            displayCurrentResources();
             
             // Add tabs for switching between resources and courses
             addAdminTabs();
@@ -1066,8 +1095,16 @@
             // Check if we have course data in session storage
             const storedData = sessionStorage.getItem('resourceData');
             if (storedData) {
-                return JSON.parse(storedData);
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    console.log("Loaded resource data:", parsedData);
+                    return parsedData;
+                } catch (e) {
+                    console.error("Error parsing resource data:", e);
+                }
             }
+            
+            console.log("No stored resource data found, using default data");
             
             // Otherwise return the default data
             const defaultData = {
@@ -1790,6 +1827,18 @@
         .view-btn:hover {
             background-color: #3e8e41;
             color: white;
+        }
+
+        .units-grid button.has-content {
+            background-color: #4CAF50;
+        }
+
+        .units-grid button:not(.has-content) {
+            background-color: #999;
+        }
+
+        .units-grid button:not(.has-content):hover {
+            background-color: #777;
         }
     </style>
 </body>

@@ -829,6 +829,277 @@
             
             showAdminMessage('Editing cancelled', 'info');
         }
+
+        // Add this function to show the course management interface
+        function showCourseManagement() {
+            // Create course management panel
+            let coursePanel = document.createElement('div');
+            coursePanel.className = 'course-management-panel';
+            coursePanel.innerHTML = `
+                <h3>Course Management</h3>
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label for="course-id">Course ID:</label>
+                        <input type="text" id="course-id" placeholder="e.g., btech, mca" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="course-title">Course Title:</label>
+                        <input type="text" id="course-title" placeholder="e.g., B.Tech, MCA">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-semesters">Max Semesters:</label>
+                        <input type="number" id="max-semesters" min="1" max="10" value="4">
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-label">Unit Label:</label>
+                        <input type="text" id="unit-label" placeholder="Unit or Module" value="Unit">
+                    </div>
+                    <div class="form-actions">
+                        <button class="admin-submit-btn" id="course-submit-btn" onclick="addCourse()">Add Course</button>
+                        <button id="cancel-course-edit-btn" class="cancel-btn" onclick="cancelCourseEdit()" style="display: none;">Cancel</button>
+                    </div>
+                </div>
+                <div id="course-message" class="admin-message"></div>
+                
+                <h4 class="mt-4">Current Courses</h4>
+                <div class="current-courses" id="current-courses">
+                    <!-- Courses will be listed here -->
+                </div>
+            `;
+            
+            // Add the course management panel to the admin panel
+            document.querySelector('.admin-panel').appendChild(coursePanel);
+            
+            // Display current courses
+            displayCurrentCourses();
+            
+            // Add tabs for switching between resources and courses
+            addAdminTabs();
+        }
+
+        // Add tabs to switch between resources and courses
+        function addAdminTabs() {
+            // Check if tabs already exist
+            if (document.querySelector('.admin-tabs')) return;
+            
+            // Create tabs
+            let tabsContainer = document.createElement('div');
+            tabsContainer.className = 'admin-tabs';
+            tabsContainer.innerHTML = `
+                <button class="tab-btn active" onclick="switchAdminTab('resources')">Resources</button>
+                <button class="tab-btn" onclick="switchAdminTab('courses')">Courses</button>
+            `;
+            
+            // Insert tabs at the top of the admin panel
+            const adminPanel = document.querySelector('.admin-panel');
+            adminPanel.insertBefore(tabsContainer, adminPanel.firstChild.nextSibling);
+            
+            // Initially hide the course management panel
+            document.querySelector('.course-management-panel').style.display = 'none';
+        }
+
+        // Switch between admin tabs
+        function switchAdminTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn:nth-child(${tab === 'resources' ? 1 : 2})`).classList.add('active');
+            
+            // Show/hide appropriate content
+            if (tab === 'resources') {
+                document.querySelector('h2').textContent = 'Admin Panel - Add New Resource';
+                document.querySelector('.admin-form').style.display = 'block';
+                document.getElementById('admin-message').style.display = 'block';
+                document.querySelector('h3.mt-4').style.display = 'block';
+                document.getElementById('current-resources').style.display = 'block';
+                document.querySelector('.course-management-panel').style.display = 'none';
+            } else {
+                document.querySelector('h2').textContent = 'Admin Panel - Course Management';
+                document.querySelector('.admin-form').style.display = 'none';
+                document.getElementById('admin-message').style.display = 'none';
+                document.querySelector('h3.mt-4').style.display = 'none';
+                document.getElementById('current-resources').style.display = 'none';
+                document.querySelector('.course-management-panel').style.display = 'block';
+            }
+        }
+
+        // Display current courses
+        function displayCurrentCourses() {
+            // Get courses from the getCourseConfig function
+            const courses = getCourseConfig();
+            const coursesContainer = document.getElementById('current-courses');
+            let coursesHTML = '';
+            
+            for (const courseId in courses) {
+                const course = courses[courseId];
+                coursesHTML += `
+                    <div class="resource-entry">
+                        <div class="resource-entry-details">
+                            <span><strong>${course.title}</strong> (${courseId})</span>
+                            <span class="course-details">
+                                ${course.maxSemesters} semesters | 
+                                Unit label: ${course.unitLabel || 'Unit'}
+                            </span>
+                        </div>
+                        <div class="resource-actions">
+                            <button class="edit-resource-btn" onclick="editCourse('${courseId}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-resource-btn" onclick="deleteCourse('${courseId}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            coursesContainer.innerHTML = coursesHTML || '<p>No courses added yet.</p>';
+        }
+
+        // Get course configuration
+        function getCourseConfig() {
+            // This would be fetched from a database in a real application
+            return {
+                'btech': { title: 'B.Tech', maxSemesters: 4, unitLabel: 'Unit' },
+                'mca': { title: 'MCA', maxSemesters: 1, unitLabel: 'Module' },
+                'imca': { title: 'iMCA', maxSemesters: 4, unitLabel: 'Unit' },
+                'bca': { title: 'BCA', maxSemesters: 3, unitLabel: 'Unit' }
+            };
+        }
+
+        // Add a new course
+        function addCourse() {
+            const courseId = document.getElementById('course-id').value.trim().toLowerCase();
+            const courseTitle = document.getElementById('course-title').value.trim();
+            const maxSemesters = document.getElementById('max-semesters').value;
+            const unitLabel = document.getElementById('unit-label').value.trim();
+            
+            // Validate inputs
+            if (!courseId || !courseTitle || !maxSemesters) {
+                showCourseMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // In a real application, this would send data to the server
+            showCourseMessage(`Course "${courseTitle}" added successfully`, 'success');
+            
+            // Clear the form
+            document.getElementById('course-id').value = '';
+            document.getElementById('course-title').value = '';
+            document.getElementById('max-semesters').value = '4';
+            document.getElementById('unit-label').value = 'Unit';
+            
+            // Refresh the display
+            displayCurrentCourses();
+        }
+
+        // Edit a course
+        function editCourse(courseId) {
+            const courses = getCourseConfig();
+            const course = courses[courseId];
+            
+            if (!course) {
+                showCourseMessage('Course not found', 'error');
+                return;
+            }
+            
+            // Set form values
+            document.getElementById('course-id').value = courseId;
+            document.getElementById('course-title').value = course.title;
+            document.getElementById('max-semesters').value = course.maxSemesters;
+            document.getElementById('unit-label').value = course.unitLabel || 'Unit';
+            
+            // Disable course ID field during edit
+            document.getElementById('course-id').disabled = true;
+            
+            // Change button text and function
+            const submitBtn = document.getElementById('course-submit-btn');
+            submitBtn.textContent = 'Update Course';
+            submitBtn.onclick = function() { updateCourse(courseId); };
+            
+            // Show cancel button
+            document.getElementById('cancel-course-edit-btn').style.display = 'inline-block';
+            
+            // Show message
+            showCourseMessage(`Editing course "${course.title}"`, 'info');
+            
+            // Scroll to form
+            document.querySelector('.course-management-panel .admin-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Update a course
+        function updateCourse(courseId) {
+            const courseTitle = document.getElementById('course-title').value.trim();
+            const maxSemesters = document.getElementById('max-semesters').value;
+            const unitLabel = document.getElementById('unit-label').value.trim();
+            
+            // Validate inputs
+            if (!courseTitle || !maxSemesters) {
+                showCourseMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // In a real application, this would update data on the server
+            showCourseMessage(`Course "${courseTitle}" updated successfully`, 'success');
+            
+            // Reset form and button
+            resetCourseForm();
+            
+            // Refresh the display
+            displayCurrentCourses();
+        }
+
+        // Delete a course
+        function deleteCourse(courseId) {
+            const courses = getCourseConfig();
+            const course = courses[courseId];
+            
+            if (!course) {
+                showCourseMessage('Course not found', 'error');
+                return;
+            }
+            
+            // In a real application, this would delete data from the server
+            showCourseMessage(`Course "${course.title}" deleted successfully`, 'success');
+            
+            // Refresh the display
+            displayCurrentCourses();
+        }
+
+        // Cancel course edit
+        function cancelCourseEdit() {
+            resetCourseForm();
+            showCourseMessage('Editing cancelled', 'info');
+        }
+
+        // Reset course form
+        function resetCourseForm() {
+            document.getElementById('course-id').value = '';
+            document.getElementById('course-title').value = '';
+            document.getElementById('max-semesters').value = '4';
+            document.getElementById('unit-label').value = 'Unit';
+            document.getElementById('course-id').disabled = false;
+            
+            const submitBtn = document.getElementById('course-submit-btn');
+            submitBtn.textContent = 'Add Course';
+            submitBtn.onclick = addCourse;
+            
+            document.getElementById('cancel-course-edit-btn').style.display = 'none';
+        }
+
+        // Show course message
+        function showCourseMessage(message, type) {
+            const messageElement = document.getElementById('course-message');
+            messageElement.textContent = message;
+            messageElement.className = `admin-message ${type}`;
+            
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+                messageElement.textContent = '';
+                messageElement.className = 'admin-message';
+            }, 3000);
+        }
     </script>
 
     <style>
@@ -1242,6 +1513,37 @@
             color: #0c5460;
             border: 1px solid #bee5eb;
             display: block;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .tab-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .course-management-panel {
+            margin-top: 20px;
+        }
+        
+        .course-details {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </body>

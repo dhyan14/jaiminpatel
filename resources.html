@@ -620,8 +620,8 @@
             // Refresh the display
             displayCurrentResources();
             
-            // After adding the resource and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function deleteResource(course, semester, unit) {
@@ -661,8 +661,8 @@
             // Refresh the display
             displayCurrentResources();
             
-            // After deleting the resource and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function showAdminMessage(message, type) {
@@ -757,8 +757,8 @@
             // Refresh the display
             displayCurrentResources();
             
-            // After updating the resource and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function cancelEdit() {
@@ -956,8 +956,8 @@
             // Refresh the display
             displayCurrentCourses();
             
-            // After adding the course and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function editCourse(courseId) {
@@ -1025,8 +1025,8 @@
             // Refresh the display
             displayCurrentCourses();
             
-            // After updating the course and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function deleteCourse(courseId) {
@@ -1055,8 +1055,8 @@
             // Refresh the display
             displayCurrentCourses();
             
-            // After deleting the course and refreshing the display
-            initializeCoursesSection();
+            // Update the main page
+            updateMainPage();
         }
 
         function cancelCourseEdit() {
@@ -1142,7 +1142,16 @@
             sessionStorage.setItem('resourceData', JSON.stringify(data));
         }
 
-        // Update the initializeCoursesSection function for better layout
+        // Add this function to update the main page when courses change
+        function updateMainPage() {
+            // First, check if we're on the main page (not in a course view)
+            if (document.querySelector('.resources-content').style.display !== 'none') {
+                // We're on the main page, so update the courses grid
+                initializeCoursesSection();
+            }
+        }
+
+        // Add this function to initialize the courses section
         function initializeCoursesSection() {
             const courseConfig = getCourseConfig();
             const coursesSection = document.querySelector('.courses-grid');
@@ -1295,8 +1304,11 @@
             container.appendChild(notes);
         }
 
-        // Initialize the courses section when the page loads
-        initializeCoursesSection();
+        // Call initializeCoursesSection when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the courses section
+            initializeCoursesSection();
+        });
     </script>
 
     <style>

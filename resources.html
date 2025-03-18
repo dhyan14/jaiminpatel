@@ -315,7 +315,7 @@
             
             if (course === 'btech') {
                 if (semester === 1) {
-                    // B.Tech Semester 1 links
+                    // B.Tech Semester 1 links - convert from /view to /preview
                     switch(unit) {
                         case 1:
                             pdfLink = 'https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview';
@@ -336,6 +336,7 @@
             }
             
             if (pdfLink) {
+                // For units with PDF links, show a single note item with View PDF button
                 notesContent = `
                     <div class="note-item" style="width: 100%;">
                         <h3>Complete ${unitLabel} ${unit} Notes</h3>
@@ -344,21 +345,11 @@
                     </div>
                 `;
             } else {
+                // Default content for units without specific PDF links
                 notesContent = `
-                    <div class="note-item">
-                        <h3>Lecture 1</h3>
-                        <p>Introduction to the topic</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
-                    </div>
-                    <div class="note-item">
-                        <h3>Lecture 2</h3>
-                        <p>Core concepts and principles</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
-                    </div>
-                    <div class="note-item">
-                        <h3>Lecture 3</h3>
-                        <p>Advanced topics and applications</p>
-                        <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
+                    <div class="note-item" style="width: 100%;">
+                        <h3>No Notes Available</h3>
+                        <p>Notes for this unit are not available yet.</p>
                     </div>
                 `;
             }

@@ -330,8 +330,16 @@
                             pdfLink = 'https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview';
                             break;
                     }
-                } else if (semester === 2 && unit === 3) {
-                    pdfLink = 'https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview';
+                } else if (semester === 2) {
+                    // B.Tech Semester 2 links
+                    switch(unit) {
+                        case 1:
+                            pdfLink = 'https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview';
+                            break;
+                        case 3:
+                            pdfLink = 'https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview';
+                            break;
+                    }
                 }
             }
             

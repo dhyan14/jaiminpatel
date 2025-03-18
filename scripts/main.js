@@ -120,4 +120,44 @@ document.addEventListener('DOMContentLoaded', function() {
             courseModal.style.display = 'none';
         }
     });
+
+    // Initialize course data in session storage if not exists
+    if (!sessionStorage.getItem('courseData')) {
+        const initialCourses = {
+            'btech': { title: 'B.Tech', maxSemesters: 4, unitLabel: 'Unit' },
+            'mca': { title: 'MCA', maxSemesters: 1, unitLabel: 'Module' },
+            'imca': { title: 'iMCA', maxSemesters: 4, unitLabel: 'Unit' },
+            'bca': { title: 'BCA', maxSemesters: 3, unitLabel: 'Unit' }
+        };
+        sessionStorage.setItem('courseData', JSON.stringify(initialCourses));
+    }
+
+    // Initialize resource data in session storage if not exists
+    if (!sessionStorage.getItem('resourceData')) {
+        const initialResources = {
+            "btech": {
+                "1": {
+                    "1": "https://drive.google.com/file/d/11iSgkma5b018OCZbPDuHO3k9DvwDAzb-/preview",
+                    "2": "https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview",
+                    "3": "https://drive.google.com/file/d/10-0644Wju4tSzKAvK7l_pZtgmmnlux0q/preview",
+                    "4": "https://drive.google.com/file/d/11lMrU26YRm-Zq3NJbFLZ2xIBHP3C9trS/preview"
+                },
+                "2": {
+                    "1": "https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview",
+                    "2": "https://drive.google.com/file/d/1tKdIYTDpLX3S-S8V2z68RhyhOEYS4Yfv/preview",
+                    "3": "https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview"
+                }
+            },
+            "mca": {
+                "1": {
+                    "1": "https://drive.google.com/file/d/1YWZpDdD3NjZosWSvnBumaiWPhde870T2/preview",
+                    "2": "https://drive.google.com/file/d/1VZCrle_06AG_XUcRFoMSFZ23bTY5fJxr/preview",
+                    "3": "https://drive.google.com/file/d/1X1eZ06AzkL_NdtVZUy8TB5C09DUeAxyp/preview",
+                    "4": "https://drive.google.com/file/d/1W_VJwZozU3MkEeADeEGIhb9lfylYT7zm/preview",
+                    "5": "https://drive.google.com/file/d/1ZeNfV9_-1-p0YfWS18nmXcpIPKzfeKkg/preview"
+                }
+            }
+        };
+        sessionStorage.setItem('resourceData', JSON.stringify(initialResources));
+    }
 }); 

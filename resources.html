@@ -304,12 +304,19 @@
             // Determine the label based on course
             const unitLabel = course === 'mca' ? 'Module' : 'Unit';
             
-            // Create and show the lecture notes container
-            let notesContainer = document.createElement('div');
-            notesContainer.className = 'notes-display';
-            notesContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - ${unitLabel} ${unit} Notes</h2>
-                <div class="notes-grid">
+            // Create notes content based on course, semester and unit
+            let notesContent = '';
+            
+            if (course === 'btech' && semester === 2 && unit === 3) {
+                notesContent = `
+                    <div class="note-item">
+                        <h3>Complete Unit Notes</h3>
+                        <p>Comprehensive notes for Unit 3</p>
+                        <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Notes</button>
+                    </div>
+                `;
+            } else {
+                notesContent = `
                     <div class="note-item">
                         <h3>Lecture 1</h3>
                         <p>Introduction to the topic</p>
@@ -325,6 +332,16 @@
                         <p>Advanced topics and applications</p>
                         <button class="view-btn" onclick="window.open('#', '_blank')">View Notes</button>
                     </div>
+                `;
+            }
+            
+            // Create and show the lecture notes container
+            let notesContainer = document.createElement('div');
+            notesContainer.className = 'notes-display';
+            notesContainer.innerHTML = `
+                <h2>${getCourseTitle(course)} - Semester ${semester} - ${unitLabel} ${unit} Notes</h2>
+                <div class="notes-grid">
+                    ${notesContent}
                 </div>
             `;
             document.querySelector('.courses-container').appendChild(notesContainer);

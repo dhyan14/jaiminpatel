@@ -1292,7 +1292,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="assignment-file">Upload Solution (PDF):</label>
-                                <input type="file" id="assignment-file" accept=".pdf">
+                                <input type="file" id="assignment-file" accept=".pdf" onchange="showUploadedPdfPreview()">
                             </div>
                             <div class="form-group">
                                 <label for="comments">Comments (Optional):</label>
@@ -1328,6 +1328,48 @@
             document.getElementById('student-id').value = '';
             document.getElementById('assignment-file').value = '';
             document.getElementById('comments').value = '';
+            
+            // Hide the preview if it exists
+            if (document.getElementById('pdf-preview-container')) {
+                document.getElementById('pdf-preview-container').style.display = 'none';
+            }
+        }
+
+        // Add this function to show a preview of the uploaded PDF
+        function showUploadedPdfPreview() {
+            const file = document.getElementById('assignment-file').files[0];
+            if (!file) return;
+            
+            // Check if it's a PDF
+            if (file.type !== 'application/pdf') {
+                alert("Please upload a PDF file.");
+                document.getElementById('assignment-file').value = '';
+                return;
+            }
+            
+            // Remove existing preview if any
+            if (document.getElementById('pdf-preview-container')) {
+                document.getElementById('pdf-preview-container').remove();
+            }
+            
+            // Create a URL for the file
+            const fileURL = URL.createObjectURL(file);
+            
+            // Create preview container
+            const previewContainer = document.createElement('div');
+            previewContainer.id = 'pdf-preview-container';
+            previewContainer.className = 'pdf-preview-container';
+            previewContainer.innerHTML = `
+                <h4>Uploaded File Preview</h4>
+                <p class="file-info">${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
+                <div class="pdf-preview">
+                    <iframe src="${fileURL}" width="100%" height="300"></iframe>
+                </div>
+            `;
+            
+            // Add the preview after the file input
+            const fileInput = document.getElementById('assignment-file');
+            fileInput.parentNode.appendChild(previewContainer);
         }
     </script>
 
@@ -1985,6 +2027,37 @@
             .assignment-actions {
                 flex: 1;
             }
+        }
+
+        .pdf-preview-container {
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+
+        .pdf-preview-container h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .file-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .pdf-preview {
+            border: 1px solid #ddd;
+            background-color: white;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .pdf-preview iframe {
+            border: none;
         }
     </style>
 </body>

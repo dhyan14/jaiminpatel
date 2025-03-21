@@ -1248,7 +1248,7 @@
             // Add the expert lectures card to the courses section
             coursesSection.appendChild(expertLecturesCard);
             
-            // Add some example resources for other categories
+            // Add example resources for other categories
             addExampleResources(coursesSection);
         }
 
@@ -1290,6 +1290,24 @@
                 </div>
             `;
             
+            // Assignment 2.2
+            const assignment2 = document.createElement('div');
+            assignment2.className = 'resource-item';
+            assignment2.setAttribute('data-category', 'assignments');
+            
+            assignment2.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="resource-details">
+                    <h3>Assignment 2.2: Advanced Calculus</h3>
+                    <p>Comprehensive assignment covering integration techniques, series, and multivariable calculus.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> June 2024</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview', '_blank')">View Document</button>
+                </div>
+            `;
+            
             // Notes
             const notes = document.createElement('div');
             notes.className = 'resource-item';
@@ -1311,6 +1329,7 @@
             // Add the resources to the container
             container.appendChild(problemSet);
             container.appendChild(assignment);
+            container.appendChild(assignment2);
             container.appendChild(notes);
         }
 

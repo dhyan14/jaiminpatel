@@ -141,15 +141,20 @@
         }
         
         function backToResources() {
-            // Remove courses container
-            const coursesContainer = document.querySelector('.courses-container');
-            if (coursesContainer) {
-                coursesContainer.remove();
-            }
-            
-            // Show the resources content section and upload section again
+            // Show the resources content section again
             document.querySelector('.resources-content').style.display = 'block';
             document.querySelector('.upload-section').style.display = 'block';
+            
+            // Remove any existing courses container
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
+            
+            // Reset any active filters
+            const allResourcesBtn = document.querySelector('.category-btn[data-category="all"]');
+            if (allResourcesBtn) {
+                allResourcesBtn.click();
+            }
         }
         
         function showSemesterUnits(semester, course) {
@@ -2406,6 +2411,77 @@
 
         .drive-status i {
             margin-right: 5px;
+        }
+
+        .alternative-submission {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alt-submission-note {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .alt-submission-note i {
+            margin-right: 5px;
+        }
+
+        .email-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .email-link:hover {
+            background-color: #0069d9;
+            text-decoration: none;
+            color: white;
+        }
+
+        .simulate-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .simulate-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .api-status-message {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4285F4;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .api-status-message i {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .api-status-message .fa-check-circle {
+            color: #4CAF50;
+        }
+
+        .api-status-message .fa-exclamation-triangle {
+            color: #f44336;
+        }
+
+        .api-status-message .fa-info-circle {
+            color: #4285F4;
         }
     </style>
 </body>

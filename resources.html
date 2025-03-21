@@ -1327,6 +1327,7 @@
             }
         }
         
+        // Update the submitAssignment function to use the Vercel API endpoint
         function submitAssignment() {
             const name = document.getElementById('student-name').value;
             const id = document.getElementById('student-id').value;
@@ -1351,54 +1352,50 @@
             formData.append('id', id);
             formData.append('comments', comments);
             
-            // Use a serverless function to handle the upload with the service account
-            // For this example, we'll use a simulated upload since client-side code
-            // cannot directly use the service account credentials
-            simulateServiceAccountUpload(name, id, file, comments, submitBtn);
-        }
-
-        // Function to simulate service account upload
-        // In a production environment, this would call a server-side endpoint
-        function simulateServiceAccountUpload(name, id, file, comments, submitBtn) {
-            console.log("Simulating service account upload to Google Drive...");
-            
-            // In a real implementation, you would:
-            // 1. Send the file to a server-side endpoint
-            // 2. The server would use the service account credentials to upload to Drive
-            // 3. Return the file ID and link
-            
-            // For now, we'll simulate a successful upload
-            setTimeout(() => {
-                console.log("Upload simulation complete");
-                
-                // Create a submission record display
-                const submissionRecord = document.createElement('div');
-                submissionRecord.className = 'submission-record';
-                submissionRecord.innerHTML = `
-                    <h3>Assignment Submitted Successfully</h3>
-                    <div class="submission-details">
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Student ID:</strong> ${id}</p>
-                        <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-                        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
-                        ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
-                        <p class="drive-status"><i class="fab fa-google-drive"></i> Uploaded to Google Drive</p>
-                        <div class="service-account-note">
-                            <p><i class="fas fa-info-circle"></i> Your assignment has been uploaded using a service account.</p>
-                            <p>File ID: SIMULATED-FILE-ID-${Math.random().toString(36).substring(2, 10)}</p>
+            // Send the file to the Vercel serverless function
+            fetch('https://your-vercel-app.vercel.app/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Create a submission record display
+                    const submissionRecord = document.createElement('div');
+                    submissionRecord.className = 'submission-record';
+                    submissionRecord.innerHTML = `
+                        <h3>Assignment Submitted Successfully</h3>
+                        <div class="submission-details">
+                            <p><strong>Name:</strong> ${name}</p>
+                            <p><strong>Student ID:</strong> ${id}</p>
+                            <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
+                            <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
+                            ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
+                            <p class="drive-status">
+                                <i class="fab fa-google-drive"></i> Saved to Google Drive 
+                                <a href="${data.fileUrl}" target="_blank" class="view-drive-link">View in Drive</a>
+                            </p>
                         </div>
-                    </div>
-                `;
-                
-                // Replace the submission form with the record
-                const submissionForm = document.querySelector('.submission-form');
-                submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
-                
-                // Remove the Google API status if it exists
-                const statusDiv = document.getElementById('google-api-status');
-                if (statusDiv) statusDiv.remove();
-                
-            }, 2000);
+                    `;
+                    
+                    // Replace the submission form with the record
+                    const submissionForm = document.querySelector('.submission-form');
+                    submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Failed to upload file: ${error.message}`);
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
         }
 
         // Replace the Google Drive integration code with service account implementation
@@ -2510,6 +2507,21 @@
         }
 
         .email-instructions i {
+            margin-right: 5px;
+        }
+
+        // Add CSS for service account note
+        .service-account-note {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #e8f4fd;
+            border-radius: 5px;
+            border-left: 4px solid #4285F4;
+            font-size: 0.9em;
+            color: #0d47a1;
+        }
+
+        .service-account-note i {
             margin-right: 5px;
         }
     </style>

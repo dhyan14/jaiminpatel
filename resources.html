@@ -1481,12 +1481,35 @@
             }
         }
 
-        // Function to show fallback upload option
+        // Function to show fallback upload option with better error handling
         function showFallbackUploadOption(statusDiv, error) {
+            console.error("Detailed Google Drive error:", error);
+            
+            // Extract a more useful error message
+            let errorMessage = "Could not connect to Google Drive";
+            if (error) {
+                if (typeof error === 'string') {
+                    errorMessage += ": " + error;
+                } else if (error.details) {
+                    errorMessage += ": " + error.details;
+                } else if (error.message) {
+                    errorMessage += ": " + error.message;
+                } else if (error.error) {
+                    errorMessage += ": " + (typeof error.error === 'string' ? error.error : JSON.stringify(error.error));
+                } else {
+                    try {
+                        errorMessage += ": " + JSON.stringify(error);
+                    } catch (e) {
+                        // If JSON stringify fails, just use a generic message
+                        errorMessage = "Could not connect to Google Drive. Please try again later.";
+                    }
+                }
+            }
+            
             statusDiv.innerHTML = `
                 <i class="fas fa-exclamation-triangle"></i> 
                 <div>
-                    <p>Could not connect to Google Drive: ${error.message || error}</p>
+                    <p>${errorMessage}</p>
                     <p>You can still submit your assignment using the alternative method below.</p>
                 </div>
             `;
@@ -1511,6 +1534,24 @@
                     simulateUpload();
                 };
             }
+
+            // Add this to the showFallbackUploadOption function
+            const debugBtn = document.createElement('button');
+            debugBtn.className = 'debug-btn';
+            debugBtn.innerHTML = 'Show Technical Details';
+            debugBtn.style.backgroundColor = '#f8f9fa';
+            debugBtn.style.color = '#333';
+            debugBtn.style.border = '1px solid #ddd';
+            debugBtn.style.padding = '5px 10px';
+            debugBtn.style.fontSize = '12px';
+            debugBtn.style.marginTop = '10px';
+            debugBtn.style.cursor = 'pointer';
+            debugBtn.onclick = function() {
+                alert("Technical error details:\n\n" + JSON.stringify(error, null, 2));
+            };
+
+            // Add the debug button after the status message
+            statusDiv.appendChild(debugBtn);
         }
 
         // Function to simulate upload

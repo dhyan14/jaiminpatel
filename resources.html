@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <header>
@@ -1307,6 +1308,17 @@
             `;
             
             document.querySelector('main').appendChild(assignmentContainer);
+            
+            // Initialize Google Drive API
+            if (typeof gapi !== 'undefined') {
+                initGoogleDriveAPI();
+            } else {
+                // Load the Google API script if not already loaded
+                const script = document.createElement('script');
+                script.src = 'https://apis.google.com/js/api.js';
+                script.onload = initGoogleDriveAPI;
+                document.head.appendChild(script);
+            }
         }
         
         function submitAssignment() {
@@ -1323,37 +1335,160 @@
             // Show loading state
             const submitBtn = document.querySelector('.submit-btn');
             const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading to Drive...';
             submitBtn.disabled = true;
             
-            // Simulate file upload to Google Drive with a delay
-            setTimeout(() => {
-                // In a real application, this would use the Google Drive API to upload the file
+            // Upload to Google Drive
+            uploadFileToDrive(file, name, id, comments, function(success, fileId, fileUrl) {
+                if (success) {
+                    // Create a submission record display
+                    const submissionRecord = document.createElement('div');
+                    submissionRecord.className = 'submission-record';
+                    submissionRecord.innerHTML = `
+                        <h3>Assignment Submitted Successfully</h3>
+                        <div class="submission-details">
+                            <p><strong>Name:</strong> ${name}</p>
+                            <p><strong>Student ID:</strong> ${id}</p>
+                            <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
+                            <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
+                            ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
+                            <p class="drive-status">
+                                <i class="fab fa-google-drive"></i> Saved to Google Drive 
+                                <a href="${fileUrl}" target="_blank" class="view-drive-link">View in Drive</a>
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Replace the submission form with the record
+                    const submissionForm = document.querySelector('.submission-form');
+                    submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
+                } else {
+                    // Show error message
+                    alert("Failed to upload file to Google Drive. Please try again.");
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+
+        // Function to handle Google Drive upload
+        function uploadFileToDrive(file, name, id, comments, callback) {
+            // Check if Google API is loaded
+            if (!gapi || !gapi.client) {
+                console.error("Google API not loaded");
+                callback(false);
+                return;
+            }
+            
+            // Create metadata for the file
+            const metadata = {
+                'name': `Assignment_${id}_${name}_${new Date().toISOString().split('T')[0]}.pdf`, // File name in Drive
+                'mimeType': 'application/pdf',
+                'description': `Assignment submitted by ${name} (${id}). Comments: ${comments || 'None'}`
+            };
+            
+            // Create a folder if needed (you can specify a folder ID to upload to)
+            // You should create a folder in your Drive and get its ID from the URL
+            const folderId = '10MxT_pSnmdHc12z8SFQWUnJpC-pZQJPM'; // Your assignments folder ID
+            if (folderId) {
+                metadata.parents = [folderId];
+            }
+            
+            // Read the file as array buffer
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileContent = e.target.result;
                 
-                // Create a submission record display
-                const submissionRecord = document.createElement('div');
-                submissionRecord.className = 'submission-record';
-                submissionRecord.innerHTML = `
-                    <h3>Assignment Submitted Successfully</h3>
-                    <div class="submission-details">
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Student ID:</strong> ${id}</p>
-                        <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-                        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
-                        ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
-                        <p class="drive-status"><i class="fab fa-google-drive"></i> Saved to Google Drive</p>
-                    </div>
-                `;
+                // Upload the file to Drive
+                gapi.client.drive.files.create({
+                    resource: metadata,
+                    media: {
+                        mimeType: 'application/pdf',
+                        body: fileContent
+                    },
+                    fields: 'id,webViewLink'
+                }).then(function(response) {
+                    console.log("File uploaded successfully:", response);
+                    const fileId = response.result.id;
+                    const fileUrl = response.result.webViewLink;
+                    
+                    // Set file permissions (optional - make it viewable by anyone with the link)
+                    gapi.client.drive.permissions.create({
+                        fileId: fileId,
+                        resource: {
+                            role: 'reader',
+                            type: 'anyone'
+                        }
+                    }).then(function() {
+                        callback(true, fileId, fileUrl);
+                    });
+                }).catch(function(error) {
+                    console.error("Error uploading file:", error);
+                    callback(false);
+                });
+            };
+            
+            reader.onerror = function() {
+                console.error("Error reading file");
+                callback(false);
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Function to initialize Google API with refresh token
+        function initGoogleDriveAPI() {
+            gapi.load('client:auth2', function() {
+                gapi.client.init({
+                    // Using your provided credentials
+                    clientId: '530516674684-hco6pk5okr298eaulh3uobv67vfsnogh.apps.googleusercontent.com',
+                    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+                    scope: 'https://www.googleapis.com/auth/drive.file',
+                    redirect_uri: 'https://developers.google.com/oauthplayground'
+                }).then(function() {
+                    // Check if we have a stored refresh token
+                    const refreshToken = "1//04YR60ELV6FroCgYIARAAGAQSNwF-L9Ire0i226kveL_qZY2hyulRreRcRCxrgC79Jag7UvTqBV_cYQqJzjqZfV9v81wLq4bO1sc";
+                    
+                    if (refreshToken) {
+                        console.log("Using stored refresh token for authentication");
+                        // Use the refresh token to get a new access token
+                        // This would typically be done through a server-side endpoint
+                        // For client-side demo, we'll use the standard OAuth flow
+                    }
+                    
+                    // Listen for sign-in state changes
+                    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+                    
+                    // Handle the initial sign-in state
+                    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                }).catch(function(error) {
+                    console.error("Error initializing Google API:", error);
+                });
+            });
+        }
+
+        function updateSigninStatus(isSignedIn) {
+            if (!isSignedIn) {
+                // User is not signed in, we need to sign them in
+                const authBtn = document.createElement('button');
+                authBtn.className = 'assignment-btn view-pdf';
+                authBtn.innerHTML = '<i class="fab fa-google"></i> Sign in to Google Drive';
+                authBtn.onclick = function() {
+                    gapi.auth2.getAuthInstance().signIn();
+                };
                 
-                // Replace the submission form with the record
+                // Add the auth button before the submission form if it exists
                 const submissionForm = document.querySelector('.submission-form');
-                submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
-                
-                // Reset button state (not needed anymore as we replaced the form)
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-                
-            }, 2000); // 2 second delay to simulate upload
+                if (submissionForm) {
+                    submissionForm.parentNode.insertBefore(authBtn, submissionForm);
+                }
+            } else {
+                // User is signed in, remove the auth button if it exists
+                const authBtn = document.querySelector('.assignment-btn.view-pdf[onclick*="signIn"]');
+                if (authBtn) {
+                    authBtn.remove();
+                }
+            }
         }
 
         // Add this function to show a preview of the uploaded PDF

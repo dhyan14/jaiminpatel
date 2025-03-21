@@ -1210,30 +1210,12 @@
             // Add the expert lectures card to the courses section
             coursesSection.appendChild(expertLecturesCard);
             
-            // Add example resources for other categories
-            addExampleResources(coursesSection);
+            // Add Assignment 2.2 to assignments section
+            addAssignment22(coursesSection);
         }
 
-        // Add example resources for other categories
-        function addExampleResources(container) {
-            // Problem Sets
-            const problemSet = document.createElement('div');
-            problemSet.className = 'resource-item';
-            problemSet.setAttribute('data-category', 'problems');
-            
-            problemSet.innerHTML = `
-                <div class="resource-icon"><i class="fas fa-tasks"></i></div>
-                <div class="resource-details">
-                    <h3>Linear Algebra Problem Set</h3>
-                    <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
-                    <div class="resource-meta">
-                        <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
-                        <span><i class="fas fa-file-pdf"></i> PDF</span>
-                    </div>
-                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
-                </div>
-            `;
-            
+        // Function to add Assignment 2.2
+        function addAssignment22(container) {
             // Assignment 2.2
             const assignment2 = document.createElement('div');
             assignment2.className = 'resource-item';
@@ -1252,28 +1234,8 @@
                 </div>
             `;
             
-            // Notes
-            const notes = document.createElement('div');
-            notes.className = 'resource-item';
-            notes.setAttribute('data-category', 'notes');
-            
-            notes.innerHTML = `
-                <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
-                <div class="resource-details">
-                    <h3>Complex Differentiation</h3>
-                    <p>Comprehensive notes on complex differentiation and complex analysis.</p>
-                    <div class="resource-meta">
-                        <span><i class="fas fa-calendar-alt"></i> 2024</span>
-                        <span><i class="fas fa-file-pdf"></i> PDF</span>
-                    </div>
-                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
-                </div>
-            `;
-            
-            // Add the resources to the container
-            container.appendChild(problemSet);
+            // Add the assignment to the container
             container.appendChild(assignment2);
-            container.appendChild(notes);
         }
 
         // Call initializeCoursesSection when the page loads

@@ -342,9 +342,17 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Category filter functionality
+            // Initialize the courses section with dynamic data
+            initializeCoursesSection();
+            
+            // Category filter functionality - moved after initialization
+            setTimeout(() => {
+                setupCategoryFilters();
+            }, 100);
+        });
+
+        function setupCategoryFilters() {
             const categoryBtns = document.querySelectorAll('.category-btn');
-            const resourceItems = document.querySelectorAll('.resource-item');
             
             categoryBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -353,6 +361,9 @@
                     // Toggle active class
                     categoryBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    
+                    // Get all resource items (after they've been added to the DOM)
+                    const resourceItems = document.querySelectorAll('.resource-item');
                     
                     // Filter resources
                     resourceItems.forEach(item => {
@@ -364,10 +375,7 @@
                     });
                 });
             });
-
-            // Initialize the courses section with dynamic data
-            initializeCoursesSection();
-        });
+        }
 
         function checkLogin(username, password) {
             // In a real application, this would validate against a database
@@ -1237,12 +1245,6 @@
             // Add the assignment to the container
             container.appendChild(assignment2);
         }
-
-        // Call initializeCoursesSection when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the courses section
-            initializeCoursesSection();
-        });
     </script>
 
     <style>

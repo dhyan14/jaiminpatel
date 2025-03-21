@@ -209,16 +209,6 @@
         }
         
         function showLectureNotes(semester, unit, course) {
-            // Remove previous notes display if exists
-            if (document.querySelector('.notes-display')) {
-                document.querySelector('.notes-display').remove();
-            }
-            
-            // Remove any existing PDF modal
-            if (document.getElementById('pdfModal')) {
-                document.getElementById('pdfModal').remove();
-            }
-            
             // Get course config from session storage
             const courseConfig = getCourseConfig();
             const unitLabel = courseConfig[course] && courseConfig[course].unitLabel ? 
@@ -237,41 +227,13 @@
                 courseData[course][semester][unit]) {
                 pdfLink = courseData[course][semester][unit];
                 console.log(`Found PDF link: ${pdfLink}`);
+                // Directly show the PDF viewer
+                createAndShowPdfViewer(pdfLink);
             } else {
                 console.log("No PDF link found for this unit");
+                // Show a message that no content is available
+                alert("No content available for this unit yet.");
             }
-            
-            // Create notes content based on whether PDF link exists
-            let notesContent = '';
-            if (pdfLink) {
-                // For units with PDF links, show a single note item with View PDF button
-                notesContent = `
-                    <div class="note-item" style="width: 100%;">
-                        <h3>Complete ${unitLabel} ${unit} Notes</h3>
-                        <p>Comprehensive notes for ${unitLabel} ${unit}</p>
-                        <button class="view-btn" onclick="createAndShowPdfViewer('${pdfLink}')">View PDF</button>
-                    </div>
-                `;
-            } else {
-                // Default content for units without specific PDF links
-                notesContent = `
-                    <div class="note-item" style="width: 100%;">
-                        <h3>No Notes Available</h3>
-                        <p>Notes for this unit are not available yet.</p>
-                    </div>
-                `;
-            }
-            
-            // Create and show the lecture notes container
-            let notesContainer = document.createElement('div');
-            notesContainer.className = 'notes-display';
-            notesContainer.innerHTML = `
-                <h2>${getCourseTitle(course)} - Semester ${semester} - ${unitLabel} ${unit} Notes</h2>
-                <div class="notes-grid">
-                    ${notesContent}
-                </div>
-            `;
-            document.querySelector('.courses-container').appendChild(notesContainer);
         }
         
         function createAndShowPdfViewer(pdfLink) {

@@ -1531,13 +1531,18 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             submitBtn.disabled = true;
             
-            // Simulate upload with a delay
+            // Create a mailto link with assignment details
+            const subject = encodeURIComponent(`Assignment 2.2 Submission - ${id}`);
+            const body = encodeURIComponent(`Name: ${name}\nStudent ID: ${id}\nSubmission Time: ${new Date().toLocaleString()}\n\nComments: ${comments || 'None'}\n\nNOTE: Please attach your assignment PDF to this email.`);
+            const mailtoLink = `mailto:submissions@jaiminpatel.com?subject=${subject}&body=${body}`;
+            
+            // Simulate processing with a delay
             setTimeout(() => {
                 // Create a submission record display
                 const submissionRecord = document.createElement('div');
                 submissionRecord.className = 'submission-record';
                 submissionRecord.innerHTML = `
-                    <h3>Assignment Submitted Successfully</h3>
+                    <h3>Assignment Recorded</h3>
                     <div class="submission-details">
                         <p><strong>Name:</strong> ${name}</p>
                         <p><strong>Student ID:</strong> ${id}</p>
@@ -1546,12 +1551,18 @@
                         ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
                         <div class="alternative-submission">
                             <p class="alt-submission-note">
-                                <i class="fas fa-info-circle"></i> Your assignment has been recorded. 
-                                Since Google Drive integration is unavailable, please also email your assignment to:
+                                <i class="fas fa-exclamation-circle"></i> <strong>Important:</strong> Your assignment details have been recorded, but the file has NOT been uploaded to Google Drive.
                             </p>
-                            <a href="mailto:submissions@jaiminpatel.com?subject=Assignment 2.2 Submission - ${id}" class="email-link">
-                                submissions@jaiminpatel.com
-                            </a>
+                            <p>Please complete your submission by sending your assignment file via email:</p>
+                            <div class="email-options">
+                                <a href="${mailtoLink}" class="email-link">
+                                    <i class="fas fa-envelope"></i> Open Email Client
+                                </a>
+                                <p class="manual-email">Or send manually to: <strong>submissions@jaiminpatel.com</strong></p>
+                            </div>
+                            <p class="email-instructions">
+                                <i class="fas fa-info-circle"></i> Remember to attach your assignment PDF file to the email.
+                            </p>
                         </div>
                     </div>
                 `;
@@ -1570,7 +1581,7 @@
                 const simulateBtn = document.querySelector('.assignment-btn.simulate-btn');
                 if (simulateBtn) simulateBtn.remove();
                 
-            }, 2000);
+            }, 1500);
         }
 
         // Simplify the uploadFileToDrive function for more reliable uploads

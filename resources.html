@@ -1234,24 +1234,6 @@
                 </div>
             `;
             
-            // Assignments
-            const assignment = document.createElement('div');
-            assignment.className = 'resource-item';
-            assignment.setAttribute('data-category', 'assignments');
-            
-            assignment.innerHTML = `
-                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
-                <div class="resource-details">
-                    <h3>Differential Equations Assignment</h3>
-                    <p>Assignment problems on solving various types of differential equations.</p>
-                    <div class="resource-meta">
-                        <span><i class="fas fa-calendar-alt"></i> May 2024</span>
-                        <span><i class="fas fa-file-pdf"></i> PDF</span>
-                    </div>
-                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview', '_blank')">View Document</button>
-                </div>
-            `;
-            
             // Assignment 2.2
             const assignment2 = document.createElement('div');
             assignment2.className = 'resource-item';
@@ -1290,7 +1272,6 @@
             
             // Add the resources to the container
             container.appendChild(problemSet);
-            container.appendChild(assignment);
             container.appendChild(assignment2);
             container.appendChild(notes);
         }

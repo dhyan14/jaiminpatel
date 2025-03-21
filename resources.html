@@ -1313,26 +1313,47 @@
             const name = document.getElementById('student-name').value;
             const id = document.getElementById('student-id').value;
             const file = document.getElementById('assignment-file').files[0];
+            const comments = document.getElementById('comments').value;
             
             if (!name || !id || !file) {
                 alert("Please fill in all required fields and upload your assignment.");
                 return;
             }
             
-            // In a real application, this would upload the file to a server
-            // For this demo, we'll just show a success message
-            alert(`Thank you, ${name}! Your assignment has been submitted successfully.`);
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            submitBtn.disabled = true;
             
-            // Clear the form
-            document.getElementById('student-name').value = '';
-            document.getElementById('student-id').value = '';
-            document.getElementById('assignment-file').value = '';
-            document.getElementById('comments').value = '';
-            
-            // Hide the preview if it exists
-            if (document.getElementById('pdf-preview-container')) {
-                document.getElementById('pdf-preview-container').style.display = 'none';
-            }
+            // Simulate file upload to Google Drive with a delay
+            setTimeout(() => {
+                // In a real application, this would use the Google Drive API to upload the file
+                
+                // Create a submission record display
+                const submissionRecord = document.createElement('div');
+                submissionRecord.className = 'submission-record';
+                submissionRecord.innerHTML = `
+                    <h3>Assignment Submitted Successfully</h3>
+                    <div class="submission-details">
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Student ID:</strong> ${id}</p>
+                        <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
+                        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
+                        ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
+                        <p class="drive-status"><i class="fab fa-google-drive"></i> Saved to Google Drive</p>
+                    </div>
+                `;
+                
+                // Replace the submission form with the record
+                const submissionForm = document.querySelector('.submission-form');
+                submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
+                
+                // Reset button state (not needed anymore as we replaced the form)
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                
+            }, 2000); // 2 second delay to simulate upload
         }
 
         // Add this function to show a preview of the uploaded PDF
@@ -2058,6 +2079,40 @@
 
         .pdf-preview iframe {
             border: none;
+        }
+
+        .submission-record {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .submission-record h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            color: #155724;
+        }
+
+        .submission-details {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #d4edda;
+        }
+
+        .drive-status {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: #4285F4;
+            font-weight: bold;
+        }
+
+        .drive-status i {
+            margin-right: 5px;
         }
     </style>
 </body>

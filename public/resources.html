@@ -3,11 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.gstatic.com https://www.google.com https://accounts.google.com https://polyfill.io https://cdn.jsdelivr.net; connect-src 'self' https://*.googleapis.com https://accounts.google.com; frame-src 'self' https://accounts.google.com https://drive.google.com https://*.googleusercontent.com https://content.googleapis.com blob:; img-src 'self' data: https://*.googleusercontent.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.gstatic.com; font-src 'self' data: https://cdnjs.cloudflare.com https://*.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.gstatic.com https://www.google.com https://accounts.google.com https://polyfill.io https://cdn.jsdelivr.net; connect-src 'self' https://*.googleapis.com https://accounts.google.com https://*.vercel.app; frame-src 'self' https://accounts.google.com https://drive.google.com https://*.googleusercontent.com https://content.googleapis.com blob:; img-src 'self' data: https://*.googleusercontent.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.gstatic.com; font-src 'self' data: https://cdnjs.cloudflare.com https://*.gstatic.com https://fonts.gstatic.com;">
     <title>Jaimin Patel - Resources</title>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    
+    <!-- Polyfill with fallback -->
+    <script>
+      // Check if polyfill.io is accessible
+      const polyfillScript = document.createElement('script');
+      polyfillScript.src = 'https://polyfill.io/v3/polyfill.min.js?features=es6';
+      polyfillScript.onerror = function() {
+        console.log('Polyfill.io not available, loading fallback...');
+        // Load a fallback if polyfill.io is not available
+        const fallbackScript = document.createElement('script');
+        fallbackScript.src = 'https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js';
+        document.head.appendChild(fallbackScript);
+      };
+      document.head.appendChild(polyfillScript);
+    </script>
+    
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -18,8 +33,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="resources.html" class="active">Resources</a></li>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/resources.html" class="active">Resources</a></li>
             </ul>
         </nav>
     </header>
@@ -58,6 +73,34 @@
                 <a href="mailto:your.email@example.com" class="contact-btn"><i class="fas fa-envelope"></i> Contact Me</a>
             </div>
         </section>
+
+        <!-- Add this section to your resources.html file -->
+        <section class="assignment-section">
+            <div class="container">
+                <h2>Assignment Submission</h2>
+                <div class="submission-form">
+                    <div class="form-group">
+                        <label for="student-name">Full Name:</label>
+                        <input type="text" id="student-name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-id">Student ID:</label>
+                        <input type="text" id="student-id" placeholder="Enter your student ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignment-file">Assignment File (PDF):</label>
+                        <input type="file" id="assignment-file" accept=".pdf" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments">Comments (Optional):</label>
+                        <textarea id="comments" placeholder="Any additional comments about your submission"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="submitAssignment()">
+                        <i class="fas fa-cloud-upload-alt"></i> Submit Assignment
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -73,7 +116,7 @@
         </div>
     </footer>
 
-    <script src="scripts/main.js"></script>
+    <script src="/scripts/main.js"></script>
     <script>
         // Initialize course data in session storage if not exists
         if (!sessionStorage.getItem('courseData')) {
@@ -1327,7 +1370,7 @@
             }
         }
         
-        // Update the submitAssignment function to use the Vercel API endpoint
+        // Add this function to your resources.html file
         function submitAssignment() {
             const name = document.getElementById('student-name').value;
             const id = document.getElementById('student-id').value;
@@ -1353,7 +1396,7 @@
             formData.append('comments', comments);
             
             // Send the file to the Vercel serverless function
-            fetch('https://your-vercel-app.vercel.app/api/upload', {
+            fetch('https://jaiminpatel.vercel.app/api/upload', {
                 method: 'POST',
                 body: formData
             })
@@ -2523,6 +2566,91 @@
 
         .service-account-note i {
             margin-right: 5px;
+        }
+
+        /* Add this CSS for the submission form */
+        .assignment-section {
+            padding: 40px 0;
+            background-color: #f5f5f5;
+        }
+        
+        .submission-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #3e8e41;
+        }
+        
+        .submission-record {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submission-details {
+            margin-top: 15px;
+        }
+        
+        .submission-details p {
+            margin-bottom: 8px;
+        }
+        
+        .drive-status {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            color: #2e7d32;
+        }
+        
+        .view-drive-link {
+            margin-left: 10px;
+            color: #1976d2;
+            text-decoration: underline;
         }
     </style>
 </body>

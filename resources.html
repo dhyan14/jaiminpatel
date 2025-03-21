@@ -1238,12 +1238,96 @@
                         <span><i class="fas fa-calendar-alt"></i> June 2024</span>
                         <span><i class="fas fa-file-pdf"></i> PDF</span>
                     </div>
-                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview', '_blank')">View Document</button>
+                    <button class="view-btn" onclick="showAssignmentDetails('Assignment 2.2: Advanced Calculus', 'https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview')">View Assignment</button>
                 </div>
             `;
             
             // Add the assignment to the container
             container.appendChild(assignment2);
+        }
+        
+        function showAssignmentDetails(title, pdfLink) {
+            // Hide the resources content section
+            document.querySelector('.resources-content').style.display = 'none';
+            document.querySelector('.upload-section').style.display = 'none';
+            
+            // Remove any existing courses container
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
+            }
+            
+            // Create assignment details container
+            let assignmentContainer = document.createElement('div');
+            assignmentContainer.className = 'courses-container';
+            assignmentContainer.innerHTML = `
+                <div class="back-button">
+                    <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
+                </div>
+                <h2>${title}</h2>
+                <div class="assignment-details">
+                    <div class="assignment-info">
+                        <p><strong>Due Date:</strong> July 15, 2024</p>
+                        <p><strong>Points:</strong> 100</p>
+                        <p><strong>Submission Format:</strong> PDF document</p>
+                        <p class="assignment-description">
+                            Complete all problems in the assignment PDF. Show your work clearly for each step.
+                            Submit your solutions as a single PDF file using the submission form below.
+                        </p>
+                    </div>
+                    
+                    <div class="assignment-actions">
+                        <button class="assignment-btn view-pdf" onclick="window.open('${pdfLink}', '_blank')">
+                            <i class="fas fa-file-pdf"></i> Open PDF
+                        </button>
+                        
+                        <div class="submission-form">
+                            <h3>Submit Your Assignment</h3>
+                            <div class="form-group">
+                                <label for="student-name">Full Name:</label>
+                                <input type="text" id="student-name" placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="student-id">Student ID:</label>
+                                <input type="text" id="student-id" placeholder="Enter your student ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="assignment-file">Upload Solution (PDF):</label>
+                                <input type="file" id="assignment-file" accept=".pdf">
+                            </div>
+                            <div class="form-group">
+                                <label for="comments">Comments (Optional):</label>
+                                <textarea id="comments" rows="3" placeholder="Any comments for your instructor"></textarea>
+                            </div>
+                            <button class="assignment-btn submit-btn" onclick="submitAssignment()">
+                                <i class="fas fa-paper-plane"></i> Submit Assignment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.querySelector('main').appendChild(assignmentContainer);
+        }
+        
+        function submitAssignment() {
+            const name = document.getElementById('student-name').value;
+            const id = document.getElementById('student-id').value;
+            const file = document.getElementById('assignment-file').files[0];
+            
+            if (!name || !id || !file) {
+                alert("Please fill in all required fields and upload your assignment.");
+                return;
+            }
+            
+            // In a real application, this would upload the file to a server
+            // For this demo, we'll just show a success message
+            alert(`Thank you, ${name}! Your assignment has been submitted successfully.`);
+            
+            // Clear the form
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-id').value = '';
+            document.getElementById('assignment-file').value = '';
+            document.getElementById('comments').value = '';
         }
     </script>
 
@@ -1790,6 +1874,117 @@
 
         .units-grid button:not(.has-content):hover {
             background-color: #777;
+        }
+        
+        /* Assignment details styles */
+        .assignment-details {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .assignment-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .assignment-description {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .assignment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .assignment-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .view-pdf {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .view-pdf:hover {
+            background-color: #3e8e41;
+        }
+        
+        .submission-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submission-form h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .submission-form .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .submission-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .submission-form input[type="text"],
+        .submission-form textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .submission-form input[type="file"] {
+            padding: 8px 0;
+        }
+        
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #0069d9;
+        }
+        
+        @media (min-width: 768px) {
+            .assignment-details {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            
+            .assignment-info {
+                flex: 1;
+            }
+            
+            .assignment-actions {
+                flex: 1;
+            }
         }
     </style>
 </body>

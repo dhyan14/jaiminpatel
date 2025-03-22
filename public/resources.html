@@ -1263,10 +1263,10 @@
                     <h3>Assignment 2.2: Advanced Data Structures</h3>
                     <p>Implement and analyze the performance of various advanced data structures including AVL trees, 
                     Red-Black trees, and Hash Tables. Compare their efficiency for different operations.</p>
-                    <div class="resource-meta">
+                        <div class="resource-meta">
                         <span><i class="fas fa-calendar-alt"></i> Due: November 15, 2023</span>
                         <span><i class="fas fa-file-pdf"></i> PDF</span>
-                    </div>
+                        </div>
                     <div class="assignment-actions">
                         <button class="view-btn" onclick="window.open('assignments/assignment2.2.pdf', '_blank')">
                             <i class="fas fa-download"></i> Download Assignment
@@ -1298,9 +1298,9 @@
                         </form>
                         <div id="upload-message-2.2" class="upload-message"></div>
                     </div>
-                </div>
-            `;
-            
+                    </div>
+                `;
+                
             container.appendChild(assignmentCard);
             
             // Add other resource types (problem sets, etc.)
@@ -1333,14 +1333,14 @@
                     <!-- Assignment 2.2 Card -->
                     <div class="resource-item assignment-card">
                         <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
-                        <div class="resource-details">
+                <div class="resource-details">
                             <h3>Assignment 2.2: Advanced Data Structures</h3>
                             <p>Implement and analyze the performance of various advanced data structures including AVL trees, 
                             Red-Black trees, and Hash Tables. Compare their efficiency for different operations.</p>
-                            <div class="resource-meta">
+                    <div class="resource-meta">
                                 <span><i class="fas fa-calendar-alt"></i> Due: November 15, 2023</span>
                                 <span><i class="fas fa-file-pdf"></i> PDF</span>
-                            </div>
+                    </div>
                             <div class="assignment-actions">
                                 <button class="view-btn" onclick="window.open('assignments/assignment2.2.pdf', '_blank')">
                                     <i class="fas fa-download"></i> Download Assignment
@@ -1348,7 +1348,7 @@
                                 <button class="upload-toggle-btn" onclick="toggleUploadForm('assignment2.2')">
                                     <i class="fas fa-upload"></i> Submit Solution
                                 </button>
-                            </div>
+                </div>
                             
                             <!-- Assignment upload form (hidden by default) -->
                             <div id="upload-form-assignment2.2" class="assignment-upload-form" style="display: none;">
@@ -1512,40 +1512,25 @@
                 };
                 
                 try {
-                    // Check if we're in development or testing mode
-                    const isLocalDev = window.location.hostname === 'localhost' || 
-                                      window.location.hostname === '127.0.0.1';
+                    // Send to server
+                    const response = await fetch('/api/submissions/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(submission)
+                    });
                     
-                    if (isLocalDev) {
-                        // For local testing, store in sessionStorage
-                        console.log("Using sessionStorage for local development");
-                        const submissions = JSON.parse(sessionStorage.getItem('assignmentSubmissions') || '[]');
-                        submissions.push(submission);
-                        sessionStorage.setItem('assignmentSubmissions', JSON.stringify(submissions));
-                        
-                        // Show success message
-                        showUploadMessage(messageContainer, 'Assignment submitted successfully! (Local Storage)', 'success');
-                    } else {
-                        // Send to server
-                        const response = await fetch('/api/submissions/upload', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(submission)
-                        });
-                        
-                        if (!response.ok) {
-                            const errorData = await response.text();
-                            console.error('Server response:', errorData);
-                            throw new Error('Failed to upload assignment');
-                        }
-                        
-                        const result = await response.json();
-                        
-                        // Show success message
-                        showUploadMessage(messageContainer, 'Assignment submitted successfully!', 'success');
+                    if (!response.ok) {
+                        const errorData = await response.text();
+                        console.error('Server response:', errorData);
+                        throw new Error('Failed to upload assignment');
                     }
+                    
+                    const result = await response.json();
+                    
+                    // Show success message
+                    showUploadMessage(messageContainer, 'Assignment submitted successfully!', 'success');
                     
                     // Reset form
                     form.reset();
@@ -2682,4 +2667,4 @@
         }
     </style>
 </body>
-</html>
+</html> 

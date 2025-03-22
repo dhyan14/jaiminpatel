@@ -1521,9 +1521,12 @@
                     });
                     
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to upload');
+                        const errorData = await response.text();
+                        console.error('Server response:', errorData);
+                        throw new Error('Failed to upload assignment');
                     }
+                    
+                    const result = await response.json();
                     
                     // Show success message
                     showUploadMessage(messageContainer, 'Assignment submitted successfully!', 'success');
@@ -1543,6 +1546,27 @@
             
             // Read the file as data URL (base64)
             reader.readAsDataURL(file);
+        }
+
+        // Show upload message
+        function showUploadMessage(container, message, type) {
+            container.textContent = message;
+            container.className = `upload-message ${type}`;
+            container.style.display = 'block';
+            
+            // Clear the message after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    container.textContent = '';
+                    container.className = 'upload-message';
+                    container.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Generate unique ID for submissions
+        function generateUniqueId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
         }
 
         // Get submissions from MongoDB API
@@ -1715,8 +1739,9 @@
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to delete submission');
+                    const errorData = await response.text();
+                    console.error('Server response:', errorData);
+                    throw new Error('Failed to delete submission');
                 }
                 
                 // Refresh the submissions list
@@ -1729,6 +1754,14 @@
 
         // Add this function to show submissions in admin panel
         function showSubmissionsPanel() {
+            // Check if submissions panel already exists
+            if (document.querySelector('.submissions-panel')) {
+                // Just display it
+                document.querySelector('.submissions-panel').style.display = 'block';
+                displaySubmissions();
+                return;
+            }
+            
             // Create submissions panel
             let submissionsPanel = document.createElement('div');
             submissionsPanel.className = 'submissions-panel';
@@ -1745,38 +1778,44 @@
             // Display submissions
             displaySubmissions();
             
-            // Add tab for submissions
+            // Add tab for submissions if it doesn't exist
             addSubmissionsTab();
         }
 
-        // Show upload message
-        function showUploadMessage(container, message, type) {
-            container.textContent = message;
-            container.className = `upload-message ${type}`;
+        // Add submissions tab to admin panel
+        function addSubmissionsTab() {
+            const tabsContainer = document.querySelector('.admin-tabs');
+            if (!tabsContainer) return;
             
-            // Clear the message after 3 seconds
-            setTimeout(() => {
-                container.textContent = '';
-                container.className = 'upload-message';
-            }, 3000);
+            // Check if submissions tab already exists
+            if (document.querySelector('.tab-btn[data-tab="submissions"]')) {
+                return;
+            }
+            
+            // Create submissions tab
+            const submissionsTab = document.createElement('button');
+            submissionsTab.className = 'tab-btn';
+            submissionsTab.setAttribute('data-tab', 'submissions');
+            submissionsTab.innerHTML = '<i class="fas fa-clipboard-check"></i> Submissions';
+            submissionsTab.onclick = function() { switchAdminTab('submissions'); };
+            
+            tabsContainer.appendChild(submissionsTab);
         }
 
-        // Generate unique ID for submissions
-        function generateUniqueId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        // Add this to your showAdminPanel function
+        function showAdminPanel() {
+            // ... existing code ...
+            
+            // Add submissions panel
+            showSubmissionsPanel();
+            
+            // ... rest of the function ...
         }
 
-        // Add this style for loading messages
-        function addStyleForLoading() {
+        // Add these styles for modals
+        document.addEventListener('DOMContentLoaded', function() {
             const style = document.createElement('style');
             style.textContent = `
-                .upload-message.info {
-                    background-color: #d1ecf1;
-                    color: #0c5460;
-                    border: 1px solid #bee5eb;
-                    display: block;
-                }
-                
                 .modal {
                     display: none;
                     position: fixed;
@@ -1812,32 +1851,16 @@
                 .close-btn:hover {
                     color: black;
                 }
+                
+                .upload-message.info {
+                    background-color: #d1ecf1;
+                    color: #0c5460;
+                    border: 1px solid #bee5eb;
+                    display: block;
+                }
             `;
             document.head.appendChild(style);
-        }
-
-        // Call this when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            addStyleForLoading();
         });
-
-        // Add tab for submissions in admin panel
-        function addSubmissionsTab() {
-            // Check if tabs already exist
-            const tabsContainer = document.querySelector('.admin-tabs');
-            if (!tabsContainer) return;
-            
-            // Check if submissions tab already exists
-            if (tabsContainer.querySelector('.tab-btn:nth-child(3)')) return;
-            
-            // Add submissions tab
-            const submissionsTab = document.createElement('button');
-            submissionsTab.className = 'tab-btn';
-            submissionsTab.textContent = 'Submissions';
-            submissionsTab.onclick = function() { switchAdminTab('submissions'); };
-            
-            tabsContainer.appendChild(submissionsTab);
-        }
 
         // Add this function to handle category button clicks
         function initializeCategoryButtons() {

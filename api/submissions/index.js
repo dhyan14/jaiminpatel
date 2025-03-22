@@ -1,34 +1,48 @@
-import dbConnect from '../../lib/mongodb';
-import Submission from '../../models/Submission';
+import { google } from 'googleapis';
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Connect to MongoDB
-    await dbConnect();
-    
-    // Get all submissions but exclude the file data to reduce payload size
-    const submissions = await Submission
-      .find({})
-      .select('-fileData') // Exclude the file data
-      .sort({ uploadDate: -1 });
-    
-    return res.status(200).json(submissions);
+    // Set up Google Drive API
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      },
+      scopes: ['https://www.googleapis.com/auth/drive.file'],
+    });
+
+    const drive = google.drive({ version: 'v3', auth });
+
+    // Get files from the submissions folder
+    const response = await drive.files.list({
+      q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents`,
+      fields: 'files(id, name, createdTime, webViewLink)',
+      orderBy: 'createdTime desc',
+    });
+
+    const files = response.data.files.map(file => {
+      // Parse the filename to extract metadata
+      // Format: Assignment_[assignmentId]_[enrollmentNumber]_[studentName]_[timestamp].pdf
+      const nameParts = file.name.split('_');
+      
+      return {
+        id: file.id,
+        assignmentId: nameParts[1] || 'Unknown',
+        enrollmentNumber: nameParts[2] || 'Unknown',
+        studentName: (nameParts[3] || 'Unknown').replace(/_/g, ' '),
+        fileName: file.name,
+        uploadDate: file.createdTime,
+        viewLink: file.webViewLink
+      };
+    });
+
+    return res.status(200).json(files);
   } catch (error) {
-    console.error('Error fetching submissions:', error);
-    return res.status(500).json({ error: 'Failed to fetch submissions', details: error.message });
+    console.error('Error retrieving submissions:', error);
+    return res.status(500).json({ error: 'Failed to retrieve submissions' });
   }
 } 

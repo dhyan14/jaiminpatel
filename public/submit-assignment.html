@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaimin Patel - Assignment Submission</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="math-symbol">&int;</span> Jaimin Patel
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="resources.html">Resources</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="submission-hero">
+            <div class="container">
+                <h1>Assignment Submission</h1>
+                <p>Submit your assignment solutions securely</p>
+            </div>
+        </section>
+
+        <section class="submission-content">
+            <div class="container">
+                <div class="submission-steps">
+                    <!-- Step 1: Enter enrollment number -->
+                    <div class="submission-step" id="step-enrollment">
+                        <h2>Step 1: Enter Your Enrollment Number</h2>
+                        <div class="form-group">
+                            <label for="enrollment-number">Enrollment Number:</label>
+                            <input type="text" id="enrollment-number" placeholder="Enter your enrollment number" required>
+                        </div>
+                        <div class="form-actions">
+                            <button class="next-btn" onclick="validateEnrollment()">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Upload assignment -->
+                    <div class="submission-step" id="step-upload" style="display: none;">
+                        <h2>Step 2: Upload Your Assignment</h2>
+                        <div class="student-info">
+                            <p><strong>Enrollment Number:</strong> <span id="display-enrollment"></span></p>
+                            <p><strong>Assignment:</strong> <span id="assignment-title"></span></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-name">Your Full Name:</label>
+                            <input type="text" id="student-name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignment-file">Your Solution (PDF only):</label>
+                            <input type="file" id="assignment-file" accept=".pdf" required>
+                        </div>
+                        <div class="form-actions">
+                            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button class="submit-btn" onclick="uploadAssignment()">Submit Assignment</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Confirmation -->
+                    <div class="submission-step" id="step-confirmation" style="display: none;">
+                        <div class="confirmation-message">
+                            <i class="fas fa-check-circle"></i>
+                            <h2>Assignment Submitted Successfully!</h2>
+                            <p>Your assignment has been uploaded to our system.</p>
+                            <p>Submission ID: <span id="submission-id"></span></p>
+                            <div class="confirmation-actions">
+                                <a href="resources.html" class="btn">Return to Resources</a>
+                                <button class="btn" onclick="submitAnother()">Submit Another Assignment</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading overlay -->
+                    <div id="loading-overlay" style="display: none;">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Uploading your assignment...</p>
+                        </div>
+                    </div>
+
+                    <!-- Error message -->
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Jaimin Patel. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get assignment ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const assignmentId = urlParams.get('id') || '2.2';
+        const assignmentTitle = urlParams.get('title') || 'Advanced Data Structures';
+        
+        // Set assignment title in the page
+        document.getElementById('assignment-title').textContent = assignmentTitle;
+        
+        // Google API credentials - your actual values
+        const CLIENT_ID = '212156666010-qf09rl4mhe5pc2lq5lt04323ucaje2pg.apps.googleusercontent.com';
+        const API_KEY = 'AIzaSyDQZxO8iwvfBwLXVAG9h_yNAuCLkcGOvJM'; // You'll need to create an API key in Google Cloud Console
+        const FOLDER_ID = '1Z323IB_00dHc5jDlWRKhNgcZ8LDyTkqm';
+        
+        // API discovery docs and scopes
+        const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'];
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+        
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+        
+        // Initialize the Google API client
+        function initializeGapiClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: DISCOVERY_DOCS,
+            }).then(() => {
+                gapiInited = true;
+                console.log('GAPI client initialized');
+            }).catch(error => {
+                console.error('Error initializing GAPI client:', error);
+                showError('Failed to initialize Google API client. Please try again later.');
+            });
+        }
+        
+        // Load the Google API client
+        function loadGapiClient() {
+            gapi.load('client', initializeGapiClient);
+        }
+        
+        // Initialize the token client
+        function initializeTokenClient() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // Will be set later
+            });
+            gisInited = true;
+            console.log('Token client initialized');
+        }
+        
+        // Load the necessary libraries when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the Google API client
+            loadGapiClient();
+            
+            // Initialize the token client
+            initializeTokenClient();
+        });
+        
+        // Validate enrollment number
+        function validateEnrollment() {
+            const enrollmentNumber = document.getElementById('enrollment-number').value.trim();
+            
+            if (!enrollmentNumber) {
+                showError('Please enter your enrollment number');
+                return;
+            }
+            
+            // Display the enrollment number in the next step
+            document.getElementById('display-enrollment').textContent = enrollmentNumber;
+            
+            // Hide step 1 and show step 2
+            document.getElementById('step-enrollment').style.display = 'none';
+            document.getElementById('step-upload').style.display = 'block';
+            
+            // Hide any previous error messages
+            hideError();
+        }
+        
+        // Go back to the enrollment step
+        function goBack() {
+            document.getElementById('step-upload').style.display = 'none';
+            document.getElementById('step-enrollment').style.display = 'block';
+        }
+        
+        // Upload the assignment to Google Drive
+        function uploadAssignment() {
+            const enrollmentNumber = document.getElementById('enrollment-number').value.trim();
+            const studentName = document.getElementById('student-name').value.trim();
+            const fileInput = document.getElementById('assignment-file');
+            
+            // Validate inputs
+            if (!studentName) {
+                showError('Please enter your full name');
+                return;
+            }
+            
+            if (!fileInput.files.length) {
+                showError('Please select a file to upload');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // Check file type
+            if (file.type !== 'application/pdf') {
+                showError('Please upload a PDF file only');
+                return;
+            }
+            
+            // Show loading overlay
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            // Hide error message
+            hideError();
+            
+            // Check if we need to get access token
+            if (!gapi.client.getToken()) {
+                // Set the callback for the token client
+                tokenClient.callback = async (resp) => {
+                    if (resp.error !== undefined) {
+                        // Handle error
+                        console.error('Error getting access token:', resp);
+                        showError('Failed to authenticate with Google. Please try again.');
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        return;
+                    }
+                    
+                    // Access token obtained, proceed with upload
+                    uploadFileToGoogleDrive(file, enrollmentNumber, studentName);
+                };
+                
+                // Request access token
+                tokenClient.requestAccessToken({prompt: 'consent'});
+            } else {
+                // We already have an access token, proceed with upload
+                uploadFileToGoogleDrive(file, enrollmentNumber, studentName);
+            }
+        }
+        
+        // Upload file to Google Drive
+        function uploadFileToGoogleDrive(file, enrollmentNumber, studentName) {
+            // Generate a unique filename
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `Assignment_${assignmentId}_${enrollmentNumber}_${studentName.replace(/\s+/g, '_')}_${timestamp}.pdf`;
+            
+            // Create a new file metadata
+            const metadata = {
+                name: filename,
+                mimeType: 'application/pdf',
+                parents: [FOLDER_ID] // The ID of the folder where the file will be stored
+            };
+            
+            // Read the file as an ArrayBuffer
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                
+                // Upload the file to Google Drive
+                const accessToken = gapi.client.getToken().access_token;
+                
+                const form = new FormData();
+                form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+                form.append('file', new Blob([content], {type: 'application/pdf'}));
+                
+                fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken
+                    },
+                    body: form
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('File uploaded successfully:', data);
+                    
+                    // Hide loading overlay
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    
+                    // Show confirmation step
+                    document.getElementById('step-upload').style.display = 'none';
+                    document.getElementById('step-confirmation').style.display = 'block';
+                    
+                    // Set submission ID
+                    document.getElementById('submission-id').textContent = data.id;
+                    
+                    // Also store submission in localStorage for backup
+                    storeSubmissionLocally(enrollmentNumber, studentName, filename, data.id);
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                    
+                    // Hide loading overlay
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    
+                    // Show error message
+                    showError('Failed to upload file. Please try again later.');
+                    
+                    // Store submission attempt in localStorage for retry
+                    storeSubmissionLocally(enrollmentNumber, studentName, filename, 'failed');
+                });
+            };
+            
+            reader.onerror = function(error) {
+                console.error('Error reading file:', error);
+                
+                // Hide loading overlay
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+                // Show error message
+                showError('Failed to read file. Please try again.');
+            };
+            
+            // Read the file
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // Store submission in localStorage for backup/retry
+        function storeSubmissionLocally(enrollmentNumber, studentName, filename, submissionId) {
+            const submissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+            
+            submissions.push({
+                id: submissionId,
+                assignmentId: assignmentId,
+                enrollmentNumber: enrollmentNumber,
+                studentName: studentName,
+                fileName: filename,
+                timestamp: new Date().toISOString(),
+                status: submissionId === 'failed' ? 'failed' : 'success'
+            });
+            
+            localStorage.setItem('assignmentSubmissions', JSON.stringify(submissions));
+        }
+        
+        // Submit another assignment
+        function submitAnother() {
+            // Reset form fields
+            document.getElementById('enrollment-number').value = '';
+            document.getElementById('student-name').value = '';
+            document.getElementById('assignment-file').value = '';
+            
+            // Show step 1
+            document.getElementById('step-confirmation').style.display = 'none';
+            document.getElementById('step-enrollment').style.display = 'block';
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        // Hide error message
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+    </script>
+
+    <style>
+        /* Submission page styles */
+        .submission-hero {
+            background-color: #4CAF50;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .submission-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .submission-content {
+            padding: 50px 0;
+        }
+        
+        .submission-steps {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            position: relative;
+        }
+        
+        .submission-step {
+            margin-bottom: 20px;
+        }
+        
+        .submission-step h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .next-btn, .submit-btn, .back-btn, .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .next-btn, .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .student-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .student-info p {
+            margin: 5px 0;
+        }
+        
+        .confirmation-message {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .confirmation-message i {
+            font-size: 80px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-message h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 100;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+        }
+        
+        .loading-spinner i {
+            font-size: 50px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .submission-steps {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .next-btn, .submit-btn, .back-btn, .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .confirmation-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html> 

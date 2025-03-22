@@ -2,13 +2,10 @@
   "version": 2,
   "builds": [
     { "src": "public/**/*", "use": "@vercel/static" },
-    { "src": "pages/api/**/*.js", "use": "@vercel/node" }
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/pages/api/$1" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/public/$1" }
-  ],
-  "env": {
-    "MONGODB_URI": "mongodb+srv://dhyanjain:dhyanjain@assignments.zrdl2.mongodb.net/?retryWrites=true&w=majority&appName=assignments"
-  }
+  ]
 } 

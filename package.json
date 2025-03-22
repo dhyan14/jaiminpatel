@@ -1,7 +1,7 @@
 {
   "name": "jaimin-patel-website",
   "version": "1.0.0",
-  "description": "Jaimin Patel's personal website with assignment submission functionality",
+  "description": "Jaimin Patel's personal website with assignment submission",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -9,13 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "mongodb": "^4.13.0",
-    "mongoose": "^7.0.0",
-    "next": "^12.3.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "engines": {
-    "node": ">=14.0.0"
+    "googleapis": "^118.0.0",
+    "next": "^12.3.4"
   }
 } 

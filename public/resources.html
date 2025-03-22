@@ -1458,12 +1458,11 @@
 
         // Toggle assignment upload form
         function toggleUploadForm(assignmentId) {
-            const formContainer = document.getElementById(`upload-form-${assignmentId}`);
-            if (formContainer.style.display === 'none' || formContainer.style.display === '') {
-                formContainer.style.display = 'block';
-            } else {
-                formContainer.style.display = 'none';
-            }
+            // Get the assignment title
+            const assignmentTitle = document.querySelector(`.resource-item[data-assignment="${assignmentId}"] h3`).textContent;
+            
+            // Redirect to the submission page with the assignment ID and title as parameters
+            window.location.href = `submit-assignment.html?id=${assignmentId}&title=${encodeURIComponent(assignmentTitle)}`;
         }
         
         // Function to upload a file directly (no chunking)

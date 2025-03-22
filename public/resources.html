@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.gstatic.com https://www.google.com https://accounts.google.com https://polyfill.io https://cdn.jsdelivr.net; connect-src 'self' https://*.googleapis.com https://accounts.google.com; frame-src 'self' https://accounts.google.com https://drive.google.com https://*.googleusercontent.com https://content.googleapis.com blob:; img-src 'self' data: https://*.googleusercontent.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.gstatic.com; font-src 'self' data: https://cdnjs.cloudflare.com https://*.gstatic.com;">
     <title>Jaimin Patel - Resources</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <header>
@@ -141,20 +139,15 @@
         }
         
         function backToResources() {
-            // Show the resources content section again
+            // Remove courses container
+            const coursesContainer = document.querySelector('.courses-container');
+            if (coursesContainer) {
+                coursesContainer.remove();
+            }
+            
+            // Show the resources content section and upload section again
             document.querySelector('.resources-content').style.display = 'block';
             document.querySelector('.upload-section').style.display = 'block';
-            
-            // Remove any existing courses container
-            if (document.querySelector('.courses-container')) {
-                document.querySelector('.courses-container').remove();
-            }
-            
-            // Reset any active filters
-            const allResourcesBtn = document.querySelector('.category-btn[data-category="all"]');
-            if (allResourcesBtn) {
-                allResourcesBtn.click();
-            }
         }
         
         function showSemesterUnits(semester, course) {
@@ -216,6 +209,16 @@
         }
         
         function showLectureNotes(semester, unit, course) {
+            // Remove previous notes display if exists
+            if (document.querySelector('.notes-display')) {
+                document.querySelector('.notes-display').remove();
+            }
+            
+            // Remove any existing PDF modal
+            if (document.getElementById('pdfModal')) {
+                document.getElementById('pdfModal').remove();
+            }
+            
             // Get course config from session storage
             const courseConfig = getCourseConfig();
             const unitLabel = courseConfig[course] && courseConfig[course].unitLabel ? 
@@ -234,13 +237,41 @@
                 courseData[course][semester][unit]) {
                 pdfLink = courseData[course][semester][unit];
                 console.log(`Found PDF link: ${pdfLink}`);
-                // Directly show the PDF viewer
-                createAndShowPdfViewer(pdfLink);
             } else {
                 console.log("No PDF link found for this unit");
-                // Show a message that no content is available
-                alert("No content available for this unit yet.");
             }
+            
+            // Create notes content based on whether PDF link exists
+            let notesContent = '';
+            if (pdfLink) {
+                // For units with PDF links, show a single note item with View PDF button
+                notesContent = `
+                    <div class="note-item" style="width: 100%;">
+                        <h3>Complete ${unitLabel} ${unit} Notes</h3>
+                        <p>Comprehensive notes for ${unitLabel} ${unit}</p>
+                        <button class="view-btn" onclick="createAndShowPdfViewer('${pdfLink}')">View PDF</button>
+                    </div>
+                `;
+            } else {
+                // Default content for units without specific PDF links
+                notesContent = `
+                    <div class="note-item" style="width: 100%;">
+                        <h3>No Notes Available</h3>
+                        <p>Notes for this unit are not available yet.</p>
+                    </div>
+                `;
+            }
+            
+            // Create and show the lecture notes container
+            let notesContainer = document.createElement('div');
+            notesContainer.className = 'notes-display';
+            notesContainer.innerHTML = `
+                <h2>${getCourseTitle(course)} - Semester ${semester} - ${unitLabel} ${unit} Notes</h2>
+                <div class="notes-grid">
+                    ${notesContent}
+                </div>
+            `;
+            document.querySelector('.courses-container').appendChild(notesContainer);
         }
         
         function createAndShowPdfViewer(pdfLink) {
@@ -349,17 +380,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the courses section with dynamic data
-            initializeCoursesSection();
-            
-            // Category filter functionality - moved after initialization
-            setTimeout(() => {
-                setupCategoryFilters();
-            }, 100);
-        });
-
-        function setupCategoryFilters() {
+            // Category filter functionality
             const categoryBtns = document.querySelectorAll('.category-btn');
+            const resourceItems = document.querySelectorAll('.resource-item');
             
             categoryBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -368,9 +391,6 @@
                     // Toggle active class
                     categoryBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    
-                    // Get all resource items (after they've been added to the DOM)
-                    const resourceItems = document.querySelectorAll('.resource-item');
                     
                     // Filter resources
                     resourceItems.forEach(item => {
@@ -382,7 +402,10 @@
                     });
                 });
             });
-        }
+
+            // Initialize the courses section with dynamic data
+            initializeCoursesSection();
+        });
 
         function checkLogin(username, password) {
             // In a real application, this would validate against a database
@@ -1225,474 +1248,77 @@
             // Add the expert lectures card to the courses section
             coursesSection.appendChild(expertLecturesCard);
             
-            // Add Assignment 2.2 to assignments section
-            addAssignment22(coursesSection);
+            // Add some example resources for other categories
+            addExampleResources(coursesSection);
         }
 
-        // Function to add Assignment 2.2
-        function addAssignment22(container) {
-            // Assignment 2.2
-            const assignment2 = document.createElement('div');
-            assignment2.className = 'resource-item';
-            assignment2.setAttribute('data-category', 'assignments');
+        // Add example resources for other categories
+        function addExampleResources(container) {
+            // Problem Sets
+            const problemSet = document.createElement('div');
+            problemSet.className = 'resource-item';
+            problemSet.setAttribute('data-category', 'problems');
             
-            assignment2.innerHTML = `
-                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+            problemSet.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-tasks"></i></div>
                 <div class="resource-details">
-                    <h3>Assignment 2.2: Advanced Calculus</h3>
-                    <p>Comprehensive assignment covering integration techniques, series, and multivariable calculus.</p>
+                    <h3>Linear Algebra Problem Set</h3>
+                    <p>Practice problems on vector spaces, matrices, and linear transformations.</p>
                     <div class="resource-meta">
-                        <span><i class="fas fa-calendar-alt"></i> June 2024</span>
+                        <span><i class="fas fa-calendar-alt"></i> Mar 2023</span>
                         <span><i class="fas fa-file-pdf"></i> PDF</span>
                     </div>
-                    <button class="view-btn" onclick="showAssignmentDetails('Assignment 2.2: Advanced Calculus', 'https://drive.google.com/file/d/126B6oKXRK0srsK0Qdk6dqOdX39S82WIL/preview')">View Assignment</button>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
                 </div>
             `;
             
-            // Add the assignment to the container
-            container.appendChild(assignment2);
-        }
-        
-        function showAssignmentDetails(title, pdfLink) {
-            // Hide the resources content section
-            document.querySelector('.resources-content').style.display = 'none';
-            document.querySelector('.upload-section').style.display = 'none';
+            // Assignments
+            const assignment = document.createElement('div');
+            assignment.className = 'resource-item';
+            assignment.setAttribute('data-category', 'assignments');
             
-            // Remove any existing courses container
-            if (document.querySelector('.courses-container')) {
-                document.querySelector('.courses-container').remove();
-            }
-            
-            // Create assignment details container
-            let assignmentContainer = document.createElement('div');
-            assignmentContainer.className = 'courses-container';
-            assignmentContainer.innerHTML = `
-                <div class="back-button">
-                    <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
-                </div>
-                <h2>${title}</h2>
-                <div class="assignment-details">
-                    <div class="assignment-info">
-                        <p><strong>Due Date:</strong> July 15, 2024</p>
-                        <p><strong>Points:</strong> 100</p>
-                        <p><strong>Submission Format:</strong> PDF document</p>
-                        <p class="assignment-description">
-                            Complete all problems in the assignment PDF. Show your work clearly for each step.
-                            Submit your solutions as a single PDF file using the submission form below.
-                        </p>
+            assignment.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="resource-details">
+                    <h3>Differential Equations Assignment</h3>
+                    <p>Assignment problems on solving various types of differential equations.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> May 2024</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
                     </div>
-                    
-                    <div class="assignment-actions">
-                        <button class="assignment-btn view-pdf" onclick="window.open('${pdfLink}', '_blank')">
-                            <i class="fas fa-file-pdf"></i> Open PDF
-                        </button>
-                        
-                        <div class="submission-form">
-                            <h3>Submit Your Assignment</h3>
-                            <div class="form-group">
-                                <label for="student-name">Full Name:</label>
-                                <input type="text" id="student-name" placeholder="Enter your full name">
-                            </div>
-                            <div class="form-group">
-                                <label for="student-id">Student ID:</label>
-                                <input type="text" id="student-id" placeholder="Enter your student ID">
-                            </div>
-                            <div class="form-group">
-                                <label for="assignment-file">Upload Solution (PDF):</label>
-                                <input type="file" id="assignment-file" accept=".pdf" onchange="showUploadedPdfPreview()">
-                            </div>
-                            <div class="form-group">
-                                <label for="comments">Comments (Optional):</label>
-                                <textarea id="comments" rows="3" placeholder="Any comments for your instructor"></textarea>
-                            </div>
-                            <button class="assignment-btn submit-btn" onclick="submitAssignment()">
-                                <i class="fas fa-paper-plane"></i> Submit Assignment
-                            </button>
-                        </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/11FtHXLNLPbeqNM8U2gAihuSA1MuK2PVJ/preview', '_blank')">View Document</button>
+                </div>
+            `;
+            
+            // Notes
+            const notes = document.createElement('div');
+            notes.className = 'resource-item';
+            notes.setAttribute('data-category', 'notes');
+            
+            notes.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="resource-details">
+                    <h3>Complex Differentiation</h3>
+                    <p>Comprehensive notes on complex differentiation and complex analysis.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> 2024</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
                     </div>
+                    <button class="view-btn" onclick="window.open('https://drive.google.com/file/d/15NGabszjq3397ArlhAiDaSpyXCFjNFxv/preview', '_blank')">View Document</button>
                 </div>
             `;
             
-            document.querySelector('main').appendChild(assignmentContainer);
-            
-            // Initialize Google Drive API
-            if (typeof gapi !== 'undefined') {
-                initGoogleDriveAPI();
-            } else {
-                // Load the Google API script if not already loaded
-                const script = document.createElement('script');
-                script.src = 'https://apis.google.com/js/api.js';
-                script.onload = initGoogleDriveAPI;
-                document.head.appendChild(script);
-            }
-        }
-        
-        // Update the submitAssignment function to use the Vercel API endpoint
-        function submitAssignment() {
-            const name = document.getElementById('student-name').value;
-            const id = document.getElementById('student-id').value;
-            const file = document.getElementById('assignment-file').files[0];
-            const comments = document.getElementById('comments').value;
-            
-            if (!name || !id || !file) {
-                alert("Please fill in all required fields and upload your assignment.");
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-            submitBtn.disabled = true;
-            
-            // Create FormData for the upload
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('name', name);
-            formData.append('id', id);
-            formData.append('comments', comments);
-            
-            // Send the file to the Vercel serverless function
-            fetch('https://your-vercel-app.vercel.app/api/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Create a submission record display
-                    const submissionRecord = document.createElement('div');
-                    submissionRecord.className = 'submission-record';
-                    submissionRecord.innerHTML = `
-                        <h3>Assignment Submitted Successfully</h3>
-                        <div class="submission-details">
-                            <p><strong>Name:</strong> ${name}</p>
-                            <p><strong>Student ID:</strong> ${id}</p>
-                            <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-                            <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
-                            ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
-                            <p class="drive-status">
-                                <i class="fab fa-google-drive"></i> Saved to Google Drive 
-                                <a href="${data.fileUrl}" target="_blank" class="view-drive-link">View in Drive</a>
-                            </p>
-                        </div>
-                    `;
-                    
-                    // Replace the submission form with the record
-                    const submissionForm = document.querySelector('.submission-form');
-                    submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
-                } else {
-                    throw new Error(data.error || 'Unknown error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert(`Failed to upload file: ${error.message}`);
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-            });
+            // Add the resources to the container
+            container.appendChild(problemSet);
+            container.appendChild(assignment);
+            container.appendChild(notes);
         }
 
-        // Replace the Google Drive integration code with service account implementation
-        function initGoogleDriveAPI() {
-            console.log("Initializing Google Drive API with service account...");
-            
-            // Add a status message to the page
-            const statusDiv = document.createElement('div');
-            statusDiv.id = 'google-api-status';
-            statusDiv.className = 'api-status-message';
-            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google Drive...';
-            
-            // Add it before the submission form
-            const submissionForm = document.querySelector('.submission-form');
-            if (submissionForm) {
-                submissionForm.parentNode.insertBefore(statusDiv, submissionForm);
-            }
-            
-            // Since we're using a service account, we don't need user authentication
-            // We'll use a server-side proxy for the actual upload
-            statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Google Drive connection ready';
-            
-            // Remove the status message after a short delay
-            setTimeout(function() {
-                statusDiv.remove();
-            }, 3000);
-            
-            // Update the submit button to use the service account upload
-            const submitBtn = document.querySelector('.submit-btn');
-            if (submitBtn) {
-                submitBtn.onclick = function() {
-                    submitAssignment();
-                };
-            }
-        }
-
-        // Function to show fallback upload option with better error handling
-        function showFallbackUploadOption(statusDiv, error) {
-            console.error("Detailed Google Drive error:", error);
-            
-            // Extract a more useful error message
-            let errorMessage = "Could not connect to Google Drive";
-            if (error) {
-                if (typeof error === 'string') {
-                    errorMessage += ": " + error;
-                } else if (error.details) {
-                    errorMessage += ": " + error.details;
-                } else if (error.message) {
-                    errorMessage += ": " + error.message;
-                } else if (error.error) {
-                    errorMessage += ": " + (typeof error.error === 'string' ? error.error : JSON.stringify(error.error));
-                } else {
-                    try {
-                        errorMessage += ": " + JSON.stringify(error);
-                    } catch (e) {
-                        // If JSON stringify fails, just use a generic message
-                        errorMessage = "Could not connect to Google Drive. Please try again later.";
-                    }
-                }
-            }
-            
-            statusDiv.innerHTML = `
-                <i class="fas fa-exclamation-triangle"></i> 
-                <div>
-                    <p>${errorMessage}</p>
-                    <p>You can still submit your assignment using the alternative method below.</p>
-                </div>
-            `;
-            
-            // Create a simulate upload button
-            const simulateBtn = document.createElement('button');
-            simulateBtn.className = 'assignment-btn simulate-btn';
-            simulateBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Submit Without Google Drive';
-            simulateBtn.style.backgroundColor = '#6c757d';
-            simulateBtn.style.marginTop = '10px';
-            simulateBtn.onclick = function() {
-                simulateUpload();
-            };
-            
-            // Add the simulate button after the status message
-            statusDiv.parentNode.insertBefore(simulateBtn, statusDiv.nextSibling);
-            
-            // Update the submit button to use simulation
-            const submitBtn = document.querySelector('.submit-btn');
-            if (submitBtn) {
-                submitBtn.onclick = function() {
-                    simulateUpload();
-                };
-            }
-
-            // Add this to the showFallbackUploadOption function
-            const debugBtn = document.createElement('button');
-            debugBtn.className = 'debug-btn';
-            debugBtn.innerHTML = 'Show Technical Details';
-            debugBtn.style.backgroundColor = '#f8f9fa';
-            debugBtn.style.color = '#333';
-            debugBtn.style.border = '1px solid #ddd';
-            debugBtn.style.padding = '5px 10px';
-            debugBtn.style.fontSize = '12px';
-            debugBtn.style.marginTop = '10px';
-            debugBtn.style.cursor = 'pointer';
-            debugBtn.onclick = function() {
-                alert("Technical error details:\n\n" + JSON.stringify(error, null, 2));
-            };
-
-            // Add the debug button after the status message
-            statusDiv.appendChild(debugBtn);
-        }
-
-        // Function to simulate upload
-        function simulateUpload() {
-            const name = document.getElementById('student-name').value;
-            const id = document.getElementById('student-id').value;
-            const file = document.getElementById('assignment-file').files[0];
-            const comments = document.getElementById('comments').value;
-            
-            if (!name || !id || !file) {
-                alert("Please fill in all required fields and upload your assignment.");
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            submitBtn.disabled = true;
-            
-            // Create a mailto link with assignment details
-            const subject = encodeURIComponent(`Assignment 2.2 Submission - ${id}`);
-            const body = encodeURIComponent(`Name: ${name}\nStudent ID: ${id}\nSubmission Time: ${new Date().toLocaleString()}\n\nComments: ${comments || 'None'}\n\nNOTE: Please attach your assignment PDF to this email.`);
-            const mailtoLink = `mailto:submissions@jaiminpatel.com?subject=${subject}&body=${body}`;
-            
-            // Simulate processing with a delay
-            setTimeout(() => {
-                // Create a submission record display
-                const submissionRecord = document.createElement('div');
-                submissionRecord.className = 'submission-record';
-                submissionRecord.innerHTML = `
-                    <h3>Assignment Recorded</h3>
-                    <div class="submission-details">
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Student ID:</strong> ${id}</p>
-                        <p><strong>File:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-                        <p><strong>Submission Time:</strong> ${new Date().toLocaleString()}</p>
-                        ${comments ? `<p><strong>Comments:</strong> ${comments}</p>` : ''}
-                        <div class="alternative-submission">
-                            <p class="alt-submission-note">
-                                <i class="fas fa-exclamation-circle"></i> <strong>Important:</strong> Your assignment details have been recorded, but the file has NOT been uploaded to Google Drive.
-                            </p>
-                            <p>Please complete your submission by sending your assignment file via email:</p>
-                            <div class="email-options">
-                                <a href="${mailtoLink}" class="email-link">
-                                    <i class="fas fa-envelope"></i> Open Email Client
-                                </a>
-                                <p class="manual-email">Or send manually to: <strong>submissions@jaiminpatel.com</strong></p>
-                            </div>
-                            <p class="email-instructions">
-                                <i class="fas fa-info-circle"></i> Remember to attach your assignment PDF file to the email.
-                            </p>
-                        </div>
-                    </div>
-                `;
-                
-                // Replace the submission form with the record
-                const submissionForm = document.querySelector('.submission-form');
-                submissionForm.parentNode.replaceChild(submissionRecord, submissionForm);
-                
-                // Remove the Google API status and buttons if they exist
-                const statusDiv = document.getElementById('google-api-status');
-                if (statusDiv) statusDiv.remove();
-                
-                const authBtn = document.querySelector('.assignment-btn.view-pdf');
-                if (authBtn) authBtn.remove();
-                
-                const simulateBtn = document.querySelector('.assignment-btn.simulate-btn');
-                if (simulateBtn) simulateBtn.remove();
-                
-            }, 1500);
-        }
-
-        // Simplify the uploadFileToDrive function for more reliable uploads
-        function uploadFileToDrive(file, name, id, comments, callback) {
-            console.log("Starting file upload to Google Drive...");
-            
-            // Check if Google API is loaded and user is signed in
-            if (!gapi || !gapi.client) {
-                console.error("Google API not loaded");
-                callback(false);
-                return;
-            }
-            
-            if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-                console.error("User not signed in to Google");
-                alert("Please sign in to Google Drive before submitting your assignment.");
-                callback(false);
-                return;
-            }
-            
-            // Create metadata for the file
-            const metadata = {
-                'name': `Assignment_${id}_${name}_${new Date().toISOString().split('T')[0]}.pdf`,
-                'mimeType': 'application/pdf',
-                'description': `Assignment submitted by ${name} (${id}). Comments: ${comments || 'None'}`
-            };
-            
-            // Set the folder ID
-            const folderId = '10MxT_pSnmdHc12z8SFQWUnJpC-pZQJPM';
-            if (folderId) {
-                metadata.parents = [folderId];
-            }
-            
-            console.log("File metadata prepared:", metadata);
-            
-            // Create a FormData object to handle the file upload
-            const form = new FormData();
-            form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-            form.append('file', file);
-            
-            // Get the access token
-            const accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
-            console.log("Got access token, sending upload request...");
-            
-            // Use fetch API for more reliable uploads
-            fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-                method: 'POST',
-                headers: new Headers({'Authorization': 'Bearer ' + accessToken}),
-                body: form
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("File uploaded successfully:", data);
-                
-                // Set file permissions to make it viewable by anyone with the link
-                return gapi.client.drive.permissions.create({
-                    fileId: data.id,
-                    resource: {
-                        role: 'reader',
-                        type: 'anyone'
-                    }
-                }).then(() => {
-                    // Get the web view link
-                    return gapi.client.drive.files.get({
-                        fileId: data.id,
-                        fields: 'webViewLink'
-                    });
-                }).then(response => {
-                    const fileUrl = response.result.webViewLink;
-                    callback(true, data.id, fileUrl);
-                });
-            })
-            .catch(error => {
-                console.error("Error uploading file:", error);
-                callback(false);
-            });
-        }
-
-        // Add this function to show a preview of the uploaded PDF
-        function showUploadedPdfPreview() {
-            const file = document.getElementById('assignment-file').files[0];
-            if (!file) return;
-            
-            // Check if it's a PDF
-            if (file.type !== 'application/pdf') {
-                alert("Please upload a PDF file.");
-                document.getElementById('assignment-file').value = '';
-                return;
-            }
-            
-            // Remove existing preview if any
-            if (document.getElementById('pdf-preview-container')) {
-                document.getElementById('pdf-preview-container').remove();
-            }
-            
-            // Create a URL for the file
-            const fileURL = URL.createObjectURL(file);
-            
-            // Create preview container
-            const previewContainer = document.createElement('div');
-            previewContainer.id = 'pdf-preview-container';
-            previewContainer.className = 'pdf-preview-container';
-            previewContainer.innerHTML = `
-                <h4>Uploaded File Preview</h4>
-                <p class="file-info">${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-                <div class="pdf-preview">
-                    <iframe src="${fileURL}" width="100%" height="300"></iframe>
-                </div>
-            `;
-            
-            // Add the preview after the file input
-            const fileInput = document.getElementById('assignment-file');
-            fileInput.parentNode.appendChild(previewContainer);
-        }
+        // Call initializeCoursesSection when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the courses section
+            initializeCoursesSection();
+        });
     </script>
 
     <style>
@@ -2238,291 +1864,6 @@
 
         .units-grid button:not(.has-content):hover {
             background-color: #777;
-        }
-        
-        /* Assignment details styles */
-        .assignment-details {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .assignment-info {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .assignment-description {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-        
-        .assignment-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .assignment-btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: background-color 0.3s;
-        }
-        
-        .view-pdf {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .view-pdf:hover {
-            background-color: #3e8e41;
-        }
-        
-        .submission-form {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .submission-form h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .submission-form .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .submission-form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .submission-form input[type="text"],
-        .submission-form textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .submission-form input[type="file"] {
-            padding: 8px 0;
-        }
-        
-        .submit-btn {
-            background-color: #007bff;
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .submit-btn:hover {
-            background-color: #0069d9;
-        }
-        
-        @media (min-width: 768px) {
-            .assignment-details {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-            
-            .assignment-info {
-                flex: 1;
-            }
-            
-            .assignment-actions {
-                flex: 1;
-            }
-        }
-
-        .pdf-preview-container {
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            background-color: #f5f5f5;
-        }
-
-        .pdf-preview-container h4 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .file-info {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .pdf-preview {
-            border: 1px solid #ddd;
-            background-color: white;
-            height: 300px;
-            overflow: hidden;
-        }
-
-        .pdf-preview iframe {
-            border: none;
-        }
-
-        .submission-record {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .submission-record h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            color: #155724;
-        }
-
-        .submission-details {
-            background-color: white;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #d4edda;
-        }
-
-        .drive-status {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            color: #4285F4;
-            font-weight: bold;
-        }
-
-        .drive-status i {
-            margin-right: 5px;
-        }
-
-        .alternative-submission {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #fff3cd;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
-        }
-
-        .alt-submission-note {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-
-        .alt-submission-note i {
-            margin-right: 5px;
-        }
-
-        .email-link {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .email-link:hover {
-            background-color: #0069d9;
-            text-decoration: none;
-            color: white;
-        }
-
-        .simulate-btn {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .simulate-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .api-status-message {
-            background-color: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            border-left: 4px solid #4285F4;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-        }
-
-        .api-status-message i {
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        .api-status-message .fa-check-circle {
-            color: #4CAF50;
-        }
-
-        .api-status-message .fa-exclamation-triangle {
-            color: #f44336;
-        }
-
-        .api-status-message .fa-info-circle {
-            color: #4285F4;
-        }
-
-        /* Add the missing CSS for email options */
-        .email-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .manual-email {
-            margin: 5px 0;
-            font-size: 0.95em;
-        }
-
-        .email-instructions {
-            font-size: 0.9em;
-            color: #856404;
-            margin-top: 10px;
-        }
-
-        .email-instructions i {
-            margin-right: 5px;
-        }
-
-        // Add CSS for service account note
-        .service-account-note {
-            margin-top: 15px;
-            padding: 10px 15px;
-            background-color: #e8f4fd;
-            border-radius: 5px;
-            border-left: 4px solid #4285F4;
-            font-size: 0.9em;
-            color: #0d47a1;
-        }
-
-        .service-account-note i {
-            margin-right: 5px;
         }
     </style>
 </body>

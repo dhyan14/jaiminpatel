@@ -1229,23 +1229,21 @@
                 { id: 'btech', title: 'B.Tech', icon: 'fa-graduation-cap', description: 'Computer Science & Engineering lecture notes and materials' },
                 { id: 'mca', title: 'MCA', icon: 'fa-laptop-code', description: 'Master of Computer Applications course materials and resources' },
                 { id: 'imca', title: 'iMCA', icon: 'fa-desktop', description: 'Integrated MCA program lecture notes and study materials' },
-                { id: 'bca', title: 'BCA', icon: 'fa-code', description: 'Bachelor of Computer Applications course resources' },
-                // Add assignment as a course card
-                { id: 'assignments', title: 'Assignments', icon: 'fa-clipboard-check', description: 'Course assignments and submission portal' }
+                { id: 'bca', title: 'BCA', icon: 'fa-code', description: 'Bachelor of Computer Applications course resources' }
             ];
             
             courses.forEach(course => {
                 const courseCard = document.createElement('div');
                 courseCard.className = 'resource-item';
-                courseCard.setAttribute('data-category', course.id === 'assignments' ? 'assignments' : 'courses');
+                courseCard.setAttribute('data-category', 'courses');
                 
                 courseCard.innerHTML = `
                     <div class="resource-icon"><i class="fas ${course.icon}"></i></div>
                     <div class="resource-details">
                         <h3>${course.title}</h3>
                         <p>${course.description}</p>
-                        <button class="view-btn" onclick="${course.id === 'assignments' ? 'showAssignments()' : `showCourses('${course.id}')`}">
-                            View ${course.id === 'assignments' ? 'Assignments' : 'Materials'}
+                        <button class="view-btn" onclick="showCourses('${course.id}')">
+                            View Materials
                         </button>
                     </div>
                 `;
@@ -1253,8 +1251,62 @@
                 container.appendChild(courseCard);
             });
             
+            // Add assignment card with assignment category
+            const assignmentCard = document.createElement('div');
+            assignmentCard.className = 'resource-item assignment-card';
+            assignmentCard.setAttribute('data-category', 'assignments');
+            
+            assignmentCard.innerHTML = `
+                <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="resource-details">
+                    <h3>Assignment 2.2: Advanced Data Structures</h3>
+                    <p>Implement and analyze the performance of various advanced data structures including AVL trees, 
+                    Red-Black trees, and Hash Tables. Compare their efficiency for different operations.</p>
+                    <div class="resource-meta">
+                        <span><i class="fas fa-calendar-alt"></i> Due: November 15, 2023</span>
+                        <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="view-btn" onclick="window.open('assignments/assignment2.2.pdf', '_blank')">
+                            <i class="fas fa-download"></i> Download Assignment
+                        </button>
+                        <button class="upload-toggle-btn" onclick="toggleUploadForm('assignment2.2')">
+                            <i class="fas fa-upload"></i> Submit Solution
+                        </button>
+                    </div>
+                    
+                    <!-- Assignment upload form (hidden by default) -->
+                    <div id="upload-form-assignment2.2" class="assignment-upload-form" style="display: none;">
+                        <form id="assignment-form-2.2" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="student-name">Your Name:</label>
+                                <input type="text" id="student-name" name="studentName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="student-id">Student ID:</label>
+                                <input type="text" id="student-id" name="studentId" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignment-file">Your Solution (PDF only):</label>
+                                <input type="file" id="assignment-file" name="assignmentFile" accept=".pdf" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="submit-btn" onclick="uploadAssignment('2.2')">Submit</button>
+                                <button type="button" class="cancel-btn" onclick="toggleUploadForm('assignment2.2')">Cancel</button>
+                            </div>
+                        </form>
+                        <div id="upload-message-2.2" class="upload-message"></div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(assignmentCard);
+            
             // Add other resource types (problem sets, etc.)
             addOtherResources(container);
+            
+            // Initialize category buttons
+            initializeCategoryButtons();
         }
 
         // Add this new function to show assignments
@@ -1393,8 +1445,14 @@
 
         // Call initializeCoursesSection when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the courses section
+            addStyleForLoading();
             initializeCoursesSection();
+            
+            // Remove the separate assignments section at the bottom
+            const separateAssignmentsSection = document.getElementById('assignments');
+            if (separateAssignmentsSection) {
+                separateAssignmentsSection.remove();
+            }
         });
 
         // Toggle assignment upload form
@@ -1750,12 +1808,39 @@
             document.head.appendChild(style);
         }
 
-        // Call this when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            addStyleForLoading();
-            // ... other initialization code
-            initializeCoursesSection();
-        });
+        // Add this function to handle category button clicks
+        function initializeCategoryButtons() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Get the category
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show all items if 'all' category is selected
+                    if (category === 'all') {
+                        document.querySelectorAll('.resource-item').forEach(item => {
+                            item.style.display = 'flex';
+                        });
+                    } else {
+                        // Hide all items
+                        document.querySelectorAll('.resource-item').forEach(item => {
+                            item.style.display = 'none';
+                        });
+                        
+                        // Show items of the selected category
+                        document.querySelectorAll(`.resource-item[data-category="${category}"]`).forEach(item => {
+                            item.style.display = 'flex';
+                        });
+                    }
+                });
+            });
+        }
     </script>
 
     <style>

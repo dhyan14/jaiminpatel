@@ -1466,88 +1466,129 @@
             }
         }
         
-        // Upload assignment function using MongoDB API
-        function uploadAssignment(assignmentId) {
-            const form = document.getElementById(`assignment-form-${assignmentId}`);
-            const messageContainer = document.getElementById(`upload-message-${assignmentId}`);
-            
-            // Get form data
-            const studentName = form.querySelector('[name="studentName"]').value;
-            const studentId = form.querySelector('[name="studentId"]').value;
-            const fileInput = form.querySelector('[name="assignmentFile"]');
-            
-            // Validate inputs
-            if (!studentName || !studentId || !fileInput.files[0]) {
-                showUploadMessage(messageContainer, 'Please fill in all fields', 'error');
-                return;
-            }
-            
-            // Check file type
-            const file = fileInput.files[0];
-            if (file.type !== 'application/pdf') {
-                showUploadMessage(messageContainer, 'Please upload a PDF file only', 'error');
-                return;
-            }
-            
-            // Show loading message
-            showUploadMessage(messageContainer, 'Uploading your assignment...', 'info');
-            
-            // Convert file to base64 for storage
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                // Get the file data as base64
-                const fileData = e.target.result;
+        // Add this function to handle chunked uploads
+        <script>
+            // Function to upload a file in chunks
+            async function uploadFileInChunks(file, metadata, messageContainer) {
+                const CHUNK_SIZE = 500 * 1024; // 500KB chunks
+                const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+                const submissionId = generateUniqueId();
                 
-                // Create submission object
-                const submission = {
-                    id: generateUniqueId(),
+                // Read the file
+                const reader = new FileReader();
+                
+                // Function to read and upload a chunk
+                const readAndUploadChunk = async (start) => {
+                    if (start >= file.size) {
+                        // All chunks uploaded
+                        showUploadMessage(messageContainer, 'Assignment submitted successfully!', 'success');
+                        return;
+                    }
+                    
+                    const end = Math.min(start + CHUNK_SIZE, file.size);
+                    const chunk = file.slice(start, end);
+                    
+                    // Read the chunk
+                    const chunkReader = new FileReader();
+                    chunkReader.onload = async function(e) {
+                        const chunkData = e.target.result;
+                        const chunkIndex = Math.floor(start / CHUNK_SIZE);
+                        
+                        try {
+                            // Update progress message
+                            const progress = Math.round((chunkIndex / totalChunks) * 100);
+                            showUploadMessage(messageContainer, `Uploading: ${progress}%`, 'info');
+                            
+                            // Send the chunk to the server
+                            const response = await fetch('/api/submissions/chunk-upload', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    chunk: chunkData,
+                                    chunkIndex: chunkIndex,
+                                    totalChunks: totalChunks,
+                                    submissionId: submissionId,
+                                    metadata: chunkIndex === 0 ? metadata : null
+                                })
+                            });
+                            
+                            if (!response.ok) {
+                                const errorData = await response.text();
+                                console.error('Server response:', errorData);
+                                throw new Error('Failed to upload chunk');
+                            }
+                            
+                            // Process next chunk
+                            await readAndUploadChunk(end);
+                        } catch (error) {
+                            console.error('Chunk upload error:', error);
+                            showUploadMessage(messageContainer, 'Error uploading: ' + error.message, 'error');
+                        }
+                    };
+                    
+                    chunkReader.readAsDataURL(chunk);
+                };
+                
+                // Start uploading from the beginning of the file
+                await readAndUploadChunk(0);
+            }
+
+            // Modify the uploadAssignment function to use chunked uploads
+            function uploadAssignment(assignmentId) {
+                const form = document.getElementById(`assignment-form-${assignmentId}`);
+                const messageContainer = document.getElementById(`upload-message-${assignmentId}`);
+                
+                // Get form data
+                const studentName = form.querySelector('[name="studentName"]').value;
+                const studentId = form.querySelector('[name="studentId"]').value;
+                const fileInput = form.querySelector('[name="assignmentFile"]');
+                
+                // Validate inputs
+                if (!studentName || !studentId || !fileInput.files[0]) {
+                    showUploadMessage(messageContainer, 'Please fill in all fields', 'error');
+                    return;
+                }
+                
+                // Check file type
+                const file = fileInput.files[0];
+                if (file.type !== 'application/pdf') {
+                    showUploadMessage(messageContainer, 'Please upload a PDF file only', 'error');
+                    return;
+                }
+                
+                // Show loading message
+                showUploadMessage(messageContainer, 'Preparing to upload...', 'info');
+                
+                // Create metadata object
+                const metadata = {
                     assignmentId: assignmentId,
                     studentName: studentName,
                     studentId: studentId,
                     fileName: file.name,
                     fileSize: file.size,
                     fileType: file.type,
-                    uploadDate: new Date().toISOString(),
-                    fileData: fileData
+                    uploadDate: new Date().toISOString()
                 };
                 
-                try {
-                    // Send to server
-                    const response = await fetch('/api/submissions/upload', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(submission)
+                // Upload the file in chunks
+                uploadFileInChunks(file, metadata, messageContainer)
+                    .then(() => {
+                        // Reset form
+                        form.reset();
+                        
+                        // Hide form after 2 seconds
+                        setTimeout(() => {
+                            toggleUploadForm(`assignment${assignmentId}`);
+                        }, 2000);
+                    })
+                    .catch(error => {
+                        console.error('Upload error:', error);
+                        showUploadMessage(messageContainer, 'Error uploading: ' + error.message, 'error');
                     });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.text();
-                        console.error('Server response:', errorData);
-                        throw new Error('Failed to upload assignment');
-                    }
-                    
-                    const result = await response.json();
-                    
-                    // Show success message
-                    showUploadMessage(messageContainer, 'Assignment submitted successfully!', 'success');
-                    
-                    // Reset form
-                    form.reset();
-                    
-                    // Hide form after 2 seconds
-                    setTimeout(() => {
-                        toggleUploadForm(`assignment${assignmentId}`);
-                    }, 2000);
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    showUploadMessage(messageContainer, 'Error uploading: ' + error.message, 'error');
-                }
-            };
-            
-            // Read the file as data URL (base64)
-            reader.readAsDataURL(file);
-        }
+            }
+        </script>
 
         // Show upload message
         function showUploadMessage(container, message, type) {

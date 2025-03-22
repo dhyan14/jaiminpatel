@@ -1218,97 +1218,119 @@
 
         // Add this function to initialize the courses section
         function initializeCoursesSection() {
-            const courseConfig = getCourseConfig();
-            const coursesSection = document.querySelector('.courses-grid');
+            const container = document.querySelector('.courses-grid');
+            if (!container) return;
             
-            if (!coursesSection) {
-                console.error("Courses grid not found!");
-                return;
-            }
+            // Clear existing content
+            container.innerHTML = '';
             
-            // Clear existing course cards
-            coursesSection.innerHTML = '';
+            // Create course cards
+            const courses = [
+                { id: 'btech', title: 'B.Tech', icon: 'fa-graduation-cap', description: 'Computer Science & Engineering lecture notes and materials' },
+                { id: 'mca', title: 'MCA', icon: 'fa-laptop-code', description: 'Master of Computer Applications course materials and resources' },
+                { id: 'imca', title: 'iMCA', icon: 'fa-desktop', description: 'Integrated MCA program lecture notes and study materials' },
+                { id: 'bca', title: 'BCA', icon: 'fa-code', description: 'Bachelor of Computer Applications course resources' },
+                // Add assignment as a course card
+                { id: 'assignments', title: 'Assignments', icon: 'fa-clipboard-check', description: 'Course assignments and submission portal' }
+            ];
             
-            // Create a card for each course in the config
-            for (const courseId in courseConfig) {
-                const course = courseConfig[courseId];
-                
-                // Create course card
+            courses.forEach(course => {
                 const courseCard = document.createElement('div');
                 courseCard.className = 'resource-item';
-                courseCard.setAttribute('data-category', 'courses');
-                
-                // Choose an appropriate icon based on the course
-                let icon = 'fa-book';
-                if (courseId.includes('tech')) {
-                    icon = 'fa-graduation-cap';
-                } else if (courseId.includes('mca') || courseId.includes('bca')) {
-                    icon = 'fa-laptop-code';
-                }
-                
-                // Create a more descriptive course description
-                let courseDescription = '';
-                switch(courseId) {
-                    case 'btech':
-                        courseDescription = 'Lecture notes and course materials for Bachelor of Technology students.';
-                        break;
-                    case 'mca':
-                        courseDescription = 'Lecture notes and course materials for Master of Computer Applications students.';
-                        break;
-                    case 'imca':
-                        courseDescription = 'Lecture notes and course materials for Integrated Master of Computer Applications students.';
-                        break;
-                    case 'bca':
-                        courseDescription = 'Lecture notes and course materials for Bachelor of Computer Applications students.';
-                        break;
-                    default:
-                        courseDescription = `Lecture notes, assignments, and study materials for ${course.title} students.`;
-                }
+                courseCard.setAttribute('data-category', course.id === 'assignments' ? 'assignments' : 'courses');
                 
                 courseCard.innerHTML = `
-                    <div class="resource-icon"><i class="fas ${icon}"></i></div>
+                    <div class="resource-icon"><i class="fas ${course.icon}"></i></div>
                     <div class="resource-details">
                         <h3>${course.title}</h3>
-                        <p>${courseDescription}</p>
-                        <div class="resource-meta">
-                            <span><i class="fas fa-book"></i> ${courseId.toUpperCase()}</span>
-                            <span><i class="fas fa-layer-group"></i> ${course.maxSemesters} Semesters</span>
-                        </div>
-                        <button class="view-btn" onclick="showCourses('${courseId}')">View Materials</button>
+                        <p>${course.description}</p>
+                        <button class="view-btn" onclick="${course.id === 'assignments' ? 'showAssignments()' : `showCourses('${course.id}')`}">
+                            View ${course.id === 'assignments' ? 'Assignments' : 'Materials'}
+                        </button>
                     </div>
                 `;
                 
-                // Add the card to the courses section
-                coursesSection.appendChild(courseCard);
+                container.appendChild(courseCard);
+            });
+            
+            // Add other resource types (problem sets, etc.)
+            addOtherResources(container);
+        }
+
+        // Add this new function to show assignments
+        function showAssignments() {
+            // Hide the resources content section and upload section
+            document.querySelector('.resources-content').style.display = 'none';
+            document.querySelector('.upload-section').style.display = 'none';
+            
+            // Remove any existing courses container to prevent duplicates
+            if (document.querySelector('.courses-container')) {
+                document.querySelector('.courses-container').remove();
             }
             
-            // Add the expert lectures card
-            const expertLecturesCard = document.createElement('div');
-            expertLecturesCard.className = 'resource-item';
-            expertLecturesCard.setAttribute('data-category', 'courses');
-            
-            expertLecturesCard.innerHTML = `
-                <div class="resource-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                <div class="resource-details">
-                    <h3>Expert Lectures</h3>
-                    <p>Video lectures from subject matter experts and professors.</p>
-                    <div class="resource-meta">
-                        <span><i class="fas fa-video"></i> Video Content</span>
-                        <span><i class="fas fa-layer-group"></i> Multiple Topics</span>
+            // Create and show the assignments container
+            let assignmentsContainer = document.createElement('div');
+            assignmentsContainer.className = 'courses-container';
+            assignmentsContainer.innerHTML = `
+                <div class="back-button">
+                    <button onclick="backToResources()"><i class="fas fa-arrow-left"></i> Back to Resources</button>
+                </div>
+                <h2>Course Assignments</h2>
+                <div class="assignments-grid">
+                    <!-- Assignment 2.2 Card -->
+                    <div class="resource-item assignment-card">
+                        <div class="resource-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <div class="resource-details">
+                            <h3>Assignment 2.2: Advanced Data Structures</h3>
+                            <p>Implement and analyze the performance of various advanced data structures including AVL trees, 
+                            Red-Black trees, and Hash Tables. Compare their efficiency for different operations.</p>
+                            <div class="resource-meta">
+                                <span><i class="fas fa-calendar-alt"></i> Due: November 15, 2023</span>
+                                <span><i class="fas fa-file-pdf"></i> PDF</span>
+                            </div>
+                            <div class="assignment-actions">
+                                <button class="view-btn" onclick="window.open('assignments/assignment2.2.pdf', '_blank')">
+                                    <i class="fas fa-download"></i> Download Assignment
+                                </button>
+                                <button class="upload-toggle-btn" onclick="toggleUploadForm('assignment2.2')">
+                                    <i class="fas fa-upload"></i> Submit Solution
+                                </button>
+                            </div>
+                            
+                            <!-- Assignment upload form (hidden by default) -->
+                            <div id="upload-form-assignment2.2" class="assignment-upload-form" style="display: none;">
+                                <form id="assignment-form-2.2" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label for="student-name">Your Name:</label>
+                                        <input type="text" id="student-name" name="studentName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="student-id">Student ID:</label>
+                                        <input type="text" id="student-id" name="studentId" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="assignment-file">Your Solution (PDF only):</label>
+                                        <input type="file" id="assignment-file" name="assignmentFile" accept=".pdf" required>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="submit-btn" onclick="uploadAssignment('2.2')">Submit</button>
+                                        <button type="button" class="cancel-btn" onclick="toggleUploadForm('assignment2.2')">Cancel</button>
+                                    </div>
+                                </form>
+                                <div id="upload-message-2.2" class="upload-message"></div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="view-btn" onclick="showExpertLectures()">View Lectures</button>
+                    
+                    <!-- You can add more assignment cards here -->
                 </div>
             `;
             
-            // Add the expert lectures card to the courses section
-            coursesSection.appendChild(expertLecturesCard);
-            
-            // Add some example resources for other categories
-            addExampleResources(coursesSection);
+            document.querySelector('main').appendChild(assignmentsContainer);
         }
 
         // Add example resources for other categories
-        function addExampleResources(container) {
+        function addOtherResources(container) {
             // Problem Sets
             const problemSet = document.createElement('div');
             problemSet.className = 'resource-item';
@@ -2407,6 +2429,46 @@
                 width: 100%;
             }
         }
+
+        /* Add these styles to your existing CSS */
+        .assignments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .assignment-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .assignment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .upload-toggle-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .upload-toggle-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </body>
-</html> 
+</html>

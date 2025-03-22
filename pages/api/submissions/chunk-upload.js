@@ -35,8 +35,8 @@ export default async function handler(req, res) {
         fileSize: metadata.fileSize,
         fileType: metadata.fileType,
         uploadDate: new Date(metadata.uploadDate),
-        fileData: '',
-        chunksReceived: 0,
+        fileData: chunk, // Store the first chunk
+        chunksReceived: 1,
         totalChunks: totalChunks
       });
       
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       }
       
       // Append the chunk to fileData
-      submission.fileData += chunk;
+      submission.fileData += chunk.replace(/^data:application\/pdf;base64,/, '');
       submission.chunksReceived = chunkIndex + 1;
       
       // Save the updated submission

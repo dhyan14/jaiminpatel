@@ -1468,7 +1468,7 @@
         
         // Function to upload a file in chunks
         async function uploadFileInChunks(file, metadata, messageContainer) {
-            const CHUNK_SIZE = 500 * 1024; // 500KB chunks
+            const CHUNK_SIZE = 100 * 1024; // Reduce to 100KB chunks for better reliability
             const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
             const submissionId = generateUniqueId();
             
@@ -1484,45 +1484,50 @@
                 const chunk = file.slice(start, end);
                 
                 const chunkReader = new FileReader();
-                chunkReader.onload = async function(e) {
-                    const chunkData = e.target.result;
+                
+                // Create a promise to handle the async FileReader
+                const readChunk = new Promise((resolve, reject) => {
+                    chunkReader.onload = (e) => resolve(e.target.result);
+                    chunkReader.onerror = (e) => reject(e);
+                    chunkReader.readAsDataURL(chunk);
+                });
+                
+                try {
+                    // Wait for the chunk to be read
+                    const chunkData = await readChunk;
                     const chunkIndex = Math.floor(start / CHUNK_SIZE);
                     
-                    try {
-                        // Update progress message
-                        const progress = Math.round((chunkIndex / totalChunks) * 100);
-                        showUploadMessage(messageContainer, `Uploading: ${progress}%`, 'info');
-                        
-                        // Send the chunk to the server
-                        const response = await fetch('/api/submissions/chunk-upload', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                chunk: chunkData,
-                                chunkIndex: chunkIndex,
-                                totalChunks: totalChunks,
-                                submissionId: submissionId,
-                                metadata: chunkIndex === 0 ? metadata : null
-                            })
-                        });
-                        
-                        if (!response.ok) {
-                            const errorData = await response.text();
-                            console.error('Server response:', errorData);
-                            throw new Error('Failed to upload chunk');
-                        }
-                        
-                        // Process next chunk
-                        await readAndUploadChunk(end);
-                    } catch (error) {
-                        console.error('Chunk upload error:', error);
-                        showUploadMessage(messageContainer, 'Error uploading: ' + error.message, 'error');
+                    // Update progress message
+                    const progress = Math.round((chunkIndex / totalChunks) * 100);
+                    showUploadMessage(messageContainer, `Uploading: ${progress}%`, 'info');
+                    
+                    // Send the chunk to the server
+                    const response = await fetch('/api/submissions/chunk-upload', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chunk: chunkData,
+                            chunkIndex: chunkIndex,
+                            totalChunks: totalChunks,
+                            submissionId: submissionId,
+                            metadata: chunkIndex === 0 ? metadata : null
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.text();
+                        console.error('Server response:', errorData);
+                        throw new Error('Failed to upload chunk');
                     }
-                };
-                
-                chunkReader.readAsDataURL(chunk);
+                    
+                    // Process next chunk
+                    await readAndUploadChunk(end);
+                } catch (error) {
+                    console.error('Chunk upload error:', error);
+                    showUploadMessage(messageContainer, 'Error uploading: ' + error.message, 'error');
+                }
             };
             
             // Start uploading from the beginning of the file

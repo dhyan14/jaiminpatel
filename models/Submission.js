@@ -40,6 +40,14 @@ const SubmissionSchema = new mongoose.Schema({
   fileData: {
     type: String,
     required: true
+  },
+  chunksReceived: {
+    type: Number,
+    default: 0
+  },
+  totalChunks: {
+    type: Number,
+    default: 1
   }
 });
 

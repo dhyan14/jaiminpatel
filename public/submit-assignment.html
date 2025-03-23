@@ -116,6 +116,60 @@
         // Set assignment title in the page
         document.getElementById('assignment-title').textContent = assignmentTitle;
         
+        // Student enrollment data
+        const studentData = {
+            "24CS5010001": "Barot Rajvee Jigneshkumar",
+            "24CS5010002": "Belani Chaitya Stavan",
+            "24CS5010003": "Bhati Deeprajsinh Mukendrasinh",
+            "24CS5010004": "Chauhan Dipika Sanjay Singh",
+            "24CS5010005": "Chauhan Jinansh Harpalsing",
+            "24CS5010006": "Chauhan Kairavi Bimalbhai",
+            "24CS5010007": "Chauhan Prithvisingh Dharmendra Singh",
+            "24CS5010008": "Chikani Heer Bhaveshbhai",
+            "24CS5010009": "Dabgar Hemilkumar Tusharkumar",
+            "24CS5010010": "Daivat Sweta Jagdish",
+            "24CS5010011": "Dave Bhavya Yogeshkumar",
+            "24CS5010012": "Desai Shaily Niravkumar",
+            "24CS5010013": "Dev Rajan",
+            "24CS5010014": "Gajjar Vrusha Jayendrakumar",
+            "24CS5010015": "Gamit Dixit Dhirajbhai",
+            "24CS5010016": "Godhani Renish Rameshbhai",
+            "24CS5010017": "Jain Dhyan Jineshkumar",
+            "24CS5010018": "Jain Tushar Kirtikumar",
+            "24CS5010019": "Jogi Yashnath Dineshnath",
+            "24CS5010020": "Joshi Aastha Maheshkumar",
+            "24CS5010021": "Kabariya Vishwa Prakashbhai",
+            "24CS5010022": "Kalal Bhavesh Rajesh",
+            "24CS5010023": "Khambhaliya Nandaniben Rajeshbhai",
+            "24CS5010024": "Krutarth Shah",
+            "24CS5010025": "Mahek Pamnani",
+            "24CS5010026": "Mantavya Snehal Gandhi",
+            "24CS5010027": "Moradiya Vishrut",
+            "24CS5010028": "Nakrani Ronak Alpeshbhai",
+            "24CS5010029": "Patel Aaryan Krunalbhai",
+            "24CS5010030": "Patel Bhavya Sanjaykumar",
+            "24CS5010031": "Patel Jiya Dhavalbhai",
+            "24CS5010032": "Patel Prince Rajeshkumar",
+            "24CS5010033": "Prajapati Jaiminkumar Rajeshkumar",
+            "24CS5010034": "Rajat Yadav",
+            "24CS5010035": "Ramani Nihar Vinubhai",
+            "24CS5010036": "Raval Jay Hareshbhai",
+            "24CS5010037": "Sagar Jeel Alpeshbhai",
+            "24CS5010038": "Savaliya Hanisha Rasikbhai",
+            "24CS5010039": "Shah Twisha Bijal",
+            "24CS5010040": "Shah Vaidehi Pranav",
+            "24CS5010041": "Shaikh Mo. Hadin",
+            "24CS5010042": "Shaikh Shehrish Faiyaz",
+            "24CS5010043": "Shrivastav Dipesh Santoshbhai",
+            "24CS5010044": "Solanki Amankumar Vijaykumar",
+            "24CS5010045": "Solanki Digvijaysinh Ranjitsinh",
+            "24CS5010046": "Varun Dutt",
+            "24CS5010047": "Vinesh Rajpurohit",
+            "24CS5010048": "Vishwakarma Ravindra Satyanarayan",
+            "24CS5010049": "Waghela Abhilasha Anilkumar",
+            "24CS5010050": "Pitroda Dhruve Upendrabhai"
+        };
+        
         // Google API credentials - your actual values
         const CLIENT_ID = '212156666010-qf09rl4mhe5pc2lq5lt04323ucaje2pg.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyDQZxO8iwvfBwLXVAG9h_yNAuCLkcGOvJM'; // You'll need to create an API key in Google Cloud Console
@@ -177,8 +231,17 @@
                 return;
             }
             
+            // Check if enrollment number exists in our database
+            if (!studentData[enrollmentNumber]) {
+                showError('Invalid enrollment number. Please enter a valid enrollment number.');
+                return;
+            }
+            
             // Display the enrollment number in the next step
             document.getElementById('display-enrollment').textContent = enrollmentNumber;
+            
+            // Auto-fill student name
+            document.getElementById('student-name').value = studentData[enrollmentNumber];
             
             // Hide step 1 and show step 2
             document.getElementById('step-enrollment').style.display = 'none';
@@ -203,6 +266,12 @@
             // Validate inputs
             if (!studentName) {
                 showError('Please enter your full name');
+                return;
+            }
+            
+            // Verify student name matches enrollment number
+            if (studentData[enrollmentNumber] && studentName !== studentData[enrollmentNumber]) {
+                showError('Student name does not match the enrollment number. Please use your registered name.');
                 return;
             }
             

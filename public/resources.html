@@ -1456,10 +1456,11 @@
             }
         });
 
-        // Toggle assignment upload form
+        // Update the toggleUploadForm function in resources.html
         function toggleUploadForm(assignmentId) {
-            // Get the assignment title
-            const assignmentTitle = document.querySelector(`.resource-item[data-assignment="${assignmentId}"] h3`).textContent;
+            // Get the assignment title from the heading element
+            const assignmentHeading = document.querySelector(`.resource-item .resource-details h3`);
+            const assignmentTitle = assignmentHeading ? assignmentHeading.textContent : 'Assignment';
             
             // Redirect to the submission page with the assignment ID and title as parameters
             window.location.href = `submit-assignment.html?id=${assignmentId}&title=${encodeURIComponent(assignmentTitle)}`;
